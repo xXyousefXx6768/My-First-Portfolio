@@ -1,10 +1,13 @@
 "use client";
-
 import React, { useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
+import Logo from'../assets/Logo.png';
+import { useTranslations } from "../lib/i18n-provider";
 
 function NavBar() {
   const navRefs = useRef<HTMLLIElement[]>([]);
+  const t = useTranslations("navbar");
 
   useEffect(() => {
     navRefs.current.forEach((el) => {
@@ -65,7 +68,7 @@ function NavBar() {
     });
   }, []);
 
-  const navItems = ["Home", "About", "Services", "Projects", "Contact"];
+  const navItems = ["home", "about", "services", "projects", "skills"];
 
   // تقسيم الحروف لنسختين (top + bottom)
   const splitText = (text: string) =>
@@ -81,12 +84,15 @@ function NavBar() {
     ));
 
   return (
-    <nav className="flex flex-row justify-between w-full p-5">
-      <div>
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-[#FA6E00] to-[#E60026] bg-clip-text text-transparent">
-          Yousef
-        </h2>
-      </div>
+    <nav className="flex flex-row justify-between font-sans  w-full p-4">
+      <div className="w-12 h-12">
+  <Image 
+    src={Logo} 
+    alt="logo" 
+    className="object-contain"
+    loading="lazy"
+  />
+</div>
       <section className="items-center flex">
         <ul className="flex flex-row items-center justify-between gap-10">
           {navItems.map((item, i) => (
@@ -95,12 +101,18 @@ function NavBar() {
               ref={(el) => (navRefs.current[i] = el!)}
               className="relative cursor-pointer overflow-hidden"
             >
-              <span className="inline-block">{splitText(item)}</span>
+              <span className="inline-block">{splitText(t(item))}</span>
               <span className="underline absolute bottom-0 left-0 w-full h-[2px] bg-orange-500 scale-x-0"></span>
             </li>
           ))}
+         
         </ul>
+
       </section>
+      
+         <button className="bg-gradient-to-r from-[#FA6E00] to-[#E60026] cursor-pointer   hover:bg-orange-600  py-2 px-4 rounded">
+            Contact Me
+         </button>
     </nav>
   );
 }
