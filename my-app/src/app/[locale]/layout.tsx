@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-      <body className={` ${michroma.variable}`}>
+      <body className={` ${michroma.variable} overflow-x-hidden`}>
         <I18nProvider locale={locale} messages={messages}>
           {children}
         </I18nProvider>
