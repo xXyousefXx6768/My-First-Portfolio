@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Michroma } from "next/font/google";
 import { I18nProvider } from "../lib/i18n-provider";
 import "../globals.css";
+import LenisScrollProvider from "../Providers/lenis-provider";
 
 export async function generateStaticParams() {
   return [{ locale: "en" }, { locale: "ar" }, { locale: "de" }];
@@ -39,7 +40,9 @@ export default async function RootLayout({
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <body className={` ${michroma.variable} overflow-x-hidden`}>
         <I18nProvider locale={locale} messages={messages}>
+          <LenisScrollProvider>
           {children}
+          </LenisScrollProvider>
         </I18nProvider>
       </body>
     </html>

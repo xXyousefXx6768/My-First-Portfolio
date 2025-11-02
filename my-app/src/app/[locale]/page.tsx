@@ -6,6 +6,7 @@ import ContactMe from "../Components/ContactMe";
 import Footer from "../Components/Footer";
 import MyProjects from "../Components/MyProjects";
 import HeroSection from "../Components/HeroSection";
+import Skills from "../Components/Skills";
 
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       <NavBar />
       <HeroSection />
       <AboutMe />
+      <Skills />
       <MyProjects />
       <ContactMe />
       <Footer />

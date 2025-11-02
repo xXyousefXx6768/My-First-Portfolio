@@ -66,7 +66,7 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="navbar-container group ">
+    <nav className="navbar-container group text-white ">
       <div className="navbar-shine"></div>
       <div className="logo-container">
         <Image src={Logo} alt="logo" className="object-contain" loading="lazy" />
@@ -92,12 +92,12 @@ const NavBar: React.FC = () => {
           </button>
 
           {isOpen && (
-            <ul className="lang-menu ">
+            <ul className="lang-menu  ">
               {languages.map((lang) => (
                 <li
                   key={lang.code}
                   onClick={() => switchLocale(lang.code)}
-                  className={`lang-item ${currentLocale === lang.code ? "active" : ""}`}
+                  className={`lang-item ${currentLocale === lang.code ? "active" : ""} `}
                 >
                   {lang.label}
                 </li>

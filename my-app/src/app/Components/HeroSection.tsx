@@ -1,7 +1,8 @@
-"use client";
+'use client';
 import React from "react";
 import Image from "next/image";
 import myImg from "../assets/my img.jpg";
+import TextType from "@/components/TextType";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faSquareLinkedin,faSquareGithub,faSquareInstagram,faSquareFacebook} from '@fortawesome/free-brands-svg-icons'
 
@@ -9,7 +10,7 @@ function HeroSection() {
   const icons = [
     {
       icon: faSquareLinkedin,
-      link: "https://www.linkedin.com/in/yousef-alzubaidi/",
+      link: "https://www.linkedin.com/in/yousef-amr-66873224b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       color: "#ff6000"
     },
     {
@@ -19,12 +20,12 @@ function HeroSection() {
     },
     {
       icon: faSquareInstagram,
-      link: "https://www.instagram.com/yousef_alzubaidi/",
+      link: "https://www.instagram.com/yousef_amr24?igsh=a3I2eTQxZ3M5ZjZ5",
       color: "#ff6000",
     },
     {
       icon: faSquareFacebook,
-      link: "https://www.facebook.com/yousef.alzubaidi/",
+      link: "https://www.facebook.com/share/1DMa2oSiss/",
       color: "#ff6000",
     },
   ]
@@ -43,9 +44,16 @@ function HeroSection() {
         <h2 className="text-3xl ml-4 font-semibold text-gray-200 mt-2">
           (Tito)
         </h2>
-        <h2 className="text-3xl font-semibold shiny-text glow-text text-gray-200 mt-2">
-          Full Stack Developer
-        </h2>
+
+        <TextType 
+  text={["full stack developer", "Nextjs developer", "php developer"]}
+  typingSpeed={75}
+  pauseDuration={1500}
+  showCursor={true}
+  cursorCharacter="|"
+  className="text-3xl font-semibold shiny-text glow-text text-gray-200 mt-2"
+/>
+        
 
         <div className="flex gap-2 mt-6">
           {icons.map((icon, index) => (
