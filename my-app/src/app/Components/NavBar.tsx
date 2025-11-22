@@ -5,6 +5,8 @@ import { useRouter, usePathname } from "next/navigation";
 import gsap from "gsap";
 import Logo from "../assets/Logo.png";
 import { useTranslations } from "../lib/i18n-provider";
+import { createPortal } from "react-dom";
+
 
 
 const NavBar: React.FC = () => {
@@ -13,6 +15,8 @@ const NavBar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const langBtnRef = useRef<HTMLButtonElement | null>(null);
+
 
   const navItems: string[] = ["home", "about", "services", "projects", "skills"];
   const languages = [
@@ -67,7 +71,9 @@ const NavBar: React.FC = () => {
 
   return (
     <nav className="navbar-container group text-white ">
-      <div className="navbar-shine"></div>
+      <div className="shine-wrapper">
+    <div className="navbar-shine"></div>
+  </div>
       <div className="logo-container">
         <Image src={Logo} alt="logo" className="object-contain" loading="lazy" />
       </div>
@@ -86,25 +92,42 @@ const NavBar: React.FC = () => {
 
       <div className="flex items-center  gap-4">
         {/* Language Switcher */}
-        <div className="relative overflow-visible">
-          <button onClick={() => setIsOpen(!isOpen)} className="lang-btn">
-            {currentLocale.toUpperCase()}
-          </button>
+      <div className="relative">
+  <button
+  ref={langBtnRef}
+  onClick={() => setIsOpen(!isOpen)}
+  className="lang-btn"
+>
+  {currentLocale.toUpperCase()}
+</button>
 
-          {isOpen && (
-            <ul className="lang-menu  ">
-              {languages.map((lang) => (
-                <li
-                  key={lang.code}
-                  onClick={() => switchLocale(lang.code)}
-                  className={`lang-item ${currentLocale === lang.code ? "active" : ""} `}
-                >
-                  {lang.label}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+
+  {isOpen && (
+  <ul
+  className="lang-menu absolute z-[9999]"
+  style={{
+    top: "110%",
+    left: 0,
+    width: langBtnRef.current
+      ? `${langBtnRef.current.offsetWidth}px`
+      : "auto",
+  }}
+>
+
+    {languages.map((lang) => (
+      <li
+        key={lang.code}
+        onClick={() => switchLocale(lang.code)}
+        className={`lang-item ${currentLocale === lang.code ? "active" : ""}`}
+      >
+        {lang.label}
+      </li>
+    ))}
+  </ul>
+)}
+
+
+</div>
 
         {/* Contact Button */}
         <button className="contact-btn">{t("contact")}</button>

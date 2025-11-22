@@ -154,15 +154,21 @@ body {
   background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
   box-shadow: 0 4px 30px rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
+  overflow: visible;  /* 👈 أهم حاجة */
+}
+
+/* الـ Shine */
+.shine-wrapper {
+  position: absolute;
+  inset: 0;     /* نفس حجم الـ navbar */
   overflow: hidden;
-  transition: all 0.4s ease;
+  border-radius: 50px; /* نفس شكل الناف */
+  pointer-events: none;
 }
 
 .navbar-shine {
-  content: "";
   position: absolute;
   top: 0;
   left: -75%;
@@ -171,8 +177,8 @@ body {
   background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
   transform: skewX(-25deg);
   animation: shine 4s infinite;
-  pointer-events: none;
 }
+
 
 @keyframes shine {
   0% { left: -75%; }
@@ -211,21 +217,19 @@ body {
 
 .lang-menu {
   position: absolute;
-  right: 0;
-  top: 110%;
   background: #2C2C2C;
   border: 1px solid #444;
   border-radius: 8px;
-  z-index: 40;
+  z-index: 9999;
   overflow: hidden;
+  min-width: 60px; /* بس ضمان */
 }
 
 .lang-item {
-  color: #ccc;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  white-space: nowrap; /* يمنع التكسر */
+  padding: 8px 12px;
 }
+
 
 .lang-item:hover {
   background: #E60026;
@@ -355,6 +359,41 @@ html {
   scroll-behavior: smooth;
   scrollbar-color: #FA6E00 #1E1E1E;
   scrollbar-width: thin;
+}
+
+/* إطار مضيء */
+.frame-glow {
+  position: relative;
+  padding: 10px;
+  border-radius: 24px;
+  transition: 0.4s ease-out;
+}
+
+.frame-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 3px;
+  background: linear-gradient(45deg, #ff0000, #ff4d00, #ff8800, #ff0000);
+  background-size: 300%;
+  filter: blur(6px);
+  opacity: 0.4;
+  transition: opacity 0.4s ease-out, filter 0.4s ease-out;
+  animation: glowMove 4s linear infinite;
+  z-index: -1;
+}
+
+.frame-glow:hover::before {
+  opacity: 1;
+  filter: blur(10px);
+}
+
+/* حركة الأنيميشن في الإطار */
+@keyframes glowMove {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 200% 0%; }
+  100% { background-position: 0% 0%; }
 }
 
 
