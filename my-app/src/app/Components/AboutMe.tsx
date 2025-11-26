@@ -1,31 +1,130 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import myImg2 from "../assets/my img2.jpg";
-function AboutMe() {
-  return (
-    <main className='flex w-full justify-around items-center px-10 py-20  text-white'>
-         <section>
-          <h3 className='font-bold text-2xl'>
-            About me 
-          </h3>
-          <div className='w-[660px] scale-90 '>
-          <p className=''>
-            👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer who loves turning ideas into interactive, functional, and visually appealing web experiences.
-I’m currently studying at Al-Alsun, Ain Shams University, majoring in Italian, English, and German, which gives me a unique ability to connect with people from different cultures and think creatively in multiple languages.
-💻 I’ve completed an online internship with Neuronetix, where I worked on real-world frontend projects and gained hands-on experience with modern technologies like React, Laravel, Tailwind CSS, Bootstrap, and Framer Motion.
-What drives me the most is problem-solving — I enjoy building efficient, clean, and user-friendly solutions from scratch.
-I also love experimenting with animations and UI effects that bring life to web interfaces.
-🚀 My goal is to keep improving my skills every day and collaborate on projects that make an impact, blending creativity with logic to build something meaningful.
-When I’m not coding, you’ll probably find me watching hacker movies, exploring new tech trends, or learning new languages.
-          </p>
-          </div>
-         </section>
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-         <section>
-          <Image src={myImg2} alt="my img" width={400} height={400} className='rounded-full' />
-         </section>
+gsap.registerPlugin(ScrollTrigger);
+
+function AboutMe() {
+  const titleRef = useRef(null);
+  const textRef = useRef(null);
+  const imgContainerRef = useRef(null);
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+  
+   const bigShadowEl =
+      document.querySelector(".big-shadow") as HTMLElement | null;
+
+    if (bigShadowEl) gsap.set(bigShadowEl, { opacity: 0 });
+    if (imgContainerRef.current) gsap.set(imgContainerRef.current, { boxShadow: "none" });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: imgContainerRef.current || titleRef.current,
+        start: "top 85%",
+      },
+    });
+
+    // Title Reveal
+    tl.fromTo(
+      titleRef.current,
+      { y: "100%", opacity: 0 },
+      { y: "0%", opacity: 1, duration: 1, ease: "power3.out" }
+    );
+
+    // Text Reveal AFTER TITLE
+    tl.fromTo(
+      textRef.current,
+      { y: 40, opacity: 0, filter: "blur(10px)" },
+      { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.1, ease: "power3.out" },
+      "+=0.2"
+    );
+
+    // BIG RED SHADOW FIRST (بعد النص، قبل الصورة)
+   
+
+    // IMAGE REVEAL (بعد الـ big-shadow)
+    tl.fromTo(
+      imgRef.current,
+      {
+        scale: 1.35,
+        y: -120,
+        opacity: 0,
+        clipPath: "inset(100% 0 0 0)",
+      },
+      
+      {
+        scale: 1,
+        y: 0,
+        opacity: 1,
+        clipPath: "inset(0% 0 0 0)",
+        duration: 1.7,
+        ease: "power3.out",
+      },
+      "+=0.05"
+
+    );
+    tl.to(
+      imgContainerRef.current,
+      {
+        boxShadow:
+          "0 18px 50px rgba(230,72,0,0.18), 0 8px 20px rgba(0,0,0,0.25)",
+        duration: 0.9,
+        ease: "power3.out",
+      },
+      "+=0.12"
+    );
+    if (bigShadowEl) {
+      tl.to(
+        bigShadowEl,
+        { opacity: 1, duration: 1.5, ease: "power3.out" },
+        "+=0.08"
+      );
+    }
+
+   
+  }, []);
+
+  return (
+    <main className="flex flex-col md:flex-row w-full justify-center md:justify-around items-center px-8 md:px-16 py-20 text-white gap-12 md:gap-4">
+      {/* TEXT SECTION */}
+      <section className="max-w-xl">
+        <div className="absolute top-200 left-18 w-[450px] h-[450px] bg-gradient-to-r from-yellow-700 to-orange-500/30 rounded-full blur-[180px] opacity-65"></div>
+        <div className=" big-shadow absolute top-200 right-18 w-[450px] h-[450px] bg-gradient-to-r from-red-800 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+
+        <div className="overflow-hidden inline-block mb-3">
+          <h3 ref={titleRef} className="font-bold text-3xl md:text-4xl text-orange-400">
+            About me
+          </h3>
+        </div>
+
+        <p ref={textRef} className="text-gray-300 leading-relaxed text-lg">
+          👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer
+          who loves turning ideas into interactive, functional, and visually appealing
+          web experiences...
+        </p>
+      </section>
+
+      {/* IMAGE SECTION  */}
+      <section
+        ref={imgContainerRef}
+        className="relative overflow-hidden rounded-2xl w-[260px] h-[460px] shadow-lg shadow-orange-700/20"
+      >
+        
+        <Image
+          ref={imgRef}
+          src={myImg2}
+          alt="my image"
+          fill
+          className="object-contain relative z-10"
+          priority
+        />
+      </section>
     </main>
-  )
+  );
 }
 
-export default AboutMe
+export default AboutMe;

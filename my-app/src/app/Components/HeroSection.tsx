@@ -40,14 +40,24 @@ function HeroSection() {
   );
 
   // النص: دخول ناعم
-  gsap.from(textRef.current, {
-    opacity: 0,
-    x: -80,
-    filter: "blur(10px)",
-    duration: 1.6,
-    delay: 0.3,
-    ease: "power3.out",
-  });
+  gsap.fromTo(textRef.current, {
+  opacity: 0,
+  x: -80,
+  filter: "blur(10px)",
+}, {
+  opacity: 1,
+  x: 0,
+  filter: "blur(0px)",
+  duration: 1.6,
+  delay: 0.1,
+  ease: "power3.out",
+  scrollTrigger: {
+    trigger: textRef.current,
+    start: "top 95%",
+    toggleActions: "play none none reverse",
+  }
+});
+
 }, []);
 
   const icons = [
@@ -65,8 +75,11 @@ function HeroSection() {
       <div className="absolute top-30 right-18 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
          <div className="light-blob"></div>
       {/* LEFT TEXT SECTION */}
-      <div ref={textRef} className="flex flex-col z-10  text-white">
-       
+     <div
+  ref={textRef}
+  className="flex flex-col z-10 text-white opacity-0 -translate-x-20"
+>
+
         <p className="text-gray-400 text-lg">Hi I am</p>
         <h1 className="text-5xl font-bold text-orange-500">Yousef Amr</h1>
         <h2 className="text-3xl ml-4 font-semibold text-gray-200 mt-2">(Tito)</h2>
@@ -95,7 +108,8 @@ function HeroSection() {
       </div>
 
     {/* RIGHT IMAGE SECTION */}
-<div ref={imgRef} className="relative z-10">
+<div ref={imgRef} className="relative z-10 opacity-0 scale-150 translate-y-20">
+
   <div className="relative group w-fit">
   <Image
     src={myImg}
