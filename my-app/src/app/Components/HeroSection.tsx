@@ -11,54 +11,65 @@ gsap.registerPlugin(ScrollTrigger);
 function HeroSection() {
   const imgRef = useRef(null);
   const textRef = useRef(null);
+  useEffect(() => {
+    const triggers: ScrollTrigger[] = [];
 
- useEffect(() => {
-  gsap.registerPlugin(ScrollTrigger);
-
-  // صورة: تبدأ بزوم كبير وتدخل تدريجياً
-  gsap.fromTo(
-    imgRef.current,
-    {
-      scale: 1.5,
-      opacity: 0,
-      y: 80,
-      filter: "blur(10px)",
-    },
-    {
-      scale: 1,
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      duration: 1.8,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: imgRef.current,
-        start: "top 90%",
-        toggleActions: "play none none reverse",
+    // --- Image Animation ---
+    const imgAnim = gsap.fromTo(
+      imgRef.current,
+      {
+        scale: 1.5,
+        opacity: 0,
+        y: 80,
+        filter: "blur(10px)",
       },
-    }
-  );
+      {
+        scale: 1,
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 1.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: imgRef.current,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
 
-  // النص: دخول ناعم
-  gsap.fromTo(textRef.current, {
-  opacity: 0,
-  x: -80,
-  filter: "blur(10px)",
-}, {
-  opacity: 1,
-  x: 0,
-  filter: "blur(0px)",
-  duration: 1.6,
-  delay: 0.1,
-  ease: "power3.out",
-  scrollTrigger: {
-    trigger: textRef.current,
-    start: "top 95%",
-    toggleActions: "play none none reverse",
-  }
-});
+    triggers.push(imgAnim.scrollTrigger!);
 
-}, []);
+    // --- Text Animation ---
+    const textAnim = gsap.fromTo(
+      textRef.current,
+      {
+        opacity: 0,
+        x: -80,
+        filter: "blur(10px)",
+      },
+      {
+        opacity: 1,
+        x: 0,
+        filter: "blur(0px)",
+        duration: 1.6,
+        delay: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: "top 95%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    triggers.push(textAnim.scrollTrigger!);
+
+    // --- Cleanup (Kill only this component triggers) ---
+    return () => {
+      triggers.forEach((t) => t.kill());
+    };
+  }, []);
 
   const icons = [
     { icon: faSquareLinkedin, link: "https://www.linkedin.com/in/yousef-amr-66873224b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", color: "#ff6000" },

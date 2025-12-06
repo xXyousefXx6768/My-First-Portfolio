@@ -5,48 +5,58 @@ import myImg2 from "../assets/my img2.jpg";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 function AboutMe() {
-  const titleRef = useRef(null);
-  const textRef = useRef(null);
-  const imgContainerRef = useRef(null);
-  const imgRef = useRef(null);
+   const titleRef = useRef<HTMLDivElement | null>(null);
+  const textRef = useRef<HTMLDivElement | null>(null);
+  const imgContainerRef = useRef<HTMLDivElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-  
-   const bigShadowEl =
-      document.querySelector(".big-shadow") as HTMLElement | null;
+    const triggers: ScrollTrigger[] = [];
+
+    // Big shadow (external element)
+    const bigShadowEl = document.querySelector(
+      ".big-shadow"
+    ) as HTMLElement | null;
 
     if (bigShadowEl) gsap.set(bigShadowEl, { opacity: 0 });
     if (imgContainerRef.current) gsap.set(imgContainerRef.current, { boxShadow: "none" });
 
+    // TIMELINE
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: imgContainerRef.current || titleRef.current,
-        start: "top 85%",
+        start: "top 90%",
       },
     });
 
-    // Title Reveal
+    triggers.push(tl.scrollTrigger!);
+
+    // --- TITLE REVEAL ---
     tl.fromTo(
       titleRef.current,
       { y: "100%", opacity: 0 },
       { y: "0%", opacity: 1, duration: 1, ease: "power3.out" }
     );
 
-    // Text Reveal AFTER TITLE
+    // --- TEXT AFTER TITLE ---
     tl.fromTo(
       textRef.current,
       { y: 40, opacity: 0, filter: "blur(10px)" },
-      { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.1, ease: "power3.out" },
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 1.1,
+        ease: "power3.out",
+      },
       "+=0.2"
     );
 
-    // BIG RED SHADOW FIRST (بعد النص، قبل الصورة)
-   
-
-    // IMAGE REVEAL (بعد الـ big-shadow)
+    // --- IMAGE REVEAL ---
     tl.fromTo(
       imgRef.current,
       {
@@ -55,7 +65,6 @@ function AboutMe() {
         opacity: 0,
         clipPath: "inset(100% 0 0 0)",
       },
-      
       {
         scale: 1,
         y: 0,
@@ -65,8 +74,9 @@ function AboutMe() {
         ease: "power3.out",
       },
       "+=0.05"
-
     );
+
+    // --- IMAGE SHADOW ---
     tl.to(
       imgContainerRef.current,
       {
@@ -77,6 +87,8 @@ function AboutMe() {
       },
       "+=0.12"
     );
+
+    // --- BIG SHADOW ---
     if (bigShadowEl) {
       tl.to(
         bigShadowEl,
@@ -85,9 +97,11 @@ function AboutMe() {
       );
     }
 
-   
+    // CLEANUP — only kill this component's triggers
+    return () => {
+      triggers.forEach((t) => t.kill());
+    };
   }, []);
-
   return (
     <main className="flex flex-col md:flex-row w-full justify-center md:justify-around items-center px-8 md:px-16 py-20 text-white gap-12 md:gap-4">
       {/* TEXT SECTION */}

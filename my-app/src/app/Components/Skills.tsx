@@ -20,6 +20,7 @@ import {
   SiFramer,
   SiZap,
 } from "react-icons/si";
+import AnimatedTitle from "./custom sections/AnimatedTitle";
 
 interface Skill {
   name: string;
@@ -49,9 +50,7 @@ const Skills: React.FC = () => {
 
   return (
     <section className="py-16 px-6 text-center">
-      <h2 className="text-4xl font-bold mb-10 text-orange-500 dark:text-white">
-        My <span className="text-amber-500">Skills</span>
-      </h2>
+      <AnimatedTitle title="My Skills" className="text-orange-400" />
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 place-items-center">
         {skills.map((skill, index) => (
@@ -83,7 +82,7 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
     "--glow-color": skill.color,
   } as React.CSSProperties}
 >
-  {/* 💫 الوميض المتحرك مع الماوس */}
+  
   {isHovered && (
     <div
       className="absolute w-24 h-24 rounded-full blur-2xl opacity-50 pointer-events-none transition-transform duration-150"
@@ -95,13 +94,13 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
     />
   )}
 
-  {/* ✨ الانعكاس الزجاجي */}
+  
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/20 via-transparent to-transparent opacity-10" />
     <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/30 via-white/5 to-transparent opacity-20 skew-y-[-8deg]" />
   </div>
 
-  {/* 🧩 الأيقونة والعنوان */}
+  
   <div className="relative flex flex-col items-center space-y-2 z-10">
     <div
       className="text-5xl transition-transform duration-300"

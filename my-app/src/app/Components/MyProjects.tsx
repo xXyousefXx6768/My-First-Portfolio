@@ -12,6 +12,7 @@ import {
   SiVite, SiFirebase, SiRedux
 } from "react-icons/si";
 import { FiExternalLink, FiGithub } from "react-icons/fi";
+import AnimatedTitle from "./custom sections/AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -56,10 +57,12 @@ export default function MyProjects() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  // Store card refs typed
-  const cardRefs = useRef<Record<string | number, HTMLDivElement | null>>({});
+  // Project card refs index
+  const cardRefs = useRef<Record<string, HTMLElement | null>>({});
 
-  
+  //-----------------------------------
+  // 1) FETCH PROJECTS
+  //-----------------------------------
   useEffect(() => {
     const fetchProjects = async () => {
       const { data, error } = await supabase
@@ -67,18 +70,21 @@ export default function MyProjects() {
         .select("*")
         .order("created_at", { ascending: true });
 
-      if (!error && data) {
-        setProjects(data as Project[]);
-      }
+      if (!error && data) setProjects(data as Project[]);
     };
+
     fetchProjects();
   }, []);
 
-  
+  //-----------------------------------
+  // 2) CARD REVEAL ANIMATION
+  //-----------------------------------
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || projects.length === 0) return;
 
     const cards = containerRef.current.querySelectorAll(".project-card");
+    const triggers: ScrollTrigger[] = [];
+
     gsap.killTweensOf(cards);
 
     gsap.set(cards, {
@@ -89,7 +95,7 @@ export default function MyProjects() {
       filter: "blur(8px)",
     });
 
-    gsap.to(cards, {
+    const anim = gsap.to(cards, {
       opacity: 1,
       y: 0,
       rotateX: 0,
@@ -100,16 +106,21 @@ export default function MyProjects() {
       stagger: 0.15,
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top 85%",
+        start: "top center",
       },
     });
 
+    // store this only trigger
+    triggers.push(anim.scrollTrigger!);
+
     return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
+      triggers.forEach((t) => t.kill());
     };
   }, [projects]);
 
-  
+  //-----------------------------------
+  // 3) OPEN MODAL
+  //-----------------------------------
   const openProj = (proj: Project) => {
     const card = cardRefs.current[proj.id];
     if (!card) return;
@@ -229,17 +240,16 @@ export default function MyProjects() {
  
   return (
     <main ref={containerRef} className="w-full px-6 md:px-16 py-20 text-white">
-      <h2 className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-orange-300 to-yellow-300 bg-clip-text text-transparent">
-        My Projects
-      </h2>
+      <AnimatedTitle title="My Projects" className="text-orange-400" />
 
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((proj) => (
           <article
             key={proj.id}
-            ref={(el) => (cardRefs.current[proj.id] = el)}
-           
+           ref={(el: HTMLElement | null) => {
+  cardRefs.current[String(proj.id)] = el;
+}}     
             className="project-card p-5 rounded-2xl bg-[#0f0f0f]/60 backdrop-blur-xl border border-white/10 shadow-[0_6px_25px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_35px_rgba(255,120,50,0.20)] hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 cursor-pointer"
           >
             {proj.image && (
