@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Michroma } from "next/font/google";
 import { I18nProvider } from "../lib/i18n-provider";
 import ToasterProvider from "../Components/ToasterProvider";
+import CustomCursor from "../Components/custom sections/CustomCursor";
 
 import "../globals.css";
 import LenisScrollProvider from "../Providers/lenis-provider";
@@ -43,8 +44,9 @@ export default async function RootLayout({
       <body className={` ${michroma.variable} overflow-x-hidden`}>
         <I18nProvider locale={locale} messages={messages}>
           <LenisScrollProvider>
+            <CustomCursor />
                 {children}
-                <ToasterProvider  />
+            <ToasterProvider  />
           </LenisScrollProvider>
         </I18nProvider>
       </body>

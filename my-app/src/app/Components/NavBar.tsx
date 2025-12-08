@@ -102,29 +102,29 @@ const NavBar: React.FC = () => {
 </button>
 
 
-  {isOpen && (
-  <ul
-  className="lang-menu absolute z-[9999]"
-  style={{
-    top: "110%",
-    left: 0,
-    width: langBtnRef.current
-      ? `${langBtnRef.current.offsetWidth}px`
-      : "auto",
-  }}
->
-
-    {languages.map((lang) => (
-      <li
-        key={lang.code}
-        onClick={() => switchLocale(lang.code)}
-        className={`lang-item ${currentLocale === lang.code ? "active" : ""}`}
-      >
-        {lang.label}
-      </li>
-    ))}
-  </ul>
-)}
+  {isOpen &&
+  createPortal(
+    <ul
+      className="lang-menu fixed z-[99999]"
+      style={{
+        top:
+          (langBtnRef.current?.getBoundingClientRect().bottom ?? 0) + 8 + "px",
+        left: langBtnRef.current?.getBoundingClientRect().left ?? 0,
+        width: langBtnRef.current?.offsetWidth ?? "auto",
+      }}
+    >
+      {languages.map((lang) => (
+        <li
+          key={lang.code}
+          onClick={() => switchLocale(lang.code)}
+          className={`lang-item ${currentLocale === lang.code ? "active" : ""}`}
+        >
+          {lang.label}
+        </li>
+      ))}
+    </ul>,
+    document.body
+  )}
 
 
 </div>

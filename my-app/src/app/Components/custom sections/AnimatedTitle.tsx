@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -12,79 +12,60 @@ interface Props {
 
 export default function AnimatedTitle({ title, className }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const splitRef = useRef<HTMLDivElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
 
-  const splitText = (text: string) =>
-    text.split("").map((letter, index) => (
-      <span key={index} className="inline-block overflow-hidden">
-        <span className="inline-block translate-y-[-150%] will-change-transform">
-          {letter === " " ? "\u00A0" : letter}
-        </span>
-      </span>
-    ));
+  useEffect(() => {
+    if (!titleRef.current) return;
 
-  useLayoutEffect(() => {
-    if (!containerRef.current || !splitRef.current) return;
+    // split characters
+    const letters = title.split("");
 
-    const letters = Array.from(splitRef.current.querySelectorAll("span > span"));
+    titleRef.current.innerHTML = letters
+      .map(
+        (l) =>
+          `<span class="inline-block opacity-0 translate-y-[120%]">${l === " " ? "&nbsp;" : l}</span>`
+      )
+      .join("");
 
-    const center = Math.floor(letters.length / 2);
-    const staggerOrder = letters
-      .map((el, i) => ({ el, dist: Math.abs(i - center) }))
-      .sort((a, b) => a.dist - b.dist)
-      .map((i) => i.el);
+    const spans = Array.from(titleRef.current.querySelectorAll("span"));
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top center",
-          end: "bottom center",
-          scrub: 0.19,
-        },
-      });
+    const center = Math.floor(spans.length / 2);
+    const timingCurve = spans.map((_, i) => Math.abs(i - center) * 0.05);
 
-      tl.fromTo(
-        staggerOrder,
-        { y: "-150%" },
-        {
-          y: "0%",
-          ease: "power3.out",
-          stagger: 0.28,
-        }
-      );
-    }, containerRef);
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top center",
+        end: "bottom center",
+        scrub: 1,
+      },
+    });
 
-    return () => ctx.revert();
-  }, []);
+    tl.to(spans, {
+      y: "0%",
+      opacity: 1,
+      ease: "power3.out",
+      stagger: {
+        from: "center",
+        amount: 0.1,
+      },
+      delay: (i) => timingCurve[i],
+    });
+
+    return () => tl.scrollTrigger?.kill();
+  }, [title]);
 
   return (
     <section
       ref={containerRef}
       className={`w-full py-28 flex items-center justify-center ${className}`}
     >
-    
-      <div
-        className="
-          relative inline-block
-          transition-all duration-300
-          hover:scale-[1.02]
-          hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.35)]
-          before:content-['']
-          before:absolute
-          before:left-0
-          before:bottom-[-6px]
-          before:h-[2px]
-          before:w-0
-          before:bg-current
-          before:transition-all
-          before:duration-300
-          hover:before:w-full
-        "
-      >
-        <h2 className="text-5xl md:text-7xl font-light tracking-tight select-none">
-          <div ref={splitRef}>{splitText(title)}</div>
-        </h2>
+      {/* Wrapper that hides overflow */}
+      <div className="overflow-hidden">
+        <h2
+          ref={titleRef}
+          className="text-5xl md:text-7xl font-bold tracking-tight text-orange-400 select-none"
+        ></h2>
       </div>
     </section>
   );

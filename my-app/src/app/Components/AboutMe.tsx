@@ -5,7 +5,6 @@ import myImg2 from "../assets/my img2.jpg";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 function AboutMe() {
@@ -29,7 +28,7 @@ function AboutMe() {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: imgContainerRef.current || titleRef.current,
-        start: "top 90%",
+        start: "top 85%",
       },
     });
 
@@ -39,7 +38,7 @@ function AboutMe() {
     tl.fromTo(
       titleRef.current,
       { y: "100%", opacity: 0 },
-      { y: "0%", opacity: 1, duration: 1, ease: "power3.out" }
+      { y: "0%", opacity: 1, duration: 1., ease: "power3.out" }
     );
 
     // --- TEXT AFTER TITLE ---

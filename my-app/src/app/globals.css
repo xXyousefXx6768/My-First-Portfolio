@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+body, html {
+  cursor: none !important;
+}
+*:hover {
+  cursor: none !important;
+}
+
 
 @custom-variant dark (&:is(.dark *));
 

@@ -22,7 +22,7 @@ const themes = {
   blue: "rgba(0,120,255,0.9)",
   green: "rgba(0,255,120,0.9)",
   yellow: "rgba(255,255,0,0.9)",
-  cyan: "rgba(0,255,255,255,0.9)",
+  cyan: "rgba(0,255,255,0.9)",
 };
 
 const services = [
@@ -68,25 +68,48 @@ export default function Services() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const cards = sectionRef.current?.querySelectorAll(".service-card");
-    if (!cards) return;
+  const cards = sectionRef.current?.querySelectorAll(".service-card");
+  if (!cards) return;
 
-    // Initial reveal animation
-    gsap.from(cards, {
-      opacity: 0,
-      y: 40,
-      scale: 0.9,
-      rotateX: 15,
-      filter: "blur(10px)",
-      duration: 1.2,
-      ease: "power3.out",
-      stagger: 0.15,
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-      },
-    });
-  }, []);
+  
+  ScrollTrigger.create({
+    trigger: sectionRef.current?.querySelector("h2"),
+    start: "top 70%", // يبدأ لما العنوان يدخل كويس
+    once: true,
+    onEnter: () => {
+    
+      setTimeout(() => {
+        gsap.fromTo(cards, {
+          opacity: 0,
+          y: 70,
+          scale: 0.85,
+          rotateX: 25,
+          filter: "blur(15px)",
+          duration: 1.8,
+          ease: "power3.out",
+          stagger: {
+            each: 0.28,
+            from: "start",
+          },
+        }
+        , {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 1.8,
+          ease: "power3.out",
+          stagger: {
+            each: 0.28,
+            from: "start",
+          },
+        });
+      }, 210); // وقت انتهاء انيميشن الحروف تقريبا
+    },
+  });
+}, []);
+
 
   // PARALLAX MOVEMENT
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -139,6 +162,8 @@ export default function Services() {
       duration: 0.35,
       ease: "power3.out",
     });
+
+    
   };
 
   const handleLeave = (card: HTMLElement) => {
@@ -174,7 +199,7 @@ export default function Services() {
         {services.map((s, i) => (
           <div
             key={i}
-            className="service-card p-8 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl cursor-pointer relative"
+            className="service-card   p-8 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl cursor-pointer relative"
             style={{
               "--maskColor": "rgba(0,0,0,1)",
               "--maskSize": "0%",
