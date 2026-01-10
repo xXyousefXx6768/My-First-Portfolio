@@ -11,7 +11,7 @@ import {
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import AnimatedTitle from "./custom sections/AnimatedTitle";
+import AnimatedTitle from "./custom-sections/AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -194,6 +194,9 @@ export default function Services() {
       className="w-full px-6 md:px-16 py-24 text-white relative"
     >
      <AnimatedTitle title="Services" className="text-orange-400" />
+     <div className="absolute top-30 left-10 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+      <div className="absolute top-80 right-18 w-[480px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+      
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {services.map((s, i) => (

@@ -4,63 +4,60 @@ import Image from "next/image";
 import myImg2 from "../assets/my img2.jpg";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import AnimatedTitle from "./custom-sections/AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
 function AboutMe() {
-   const titleRef = useRef<HTMLDivElement | null>(null);
-  const textRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const textRef = useRef<HTMLParagraphElement | null>(null);
   const imgContainerRef = useRef<HTMLDivElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const titleTriggerRef = useRef<HTMLDivElement | null>(null);
+
 
   useEffect(() => {
-    const triggers: ScrollTrigger[] = [];
+  if (
+    !titleTriggerRef.current ||
+    !textRef.current ||
+    !imgRef.current ||
+    !imgContainerRef.current
+  ) return;
 
-    // Big shadow (external element)
-    const bigShadowEl = document.querySelector(
-      ".big-shadow"
-    ) as HTMLElement | null;
-
-    if (bigShadowEl) gsap.set(bigShadowEl, { opacity: 0 });
-    if (imgContainerRef.current) gsap.set(imgContainerRef.current, { boxShadow: "none" });
-
-    // TIMELINE
+  const ctx = gsap.context(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: imgContainerRef.current || titleRef.current,
-        start: "top 85%",
+        trigger: titleTriggerRef.current,
+        start: "bottom 78%",
+        once: true,
+      },
+      defaults: {
+        ease: "power3.out",
       },
     });
 
-    triggers.push(tl.scrollTrigger!);
-
-    // --- TITLE REVEAL ---
-    tl.fromTo(
-      titleRef.current,
-      { y: "100%", opacity: 0 },
-      { y: "0%", opacity: 1, duration: 1., ease: "power3.out" }
-    );
-
-    // --- TEXT AFTER TITLE ---
+    /* TEXT */
     tl.fromTo(
       textRef.current,
-      { y: 40, opacity: 0, filter: "blur(10px)" },
+      {
+        y: 40,
+        opacity: 0,
+        filter: "blur(6px)",
+      },
       {
         y: 0,
         opacity: 1,
         filter: "blur(0px)",
-        duration: 1.1,
-        ease: "power3.out",
-      },
-      "+=0.2"
+        duration: 0.9,
+      }
     );
 
-    // --- IMAGE REVEAL ---
+    /* IMAGE REVEAL */
     tl.fromTo(
       imgRef.current,
       {
-        scale: 1.35,
-        y: -120,
+        scale: 1.25,
+        y: -80,
         opacity: 0,
         clipPath: "inset(100% 0 0 0)",
       },
@@ -69,73 +66,94 @@ function AboutMe() {
         y: 0,
         opacity: 1,
         clipPath: "inset(0% 0 0 0)",
-        duration: 1.7,
-        ease: "power3.out",
+        duration: 1.1,
       },
-      "+=0.05"
+      "-=0.55"
     );
 
-    // --- IMAGE SHADOW ---
+    /* IMAGE SHADOW */
     tl.to(
       imgContainerRef.current,
       {
         boxShadow:
-          "0 18px 50px rgba(230,72,0,0.18), 0 8px 20px rgba(0,0,0,0.25)",
-        duration: 0.9,
-        ease: "power3.out",
+          "0 20px 55px rgba(230,72,0,0.22), 0 8px 22px rgba(0,0,0,0.3)",
+        duration: 0.8,
       },
-      "+=0.12"
+      "-=0.6"
     );
 
-    // --- BIG SHADOW ---
-    if (bigShadowEl) {
-      tl.to(
-        bigShadowEl,
-        { opacity: 1, duration: 1.5, ease: "power3.out" },
-        "+=0.08"
-      );
-    }
+    /* GLOW */
+    tl.to(
+      ".big-shadow",
+      {
+        opacity: 1,
+        duration: 1,
+      },
+      "-=0.7"
+    );
+  });
 
-    // CLEANUP — only kill this component's triggers
-    return () => {
-      triggers.forEach((t) => t.kill());
-    };
-  }, []);
+  return () => ctx.revert();
+}, []);
+
   return (
-    <main className="flex flex-col md:flex-row w-full justify-center md:justify-around items-center px-8 md:px-16 py-20 text-white gap-12 md:gap-4">
-      {/* TEXT SECTION */}
-      <section className="max-w-xl">
-        <div className="absolute top-200 left-18 w-[450px] h-[450px] bg-gradient-to-r from-yellow-700 to-orange-500/30 rounded-full blur-[180px] opacity-65"></div>
-        <div className=" big-shadow absolute top-200 right-18 w-[450px] h-[450px] bg-gradient-to-r from-red-800 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+    <main
+      ref={sectionRef}
+      className="w-full px-6 sm:px-10 md:px-16 py-24 text-white"
+    >
+      {/* TITLE */}
+      <div ref={titleTriggerRef} className="w-full flex justify-center mb-16 relative">
+        <AnimatedTitle title="About Me" className="text-orange-400" />
+      </div>
 
-        <div className="overflow-hidden inline-block mb-3">
-          <h3 ref={titleRef} className="font-bold text-3xl md:text-4xl text-orange-400">
-            About me
-          </h3>
-        </div>
+      {/* CONTENT */}
+      <div className="relative flex flex-col md:flex-row items-center justify-center gap-16">
 
-        <p ref={textRef} className="text-gray-300 leading-relaxed text-lg">
-          👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer
-          who loves turning ideas into interactive, functional, and visually appealing
-          web experiences...
-        </p>
-      </section>
-
-      {/* IMAGE SECTION  */}
-      <section
-        ref={imgContainerRef}
-        className="relative overflow-hidden rounded-2xl w-[260px] h-[460px] shadow-lg shadow-orange-700/20"
-      >
-        
-        <Image
-          ref={imgRef}
-          src={myImg2}
-          alt="my image"
-          fill
-          className="object-contain relative z-10"
-          priority
+        {/* BIG GLOW */}
+        <div
+          className="big-shadow absolute right-1/2 md:right-10 translate-x-1/2 md:translate-x-0
+          w-[320px] h-[320px] md:w-[450px] md:h-[450px]
+          bg-gradient-to-r from-red-800 to-orange-500/30
+          rounded-full blur-[140px] opacity-0 pointer-events-none"
         />
-      </section>
+
+        {/* TEXT */}
+        <section className="max-w-xl z-10">
+          <p
+            ref={textRef}
+            className="text-gray-300 leading-relaxed text-lg md:text-xl"
+          >
+            👋 Hi, I’m{" "}
+            <span className="text-orange-400">Yousef Amr</span>, also known as
+            Tito — a passionate Full-Stack Developer who loves turning ideas into
+            interactive, functional, and visually appealing web experiences...
+          </p>
+        </section>
+
+        {/* IMAGE */}
+        <section
+  ref={imgContainerRef}
+  className="
+    relative overflow-hidden rounded-2xl
+    w-[240px] h-[420px]
+    md:w-[260px] md:h-[460px]
+    shadow-lg shadow-orange-700/10
+    z-[5]
+    will-change-transform
+  "
+>
+          <Image
+  ref={imgRef}
+  src={myImg2}
+  alt="Yousef Amr"
+  fill
+  sizes="(max-width: 768px) 260px, 460px"
+  className="object-cover will-change-transform"
+  priority={false}
+/>
+
+        </section>
+      </div>
     </main>
   );
 }

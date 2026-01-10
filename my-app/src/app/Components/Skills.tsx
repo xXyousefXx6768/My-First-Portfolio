@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaReact,
   FaHtml5,
@@ -20,15 +20,19 @@ import {
   SiFramer,
   SiZap,
 } from "react-icons/si";
-import AnimatedTitle from "./custom sections/AnimatedTitle";
-
+import AnimatedTitle from "./custom-sections/AnimatedTitle";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 interface Skill {
   name: string;
   icon: JSX.Element;
   color: string;
+  index?: number
+
 }
 
-const Skills: React.FC = () => {
+ const Skills: React.FC = () => {
   const skills: Skill[] = [
     { name: "React JS", icon: <FaReact className="text-sky-400" />, color: "#38bdf8" },
     { name: "JavaScript", icon: <SiJavascript className="text-yellow-400" />, color: "#facc15" },
@@ -50,74 +54,116 @@ const Skills: React.FC = () => {
 
   return (
     <section className="py-16 px-6 text-center">
+      <div className="absolute top-430 left-50 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+      <div className="absolute top-500 right-48 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+      
+      
       <AnimatedTitle title="My Skills" className="text-orange-400" />
+
+      
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 place-items-center">
         {skills.map((skill, index) => (
-          <SkillCard key={index} skill={skill} />
+          <SkillCard key ={index} skill={skill} index={index} />
         ))}
       </div>
     </section>
   );
 };
 
-const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
+export default Skills;
+
+const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) => {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const iconRef = useRef<HTMLDivElement | null>(null);
+  const textRef = useRef<HTMLParagraphElement | null>(null);
+
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
+  useEffect(() => {
+    if (!cardRef.current || !iconRef.current || !textRef.current) return;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: cardRef.current,
+        start: "top 85%",
+      },
+      delay: index * 0.15, // 🔥 Stagger animation
+    });
+
+    tl.fromTo(
+      iconRef.current,
+      {
+        scale: 0,
+        opacity: 0,
+        filter: "blur(6px)",
+        rotate: -20,
+      },
+      {
+        scale: 1,
+        opacity: 1,
+        filter: "blur(0px)",
+        rotate: 0,
+        duration: 0.6,
+        ease: "power3.out",
+      }
+    );
+
+    tl.fromTo(
+      textRef.current,
+      {
+        y: 10,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.4,
+        ease: "power3.out",
+      },
+      "-=0.35"
+    );
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setPos({ x, y });
+    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
     <div
-  onMouseMove={handleMouseMove}
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
-  className="relative w-40 h-40 backdrop-blur-xl bg-black/40 dark:bg-black/50 border border-white/10 rounded-2xl shadow-[0_0_25px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-[1.03]"
-  style={{
-    "--glow-color": skill.color,
-  } as React.CSSProperties}
->
-  
-  {isHovered && (
-    <div
-      className="absolute w-24 h-24 rounded-full blur-2xl opacity-50 pointer-events-none transition-transform duration-150"
-      style={{
-        background: `var(--glow-color)`,
-        left: pos.x - 48,
-        top: pos.y - 48,
-      }}
-    />
-  )}
-
-  
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/20 via-transparent to-transparent opacity-10" />
-    <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/30 via-white/5 to-transparent opacity-20 skew-y-[-8deg]" />
-  </div>
-
-  
-  <div className="relative flex flex-col items-center space-y-2 z-10">
-    <div
-      className="text-5xl transition-transform duration-300"
-      style={{ color: skill.color }}
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative w-40 h-40 backdrop-blur-xl bg-black/40 dark:bg-black/50 border border-white/10 rounded-2xl shadow-[0_0_25px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-[1.03]"
+      style={{ "--glow-color": skill.color } as React.CSSProperties}
     >
-      {skill.icon}
+      {isHovered && (
+        <div
+          className="absolute w-24 h-24 rounded-full blur-2xl opacity-50 pointer-events-none transition-transform duration-150"
+          style={{
+            background: `var(--glow-color)`,
+            left: pos.x - 48,
+            top: pos.y - 48,
+          }}
+        />
+      )}
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/20 via-transparent to-transparent opacity-10" />
+        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/30 via-white/5 to-transparent opacity-20 skew-y-[-8deg]" />
+      </div>
+
+      <div className="relative flex flex-col items-center space-y-2 z-10">
+        <div ref={iconRef} className="text-5xl" style={{ color: skill.color }}>
+          {skill.icon}
+        </div>
+        <p ref={textRef} className="text-sm font-semibold" style={{ color: skill.color }}>
+          {skill.name}
+        </p>
+      </div>
     </div>
-    <p
-      className="text-sm font-semibold transition-colors duration-300"
-      style={{ color: skill.color }}
-    >
-      {skill.name}
-    </p>
-  </div>
-</div>
-
   );
 };
-
-export default Skills;

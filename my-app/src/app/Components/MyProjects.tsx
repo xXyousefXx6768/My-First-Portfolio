@@ -12,7 +12,7 @@ import {
   SiVite, SiFirebase, SiRedux
 } from "react-icons/si";
 import { FiExternalLink, FiGithub } from "react-icons/fi";
-import AnimatedTitle from "./custom sections/AnimatedTitle";
+import AnimatedTitle from "./custom-sections/AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 

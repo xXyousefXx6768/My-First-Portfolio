@@ -15,25 +15,25 @@ export default function CustomCursor() {
     // ================== Cursor Styles ==================
     Object.assign(dot.style, {
       position: "fixed",
-      width: "26px",        // ⬆️ أكبر من قبل
+      width: "26px",        
       height: "26px",
       borderRadius: "50%",
-      background: "#FFD54A", // ⬅️ اللون الأصفر
+      background: "#FFD54A", 
       pointerEvents: "none",
       zIndex: "99999",
       willChange: "transform",
       mixBlendMode: "difference",
-      boxShadow: "0 0 25px rgba(255,213,74,0.95)", // ⬅️ glow أصفر
+      boxShadow: "0 0 25px rgba(255,213,74,0.95)", 
     });
 
     Object.assign(ring.style, {
       position: "fixed",
-      width: "85px",        // ⬆️ أكبر
+      width: "85px",        
       height: "85px",
       borderRadius: "50%",
       pointerEvents: "none",
       zIndex: "99998",
-      border: "2px solid rgba(255,213,74,0.7)", // ⬅️ أصفر
+      border: "2px solid rgba(255,213,74,0.7)", 
       willChange: "transform",
       mixBlendMode: "difference",
     });
@@ -44,7 +44,7 @@ export default function CustomCursor() {
       width: "45px",
       height: "45px",
       borderRadius: "50%",
-      background: "rgba(255,213,74,0.20)", // ⬅️ أصفر فاتح
+      background: "rgba(255,213,74,0.20)",
       pointerEvents: "none",
       zIndex: "99990",
       willChange: "transform, opacity",
@@ -70,7 +70,7 @@ export default function CustomCursor() {
       dotX(x - 13); // centered
       dotY(y - 13);
 
-      ringX(x - 50); // ring خلف الدوت (مش centered)
+      ringX(x - 60); 
       ringY(y - 50);
 
       tailX(x - 22);

@@ -16,27 +16,25 @@ function HeroSection() {
 
     // --- Image Animation ---
     const imgAnim = gsap.fromTo(
-      imgRef.current,
-      {
-        scale: 1.5,
-        opacity: 0,
-        y: 80,
-        filter: "blur(10px)",
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 1.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: imgRef.current,
-          start: "top 90%",
-          toggleActions: "play none none reverse",
-        },
-      }
-    );
+  imgRef.current,
+  {
+    y: 60,
+    opacity: 0,
+    filter: "blur(10px)",
+  },
+  {
+    y: 0,
+    opacity: 1,
+    filter: "blur(0px)",
+    duration: 1.4,
+    ease: "power3.out",
+    scrollTrigger: {
+      trigger: imgRef.current,
+      start: "top 90%",
+    },
+    willChange: "transform, opacity",
+  }
+);
 
     triggers.push(imgAnim.scrollTrigger!);
 
@@ -79,7 +77,8 @@ function HeroSection() {
   ];
 
   return (
-    <section className="relative  overflow-visible flex flex-row w-full justify-around items-center px-10 py-20">
+    <section className="relative  overflow-visible flex flex-col-reverse md:flex-row
+ w-full justify-around items-center px-10 py-20">
       
       {/* Background effects (unchanged) */}
       <div className="absolute top-30 left-18 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[180px] opacity-10"></div>
@@ -119,16 +118,21 @@ function HeroSection() {
       </div>
 
     {/* RIGHT IMAGE SECTION */}
-<div ref={imgRef} className="relative z-10 opacity-0 scale-150 translate-y-20">
+<div ref={imgRef} className="relative z-10 ">
 
   <div className="relative group w-fit">
   <Image
-    src={myImg}
-    alt="my img"
-    width={300}
-    height={300}
-    className="rounded-3xl object-cover transition-transform duration-500 group-hover:scale-105"
-  />
+  src={myImg}
+  alt="my img"
+  width={300}
+  height={300}
+  priority
+  sizes="(max-width: 768px) 220px, 300px"
+  className="rounded-3xl object-cover transition-transform duration-500 group-hover:scale-105"
+/>
+
+
+
 
   {/* Top */}
   <span className="absolute top-0 left-0 h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500 group-hover:w-full"></span>
