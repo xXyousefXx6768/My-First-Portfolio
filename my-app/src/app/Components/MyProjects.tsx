@@ -68,7 +68,7 @@ export default function MyProjects() {
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (!error && data) setProjects(data as Project[]);
     };
@@ -241,6 +241,7 @@ export default function MyProjects() {
   return (
     <main ref={containerRef} className="w-full px-6 md:px-16 py-20 text-white">
       <AnimatedTitle title="My Projects" className="text-orange-400" />
+       <div className="absolute top-988 left-57 w-[480px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
 
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

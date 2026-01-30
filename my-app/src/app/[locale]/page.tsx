@@ -7,6 +7,7 @@ import MyProjects from "../Components/MyProjects";
 import HeroSection from "../Components/HeroSection";
 import Skills from "../Components/Skills";
 import Services from "../Components/Services";
+import CertificatesSection from "../Components/CertificatesSection";
 
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
       <Skills />
       <Services />
       <MyProjects />
+      <CertificatesSection />
       <ContactMe />
       <Footer />
     </main>

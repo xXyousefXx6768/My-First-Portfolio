@@ -6,5 +6,36 @@
     "projects": "Projects",
     "skills": "Skills",
     "contact": "Contact Me"
-  }
+  },
+  "hero": {
+    "title": "Hi I am Yousef Amr",
+    "subtitle": "I'm a Full-Stack Developer"
+},
+"about": {
+    "title": "About Me",
+    "subtitle": "👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer who loves turning ideas into interactive, functional, and visually appealing web experiences..."
+ 
+
+},
+"My Skills":{
+    "title": "My Skills"
+},
+"Services":{
+    "title": "Services",
+    "service1":"Full-Stack Web DevelopmentBuilding fast, scalable apps using React, Next.js, Node.js & Laravel.",
+    "service2":"Front-End UI/UX Crafting Pixel-perfect, animated UIs using Tailwind, GSAP & Framer Motion.",
+    "service3":"Back-End & API Architecture Secure, optimized REST APIs using Node.js & Laravel.",
+    "service4":"Database Optimization Relational & NoSQL DB design, indexing & performance tuning.",
+    "service5":"Performance & SEO Core Web Vitals, caching, and full SEO optimization.",
+     "service6":"Maintenance & Support Bug fixes, refactoring, and long-term project support."
+},
+"Projects":{
+    "title": "Projects",
+    "project1":"Full-Stack Web DevelopmentBuilding fast, scalable apps using React, Next.js, Node.js & Laravel.",
+    "project2":"Front-End UI/UX Crafting Pixel-perfect, animated UIs using Tailwind, GSAP & Framer Motion.",
+    "project3":"Back-End & API Architecture Secure, optimized REST APIs using Node.js & Laravel.",
+    "project4":"Database Optimization Relational & NoSQL DB design, indexing & performance tuning.",
+    "project5":"Performance & SEO Core Web Vitals, caching, and full SEO optimization.",
+     "project6":"Maintenance & Support Bug fixes, refactoring, and long-term project support."
+}
 }

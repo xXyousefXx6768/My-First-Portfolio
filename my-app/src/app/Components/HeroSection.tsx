@@ -113,7 +113,14 @@ function HeroSection() {
 
         <div className="flex gap-4 mt-6">
           <button className="bg-gradient-to-r from-[#FA6E00] to-[#E60026] text-white font-semibold py-2 px-5 rounded hover:opacity-90 transition">Hire Me</button>
-          <button className="border border-gray-500 text-gray-300 font-semibold py-2 px-5 rounded hover:bg-gray-700 transition">Download CV</button>
+          <button 
+          onClick={() => {
+    const link = document.createElement("a");
+    link.href = "/cv.pdf";
+    link.download = "Yousef_Amr_CV.pdf";
+    link.click();
+  }}
+          className="border border-gray-500 text-gray-300 font-semibold py-2 px-5 rounded hover:bg-gray-700 transition">Download CV</button>
         </div>
       </div>
 
