@@ -200,13 +200,12 @@ body {
   transition: 0.4s ease-in-out;
 }
 
-/* اللوجو */
 .logo-container {
   width: 50px;
   height: 50px;
 }
 
-/* أزرار اللغات */
+
 .lang-btn {
   background: linear-gradient(to right, #FA6E00, #E60026);
   color: #fff;
@@ -229,11 +228,11 @@ body {
   border-radius: 8px;
   z-index: 9999;
   overflow: hidden;
-  min-width: 60px; /* بس ضمان */
+  min-width: 60px; 
 }
 
 .lang-item {
-  white-space: nowrap; /* يمنع التكسر */
+  white-space: nowrap; 
   padding: 8px 12px;
 }
 

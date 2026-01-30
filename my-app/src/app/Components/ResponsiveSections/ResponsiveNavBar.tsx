@@ -16,47 +16,48 @@ const ResponsiveNavBar: React.FC<Props> = ({ open, onClose, navItems }) => {
   const t = useTranslations("navbar");
 
   /* =========================
-     OPEN ANIMATION (CINEMATIC)
+      OPEN – AWWWARDS STYLE
   ========================== */
   useEffect(() => {
     if (!open) return;
 
     gsap.set(containerRef.current, {
-      clipPath: "polygon(0 0,100% 0,100% 0,0 0)",
-      skewY: -6,
-      scaleY: 1.15,
-      transformOrigin: "top center",
+      yPercent: 100,
+      skewY: 6,
+      transformOrigin: "bottom center",
     });
 
-    gsap.to(containerRef.current, {
-      clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)",
+    gsap.set(itemsRef.current, {
+      y: 60,
+      opacity: 0,
+      filter: "blur(8px)",
+    });
+
+    const tl = gsap.timeline();
+
+    tl.to(containerRef.current, {
+      yPercent: 0,
       skewY: 0,
-      scaleY: 1,
       duration: 1.3,
-      ease: "power4.out",
+      ease: "expo.out",
     });
 
-    gsap.fromTo(
+    tl.to(
       itemsRef.current,
       {
-        opacity: 0,
-        y: 60,
-        scale: 0.96,
-      },
-      {
-        opacity: 1,
         y: 0,
-        scale: 1,
-        stagger: 0.14,
-        delay: 0.45,
+        opacity: 1,
+        filter: "blur(0px)",
+        stagger: 0.12,
         duration: 1,
-        ease: "power3.out",
-      }
+        ease: "power4.out",
+      },
+      "-=0.5"
     );
   }, [open]);
 
   /* =========================
-     CLOSE ANIMATION (PRO EXIT)
+      EXIT – SMOOTH COLLAPSE
   ========================== */
   const closeWithAnimation = (callback?: () => void) => {
     const tl = gsap.timeline({
@@ -67,37 +68,87 @@ const ResponsiveNavBar: React.FC<Props> = ({ open, onClose, navItems }) => {
     });
 
     tl.to(itemsRef.current, {
+      y: -40,
       opacity: 0,
-      y: -30,
-      scale: 0.95,
-      stagger: {
-        each: 0.06,
-        from: "end",
-      },
-      duration: 0.5,
-      ease: "power2.in",
+      filter: "blur(6px)",
+      stagger: 0.08,
+      duration: 0.6,
+      ease: "power3.in",
     });
 
     tl.to(
       containerRef.current,
       {
-        clipPath: "polygon(0 0,100% 0,100% 0,0 0)",
-        skewY: -6,
-        scaleY: 1.1,
-        duration: 1.1,
-        ease: "power4.inOut",
+        yPercent: 100,
+        skewY: -4,
+        duration: 1,
+        ease: "expo.inOut",
       },
-      "-=0.15"
+      "-=0.3"
     );
   };
 
-  const handleItemClick = (id: string) => {
-    closeWithAnimation(() => {
-      document.getElementById(id)?.scrollIntoView({
-        behavior: "smooth",
-      });
+  /* =========================
+      HOVER – AWWWARDS FEEL
+  ========================== */
+  useEffect(() => {
+    itemsRef.current.forEach((el) => {
+      if (!el) return;
+
+      const text = el.querySelector(".nav-text");
+      const line = el.querySelector(".nav-line");
+      const glow = el.querySelector(".nav-glow");
+
+      if (!text || !line || !glow) return;
+
+      const enter = () => {
+        gsap.to(text, {
+          y: -8,
+          duration: 0.4,
+          ease: "power3.out",
+        });
+
+        gsap.to(line, {
+          scaleX: 1,
+          duration: 0.5,
+          ease: "expo.out",
+        });
+
+        gsap.to(glow, {
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      };
+
+      const leave = () => {
+        gsap.to(text, {
+          y: 0,
+          duration: 0.35,
+          ease: "power3.out",
+        });
+
+        gsap.to(line, {
+          scaleX: 0,
+          duration: 0.3,
+          ease: "power2.in",
+        });
+
+        gsap.to(glow, {
+          opacity: 0,
+          duration: 0.25,
+        });
+      };
+
+      el.addEventListener("mouseenter", enter);
+      el.addEventListener("mouseleave", leave);
+
+      return () => {
+        el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      };
     });
-  };
+  }, [open]);
 
   if (!open) return null;
 
@@ -106,33 +157,34 @@ const ResponsiveNavBar: React.FC<Props> = ({ open, onClose, navItems }) => {
       ref={containerRef}
       className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center text-white"
     >
-      {/* Close */}
       <button
         onClick={() => closeWithAnimation()}
-        className="absolute top-6 right-6 opacity-80 hover:opacity-100 transition"
+        className="absolute top-6 right-6 opacity-70 hover:opacity-100 transition"
       >
         <X size={32} />
       </button>
 
-      {/* Nav Items */}
-      <ul className="flex flex-col gap-10 text-3xl font-semibold">
+      <ul className="flex flex-col gap-16 text-4xl md:text-5xl font-semibold">
         {navItems.map((item, i) => (
           <li
             key={item}
             ref={(el) => (itemsRef.current[i] = el!)}
-            onClick={() => handleItemClick(item)}
-            className="relative cursor-pointer group"
+            onClick={() =>
+              closeWithAnimation(() =>
+                document
+                  .getElementById(item)
+                  ?.scrollIntoView({ behavior: "smooth" })
+              )
+            }
+            className="relative cursor-pointer"
           >
-            {/* Text */}
-            <span className="relative z-10 transition-transform duration-300 group-hover:-translate-y-1">
+            <span className="nav-text block relative z-10">
               {t(item)}
             </span>
 
-            {/* Cinematic underline mask */}
-            <span className="absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 bg-white transition-transform duration-500 ease-out group-hover:scale-x-100" />
+            <span className="nav-line absolute left-0 -bottom-2 h-[2px] w-full bg-white origin-left scale-x-0" />
 
-            {/* subtle glow */}
-            <span className="absolute inset-0 -z-10 opacity-0 blur-xl bg-white/10 transition-opacity duration-300 group-hover:opacity-100" />
+            <span className="nav-glow absolute inset-0 -z-10 opacity-0 blur-3xl bg-white/20" />
           </li>
         ))}
       </ul>
