@@ -8,34 +8,57 @@
     "contact": "Contact Me"
   },
   "hero": {
-    "title": "Hi I am Yousef Amr",
-    "subtitle": "I'm a Full-Stack Developer"
-},
-"about": {
+    "greeting": "Hi I am",
+    "name": "Yousef Amr",
+    "nickname": "(Tito)",
+    "roles": [
+      "Full Stack Developer",
+      "Next.js Developer",
+      "PHP Developer"
+    ],
+    "hire": "Hire Me",
+    "download": "Download CV"
+  }
+,
+  "about": {
     "title": "About Me",
-    "subtitle": "👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer who loves turning ideas into interactive, functional, and visually appealing web experiences..."
- 
-
-},
-"My Skills":{
+    "description": "👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer who loves turning ideas into interactive, functional, and visually appealing web experiences..."
+  },
+  "skills": {
     "title": "My Skills"
-},
-"Services":{
-    "title": "Services",
-    "service1":"Full-Stack Web DevelopmentBuilding fast, scalable apps using React, Next.js, Node.js & Laravel.",
-    "service2":"Front-End UI/UX Crafting Pixel-perfect, animated UIs using Tailwind, GSAP & Framer Motion.",
-    "service3":"Back-End & API Architecture Secure, optimized REST APIs using Node.js & Laravel.",
-    "service4":"Database Optimization Relational & NoSQL DB design, indexing & performance tuning.",
-    "service5":"Performance & SEO Core Web Vitals, caching, and full SEO optimization.",
-     "service6":"Maintenance & Support Bug fixes, refactoring, and long-term project support."
-},
-"Projects":{
-    "title": "Projects",
-    "project1":"Full-Stack Web DevelopmentBuilding fast, scalable apps using React, Next.js, Node.js & Laravel.",
-    "project2":"Front-End UI/UX Crafting Pixel-perfect, animated UIs using Tailwind, GSAP & Framer Motion.",
-    "project3":"Back-End & API Architecture Secure, optimized REST APIs using Node.js & Laravel.",
-    "project4":"Database Optimization Relational & NoSQL DB design, indexing & performance tuning.",
-    "project5":"Performance & SEO Core Web Vitals, caching, and full SEO optimization.",
-     "project6":"Maintenance & Support Bug fixes, refactoring, and long-term project support."
+  },
+  
+  "services": {
+  "title": "Services",
+  "items": {
+    "0": {
+      "title": "Full-Stack Web Development",
+      "desc": "Building fast, scalable apps using React, Next.js, Node.js & Laravel."
+    },
+    "1": {
+      "title": "Front-End UI/UX Crafting",
+      "desc": "Pixel-perfect, animated UIs using Tailwind, GSAP & Framer Motion."
+    },
+    "2": {
+      "title": "Back-End & API Architecture",
+      "desc": "Secure, optimized REST APIs using Node.js & Laravel."
+    },
+    "3": {
+      "title": "Database Optimization",
+      "desc": "Relational & NoSQL DB design, indexing & performance tuning."
+    },
+    "4": {
+      "title": "Performance & SEO",
+      "desc": "Core Web Vitals, caching, and full SEO optimization."
+    },
+    "5": {
+      "title": "Maintenance & Support",
+      "desc": "Bug fixes, refactoring, and long-term project support."
+    }
+  }
 }
 }
+
+
+
+

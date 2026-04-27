@@ -23,6 +23,7 @@ import {
 import AnimatedTitle from "./custom-sections/AnimatedTitle";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "../lib/i18n-provider";
 gsap.registerPlugin(ScrollTrigger);
 interface Skill {
   name: string;
@@ -51,14 +52,16 @@ interface Skill {
     { name: "Figma", icon: <FaFigma className="text-pink-500" />, color: "#ec4899" },
     { name: "Framer Motion", icon: <SiFramer className="text-fuchsia-600" />, color: "#c026d3" },
   ];
-
+ 
+  const t = useTranslations("skills");
   return (
     <section className="py-16 px-6 text-center">
       <div className="absolute top-430 left-50 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
       <div className="absolute top-500 right-48 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
       
       
-      <AnimatedTitle title="My Skills" className="text-orange-400" />
+      <AnimatedTitle title={t("title")} className="text-orange-400" />
+
 
       
 

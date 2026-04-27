@@ -12,6 +12,7 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AnimatedTitle from "./custom-sections/AnimatedTitle";
+import { useTranslations } from "../lib/i18n-provider";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,91 +26,92 @@ const themes = {
   cyan: "rgba(0,255,255,0.9)",
 };
 
-const services = [
-  {
-    title: "Full-Stack Web Development",
-    desc: "Building fast, scalable apps using React, Next.js, Node.js & Laravel.",
-    icon: <FaCode className="text-orange-400 text-4xl parallax-l" data-depth="30" />,
-    theme: themes.orange,
-  },
-  {
-    title: "Front-End UI/UX Crafting",
-    desc: "Pixel-perfect, animated UIs using Tailwind, GSAP & Framer Motion.",
-    icon: <FaPaintBrush className="text-pink-400 text-4xl parallax-l" data-depth="30" />,
-    theme: themes.pink,
-  },
-  {
-    title: "Back-End & API Architecture",
-    desc: "Secure, optimized REST APIs using Node.js & Laravel.",
-    icon: <FaServer className="text-blue-400 text-4xl parallax-l" data-depth="30" />,
-    theme: themes.blue,
-  },
-  {
-    title: "Database Optimization",
-    desc: "Relational & NoSQL DB design, indexing & performance tuning.",
-    icon: <FaDatabase className="text-green-400 text-4xl parallax-l" data-depth="30" />,
-    theme: themes.green,
-  },
-  {
-    title: "Performance & SEO",
-    desc: "Core Web Vitals, caching, and full SEO optimization.",
-    icon: <FaRocket className="text-yellow-400 text-4xl parallax-l" data-depth="30" />,
-    theme: themes.yellow,
-  },
-  {
-    title: "Maintenance & Support",
-    desc: "Bug fixes, refactoring, and long-term project support.",
-    icon: <FaTools className="text-cyan-300 text-4xl parallax-l" data-depth="30" />,
-    theme: themes.cyan,
-  },
-];
-
 export default function Services() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const t = useTranslations("services");
+
+  const services = [
+    {
+      title: t("items.0.title"),
+      desc: t("items.0.desc"),
+      icon: <FaCode className="text-orange-400 text-4xl parallax-l" data-depth="30" />,
+      theme: themes.orange,
+    },
+    {
+      title: t("items.1.title"),
+      desc: t("items.1.desc"),
+      icon: <FaPaintBrush className="text-pink-400 text-4xl parallax-l" data-depth="30" />,
+      theme: themes.pink,
+    },
+    {
+      title: t("items.2.title"),
+      desc: t("items.2.desc"),
+      icon: <FaServer className="text-blue-400 text-4xl parallax-l" data-depth="30" />,
+      theme: themes.blue,
+    },
+    {
+      title: t("items.3.title"),
+      desc: t("items.3.desc"),
+      icon: <FaDatabase className="text-green-400 text-4xl parallax-l" data-depth="30" />,
+      theme: themes.green,
+    },
+    {
+      title: t("items.4.title"),
+      desc: t("items.4.desc"),
+      icon: <FaRocket className="text-yellow-400 text-4xl parallax-l" data-depth="30" />,
+      theme: themes.yellow,
+    },
+    {
+      title: t("items.5.title"),
+      desc: t("items.5.desc"),
+      icon: <FaTools className="text-cyan-300 text-4xl parallax-l" data-depth="30" />,
+      theme: themes.cyan,
+    },
+  ];
 
   useEffect(() => {
-  const cards = sectionRef.current?.querySelectorAll(".service-card");
-  if (!cards) return;
+    const cards = sectionRef.current?.querySelectorAll(".service-card");
+    if (!cards) return;
 
-  
-  ScrollTrigger.create({
-    trigger: sectionRef.current?.querySelector("h2"),
-    start: "top 70%", // يبدأ لما العنوان يدخل كويس
-    once: true,
-    onEnter: () => {
-    
-      setTimeout(() => {
-        gsap.fromTo(cards, {
-          opacity: 0,
-          y: 70,
-          scale: 0.85,
-          rotateX: 25,
-          filter: "blur(15px)",
-          duration: 1.8,
-          ease: "power3.out",
-          stagger: {
-            each: 0.28,
-            from: "start",
-          },
-        }
-        , {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotateX: 0,
-          filter: "blur(0px)",
-          duration: 1.8,
-          ease: "power3.out",
-          stagger: {
-            each: 0.28,
-            from: "start",
-          },
-        });
-      }, 210); // وقت انتهاء انيميشن الحروف تقريبا
-    },
-  });
-}, []);
-
+    ScrollTrigger.create({
+      trigger: sectionRef.current?.querySelector("h2"),
+      start: "top 70%",
+      once: true,
+      onEnter: () => {
+        setTimeout(() => {
+          gsap.fromTo(
+            cards,
+            {
+              opacity: 0,
+              y: 70,
+              scale: 0.85,
+              rotateX: 25,
+              filter: "blur(15px)",
+              duration: 1.8,
+              ease: "power3.out",
+              stagger: {
+                each: 0.28,
+                from: "start",
+              },
+            },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotateX: 0,
+              filter: "blur(0px)",
+              duration: 1.8,
+              ease: "power3.out",
+              stagger: {
+                each: 0.28,
+                from: "start",
+              },
+            }
+          );
+        }, 210);
+      },
+    });
+  }, []);
 
   // PARALLAX MOVEMENT
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -121,7 +123,6 @@ export default function Services() {
     const percentX = (x / rect.width - 0.5) * 2;
     const percentY = (y / rect.height - 0.5) * 2;
 
-    // Card tilt
     gsap.to(card, {
       rotateY: percentX * 12,
       rotateX: percentY * -12,
@@ -130,7 +131,6 @@ export default function Services() {
       ease: "power2.out",
     });
 
-    // 3D parallax layers
     const layers = card.querySelectorAll(".parallax-l");
     layers.forEach((layer: any) => {
       const depth = layer.getAttribute("data-depth");
@@ -142,7 +142,6 @@ export default function Services() {
       });
     });
 
-    // Update mask spot
     card.style.setProperty("--x", `${x}px`);
     card.style.setProperty("--y", `${y}px`);
   };
@@ -152,7 +151,7 @@ export default function Services() {
       "--maskColor": color,
       "--maskSize": "160%",
       scale: 1.07,
-      duration: 0.35, // ← بدون تأخير
+      duration: 0.35,
       ease: "power3.out",
     });
 
@@ -162,8 +161,6 @@ export default function Services() {
       duration: 0.35,
       ease: "power3.out",
     });
-
-    
   };
 
   const handleLeave = (card: HTMLElement) => {
@@ -193,39 +190,49 @@ export default function Services() {
       id="services"
       className="w-full px-6 md:px-16 py-24 text-white relative"
     >
-     <AnimatedTitle title="Services" className="text-orange-400" />
-     <div className="absolute top-30 left-10 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+      <AnimatedTitle title={t("title")} className="text-orange-400" />
+
+      <div className="absolute top-30 left-10 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
       <div className="absolute top-80 right-18 w-[480px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
-      
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {services.map((s, i) => (
           <div
             key={i}
-            className="service-card   p-8 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl cursor-pointer relative"
-            style={{
-              "--maskColor": "rgba(0,0,0,1)",
-              "--maskSize": "0%",
-              backgroundImage: `
+            className="service-card p-8 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl cursor-pointer relative"
+            style={
+              {
+                "--maskColor": "rgba(0,0,0,1)",
+                "--maskSize": "0%",
+                backgroundImage: `
                 radial-gradient(
                   circle at var(--x) var(--y),
                   var(--maskColor) var(--maskSize),
                   rgba(0,0,0,0.4) 100%
                 )
               `,
-              transformStyle: "preserve-3d",
-            } as any}
+                transformStyle: "preserve-3d",
+              } as any
+            }
             onMouseMove={handleMove}
             onMouseEnter={(e) => handleHover(e.currentTarget, s.theme)}
             onMouseLeave={(e) => handleLeave(e.currentTarget)}
           >
-            <div className="parallax-l mb-4" data-depth="35">{s.icon}</div>
+            <div className="parallax-l mb-4" data-depth="35">
+              {s.icon}
+            </div>
 
-            <h3 className="parallax-l text-xl font-semibold mb-3 opacity-90" data-depth="18">
+            <h3
+              className="parallax-l text-xl font-semibold mb-3 opacity-90"
+              data-depth="18"
+            >
               {s.title}
             </h3>
 
-            <p className="parallax-l text-gray-300 text-sm leading-relaxed opacity-80" data-depth="10">
+            <p
+              className="parallax-l text-gray-300 text-sm leading-relaxed opacity-80"
+              data-depth="10"
+            >
               {s.desc}
             </p>
           </div>

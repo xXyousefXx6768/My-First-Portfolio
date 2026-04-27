@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { supabase } from "@/utils/SupaBase/ServerClient";
 import gsap from "gsap";
+import { useParams } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { 
   FaReact, FaBootstrap, FaPhp, FaLaravel, FaHtml5 
@@ -56,6 +57,8 @@ export default function MyProjects() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const params = useParams();
+  const locale = params.locale || "en";
 
   // Project card refs index
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -223,6 +226,15 @@ export default function MyProjects() {
     });
   };
 
+  const getTranslated = (field: any, locale: string) => {
+  if (!field) return "";
+
+  // لو string عادي
+  if (typeof field === "string") return field;
+
+  // لو object json
+  return field[locale] || field.en || "";
+};
     const renderTech = (tech: string[] = []) => (
     <div className="flex flex-wrap gap-2 mb-4">
       {tech.map((t, i) => (
@@ -262,11 +274,11 @@ export default function MyProjects() {
             )}
 
             <h3 className="text-xl font-bold bg-gradient-to-r from-orange-300 to-yellow-300 bg-clip-text text-transparent mb-2">
-              {proj.name}
+             {getTranslated(proj.name, locale)}
             </h3>
 
             <p className="text-gray-300 text-sm line-clamp-3 mb-3">
-              {proj.desc}
+              {getTranslated(proj.desc, locale)}
             </p>
 
             {proj.tech && renderTech(proj.tech)}
@@ -336,11 +348,11 @@ export default function MyProjects() {
 
             <div className="flex-1">
               <h3 className="text-2xl md:text-3xl font-bold text-orange-300 mb-3">
-                {activeProj.name}
+              {getTranslated(activeProj.name, locale)}
               </h3>
 
               <p className="text-gray-200 mb-4 leading-relaxed">
-                {activeProj.desc}
+               {getTranslated(activeProj.desc, locale)}
               </p>
 
               {activeProj.tech && renderTech(activeProj.tech)}

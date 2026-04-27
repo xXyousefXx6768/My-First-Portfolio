@@ -13,6 +13,10 @@ import ResponsiveNavBar from "./ResponsiveSections/ResponsiveNavBar";
 
 const NavBar: React.FC = () => {
   const navRefs = useRef<HTMLLIElement[]>([]);
+  const navContainerRef = useRef<HTMLElement | null>(null);
+  const logoRef = useRef<HTMLDivElement | null>(null);
+  const rightRef = useRef<HTMLDivElement | null>(null);
+
   const t = useTranslations("navbar");
   const router = useRouter();
   const pathname = usePathname();
@@ -24,22 +28,16 @@ const NavBar: React.FC = () => {
   const navItems = ["home", "about", "services", "projects", "skills"];
 
   const languages = [
-    {
-      code: "en",
-      label: "EN",
-      image: en,
-    },
-    {
-      code: "de",
-      label: "DE",
-      image: de,
-    },
+    { code: "en", label: "EN", image: en },
+    { code: "de", label: "DE", image: de },
   ];
 
   const currentLocale = pathname.split("/")[1] || "en";
   const currentLang = languages.find((l) => l.code === currentLocale);
 
-  /* ========= Desktop hover (كما هو) ========= */
+  /* ===============================
+     ✅ DESKTOP HOVER (كما هو)
+  ===============================*/
   useEffect(() => {
     navRefs.current.forEach((el) => {
       if (!el) return;
@@ -65,6 +63,84 @@ const NavBar: React.FC = () => {
     });
   }, []);
 
+  /* ===============================
+     ✅ NAVBAR ENTRANCE + SCROLL BEHAVIOR
+  ===============================*/
+  useEffect(() => {
+    if (!navContainerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        defaults: { ease: "expo.out" },
+        delay: 0.2,
+      });
+
+      // Navbar container entrance
+      tl.fromTo(
+        navContainerRef.current,
+        { y: -80, opacity: 0, filter: "blur(10px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2 }
+      )
+
+      // Logo entrance
+      .fromTo(
+        logoRef.current,
+        { scale: 0.6, opacity: 0, rotate: -10 },
+        { scale: 1, opacity: 1, rotate: 0, duration: 1 },
+        "-=0.8"
+      )
+
+      // Nav items stagger
+      .from(
+        navRefs.current,
+        { y: -20, opacity: 0, stagger: 0.12, duration: 0.8 },
+        "-=0.8"
+      )
+
+      // Right side
+      .fromTo(
+        rightRef.current,
+        { x: 40, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1 },
+        "-=0.8"
+      );
+    });
+
+    // ✅ Hide on scroll down / Show on scroll up
+    let lastScroll = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      if (!navContainerRef.current) return;
+
+      if (currentScroll > lastScroll && currentScroll > 80) {
+        // scrolling down
+        gsap.to(navContainerRef.current, {
+          y: -120,
+          duration: 0.6,
+          ease: "power3.out",
+        });
+      } else {
+        // scrolling up
+        gsap.to(navContainerRef.current, {
+          y: 0,
+          duration: 0.6,
+          ease: "power3.out",
+        });
+      }
+
+      lastScroll = currentScroll;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      ctx.revert();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const splitText = (text: string) =>
     text.split("").map((char, i) => (
       <span key={i} className="relative inline-block overflow-hidden">
@@ -82,14 +158,17 @@ const NavBar: React.FC = () => {
 
   return (
     <>
-      <nav className="navbar-container group text-white">
+      <nav
+        ref={navContainerRef}
+        className="navbar-container group text-white"
+      >
         {/* Shine */}
         <div className="shine-wrapper">
           <div className="navbar-shine"></div>
         </div>
 
         {/* Logo */}
-        <div className="logo-container">
+        <div ref={logoRef} className="logo-container">
           <Image src={Logo} alt="logo" priority />
         </div>
 
@@ -108,8 +187,7 @@ const NavBar: React.FC = () => {
         </ul>
 
         {/* Right */}
-        <div className="flex items-center gap-4">
-          {/* Language */}
+        <div ref={rightRef} className="flex items-center gap-4">
           <button
             ref={langBtnRef}
             onClick={() => setIsLangOpen(!isLangOpen)}
@@ -119,7 +197,6 @@ const NavBar: React.FC = () => {
             {currentLocale.toUpperCase()}
           </button>
 
-          {/* Burger (small only) */}
           <button
             onClick={() => setIsMenuOpen(true)}
             className="md:hidden"
@@ -129,7 +206,6 @@ const NavBar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Language Dropdown */}
       {isLangOpen &&
         createPortal(
           <ul
@@ -154,7 +230,6 @@ const NavBar: React.FC = () => {
           document.body
         )}
 
-      {/* Responsive Nav (small screens only) */}
       <div className="md:hidden">
         <ResponsiveNavBar
           open={isMenuOpen}

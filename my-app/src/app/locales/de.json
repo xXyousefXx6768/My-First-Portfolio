@@ -6,5 +6,58 @@
     "projects": "Projekte",
     "skills": "Fähigkeiten",
     "contact": "Kontakt"
+  },
+  "hero": {
+    "greeting": "Hallo, ich bin",
+    "name": "Yousef Amr",
+    "nickname": "(Tito)",
+    "roles": [
+      "Full-Stack Entwickler",
+      "Next.js Entwickler",
+      "PHP Entwickler"
+    ],
+    "hire": "Stellen Sie mich ein",
+    "download": "Lebenslauf herunterladen"
+  },
+  
+  "about": {
+    "title": "Über mich",
+    "description": "👋 Hallo, ich bin Yousef Amr, auch bekannt als Tito — ein leidenschaftlicher Full-Stack-Entwickler, der es liebt, Ideen in interaktive, funktionale und visuell ansprechende Web-Erlebnisse zu verwandeln..."
+  },
+  "skills": {
+    "title": "Meine Fähigkeiten"
+  },
+  
+ "services": {
+  "title": "Dienstleistungen",
+  "items": {
+    "0": {
+      "title": "Full-Stack Webentwicklung",
+      "desc": "Schnelle und skalierbare Anwendungen mit React, Next.js, Node.js und Laravel."
+    },
+    "1": {
+      "title": "Front-End UI/UX Gestaltung",
+      "desc": "Pixelgenaue, animierte Benutzeroberflächen mit Tailwind, GSAP und Framer Motion."
+    },
+    "2": {
+      "title": "Back-End & API Architektur",
+      "desc": "Sichere und optimierte REST-APIs mit Node.js und Laravel."
+    },
+    "3": {
+      "title": "Datenbank-Optimierung",
+      "desc": "Design relationaler und NoSQL-Datenbanken mit Performance-Optimierung."
+    },
+    "4": {
+      "title": "Performance & SEO",
+      "desc": "Optimierung von Core Web Vitals, Caching und SEO."
+    },
+    "5": {
+      "title": "Wartung & Support",
+      "desc": "Fehlerbehebung, Refactoring und langfristige Projektunterstützung."
+    }
   }
 }
+}
+
+
+

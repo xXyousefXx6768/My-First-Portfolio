@@ -30,10 +30,16 @@ export function I18nProvider({
 export function useTranslations(namespace?: string) {
   const { messages } = useContext(I18nContext);
 
+  const getValue = (obj: any, path: string) => {
+    return path.split(".").reduce((acc, key) => {
+      if (acc === undefined) return undefined;
+      return acc[key];
+    }, obj);
+  };
+
   return (key: string) => {
-    if (namespace && messages[namespace]) {
-      return messages[namespace][key] || key;
-    }
-    return messages[key] || key;
+    const path = namespace ? `${namespace}.${key}` : key;
+    const value = getValue(messages, path);
+    return value ?? key;
   };
 }
