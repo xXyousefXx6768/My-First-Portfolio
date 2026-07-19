@@ -134,15 +134,24 @@ function HeroSection() {
   ];
 
   return (
-   <section className="relative overflow-visible flex flex-col-reverse md:flex-row items-center justify-around gap-10 w-full max-w-7xl mx-auto px-6 md:px-10 py-20">
+   <section className="relative overflow-visible flex flex-col-reverse md:flex-row items-center justify-center md:gap-55  w-full max-w-7xl mx-auto px-6 md:px-10 py-20">
 
       {/* Background unchanged */}
-      <div className="absolute top-30 left-18 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[180px] opacity-10"></div>
-      <div className="absolute top-30 right-18 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+      <div className="absolute top-30 left-18 
+      w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 
+      rounded-full blur-[180px] opacity-10">
+      </div>
+      <div className="absolute top-30 right-18 
+      w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 
+      rounded-full blur-[120px] opacity-50">
+      </div>
       <div className="light-blob"></div>
 
       {/* LEFT TEXT */}
-      <div ref={textRef} className="flex flex-col z-10 text-white md:w-1/2">
+      <div
+  ref={textRef}
+  className="flex flex-col z-10 text-white md:w-[55%]"
+>
 
         <p className="text-gray-400 text-lg">{t("greeting")}</p>
         <h1 className="text-5xl font-bold text-orange-500">{t("name")}</h1>
@@ -179,7 +188,8 @@ function HeroSection() {
               link.download = "Yousef_Amr_CV.pdf";
               link.click();
             }}
-            className="border border-gray-500 text-gray-300 font-semibold py-2 px-5 rounded hover:bg-gray-700 transition"
+            className="border border-gray-500 text-gray-300 
+            font-semibold py-2 px-5 rounded hover:bg-gray-700 transition"
           >
             {t("download")}
           </button>
@@ -187,7 +197,10 @@ function HeroSection() {
       </div>
 
       {/* RIGHT IMAGE */}
-      <div ref={imgRef} className="relative z-10 md:w-1/2 flex justify-center">
+      <div
+  ref={imgRef}
+  className="relative z-10 md:w-[45%] flex justify-center"
+>
         <div className="relative group w-fit">
           <Image
             src={myImg}
@@ -200,10 +213,18 @@ function HeroSection() {
           />
 
           {/* Hover borders unchanged */}
-          <span className="absolute top-0 left-0 h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500 group-hover:w-full"></span>
-          <span className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500 group-hover:w-full"></span>
-          <span className="absolute top-0 left-0 w-[3px] h-0 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full transition-all duration-500 group-hover:h-full"></span>
-          <span className="absolute top-0 right-0 w-[3px] h-0 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full transition-all duration-500 group-hover:h-full"></span>
+          <span className="absolute top-0 left-0 
+          h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600 
+          rounded-full transition-all duration-500 group-hover:w-full"></span>
+          <span className="absolute bottom-0 left-0 
+          h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600 
+          rounded-full transition-all duration-500 group-hover:w-full"></span>
+          <span className="absolute top-0 left-0 w-[3px] 
+          h-0 bg-gradient-to-b from-orange-500 to-orange-600 
+          rounded-full transition-all duration-500 group-hover:h-full"></span>
+          <span className="absolute top-0 right-0 w-[3px] 
+          h-0 bg-gradient-to-b from-orange-500 to-orange-600 
+          rounded-full transition-all duration-500 group-hover:h-full"></span>
         </div>
       </div>
 

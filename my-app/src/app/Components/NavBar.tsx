@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import Logo from "../assets/Logo.png";
 import en from "../assets/united-states.png";
 import de from "../assets/germany.png";
@@ -11,11 +12,21 @@ import { createPortal } from "react-dom";
 import { Menu } from "lucide-react";
 import ResponsiveNavBar from "./ResponsiveSections/ResponsiveNavBar";
 
+gsap.registerPlugin(ScrollToPlugin);
+
 const NavBar: React.FC = () => {
   const navRefs = useRef<HTMLLIElement[]>([]);
   const navContainerRef = useRef<HTMLElement | null>(null);
   const logoRef = useRef<HTMLDivElement | null>(null);
   const rightRef = useRef<HTMLDivElement | null>(null);
+
+  const  navItems = [
+  { key: "home", target: "home" },
+  { key: "about", target: "about" },
+  { key: "services", target: "services" },
+  { key: "projects", target: "projects" },
+  { key: "skills", target: "skills" },
+];
 
   const t = useTranslations("navbar");
   const router = useRouter();
@@ -25,7 +36,6 @@ const NavBar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const langBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const navItems = ["home", "about", "services", "projects", "skills"];
 
   const languages = [
     { code: "en", label: "EN", image: en },
@@ -141,20 +151,31 @@ const NavBar: React.FC = () => {
     };
   }, []);
 
-  const splitText = (text: string) =>
-    text.split("").map((char, i) => (
-      <span key={i} className="relative inline-block overflow-hidden">
-        <span className="letter-top block">{char}</span>
-        <span className="letter-bottom absolute top-0 left-0 block -translate-y-full">
-          {char}
-        </span>
+  const splitText = (text: string = "") =>
+  text.split("").map((char, i) => (
+    <span key={i} className="relative inline-block overflow-hidden">
+      <span className="letter-top block">{char}</span>
+      <span className="letter-bottom absolute top-0 left-0 block -translate-y-full">
+        {char}
       </span>
-    ));
+    </span>
+  ));
 
   const switchLocale = (locale: string) => {
     router.push(pathname.replace(`/${currentLocale}`, `/${locale}`));
     setIsLangOpen(false);
   };
+
+  const scrollToSection = (sectionId: string) => {
+  gsap.to(window, {
+    duration: 1.5,
+    scrollTo: {
+      y: `#${sectionId}`,
+      offsetY: 120, // ارتفاع الناف بار
+    },
+    ease: "power4.inOut",
+  });
+};
 
   return (
     <>
@@ -174,16 +195,21 @@ const NavBar: React.FC = () => {
 
         {/* Desktop Nav */}
         <ul className="hidden md:flex gap-10">
+
           {navItems.map((item, i) => (
-            <li
-              key={item}
-              ref={(el) => (navRefs.current[i] = el!)}
-              className="relative cursor-pointer overflow-hidden"
-            >
-              <span className="inline-block">{splitText(t(item))}</span>
-              <span className="underline absolute bottom-0 left-0 w-full h-[2px] bg-orange-500 scale-x-0" />
-            </li>
-          ))}
+  <li
+    key={item.key}
+    ref={(el) => (navRefs.current[i] = el!)}
+    onClick={() => scrollToSection(item.target)}
+    className="relative cursor-pointer overflow-hidden"
+  >
+    <span className="inline-block">
+      {splitText(t(item.key))}
+    </span>
+
+    <span className="underline absolute bottom-0 left-0 w-full h-[2px] bg-orange-500 scale-x-0" />
+  </li>
+))}
         </ul>
 
         {/* Right */}

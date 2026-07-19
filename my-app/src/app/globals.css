@@ -402,6 +402,92 @@ html {
   100% { background-position: 0% 0%; }
 }
 
+.aurora{
+  background:
+    radial-gradient(circle at 30% 40%,
+    rgba(255,110,0,.18),
+    transparent 40%),
 
+    radial-gradient(circle at 70% 60%,
+    rgba(255,60,0,.12),
+    transparent 40%);
+
+  filter:blur(80px);
+}
+.light-sweep{
+  position:absolute;
+
+  top:0;
+  left:-150%;
+
+  width:40%;
+  height:100%;
+
+  background:
+  linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.35),
+    transparent
+  );
+
+  filter:blur(10px);
+}
+
+.tito-text{
+  background:
+  linear-gradient(
+  180deg,
+  #ffffff,
+  #d7d7d7 35%,
+  #9b9b9b 70%,
+  #5a5a5a 100%
+  );
+
+  -webkit-background-clip:text;
+  color:transparent;
+
+  text-shadow:
+  0 8px 30px rgba(0,0,0,.45);
+}
+
+.tito-reflection{
+  opacity:.15;
+
+  filter:
+  blur(14px)
+  grayscale(100%);
+
+  transform:
+  scaleY(-1)
+  perspective(600px)
+  rotateX(70deg);
+
+  transform-origin:top;
+}
+.cinematic-mask{
+  position:absolute;
+  inset:0;
+
+  background:#090909;
+
+  clip-path:
+  ellipse(
+    0% 60%
+    at 50% 50%
+  );
+
+  pointer-events:none;
+}
+
+@keyframes auroraMove {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+
+  to {
+    transform: scale(1.2) rotate(8deg);
+  }
+}
 
 

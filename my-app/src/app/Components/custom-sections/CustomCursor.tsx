@@ -1,18 +1,85 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const tailRef = useRef<HTMLDivElement | null>(null);
+  const [isOverNavbar, setIsOverNavbar] = useState(false);
+
+  useEffect(() => {
+  const navbar = document.querySelector(".navbar-container");
+
+  const enterNavbar = () => setIsOverNavbar(true);
+  const leaveNavbar = () => setIsOverNavbar(false);
+
+  navbar?.addEventListener("mouseenter", enterNavbar);
+  navbar?.addEventListener("mouseleave", leaveNavbar);
+
+  return () => {
+    navbar?.removeEventListener("mouseenter", enterNavbar);
+    navbar?.removeEventListener("mouseleave", leaveNavbar);
+  };
+}, []);
+
+useEffect(() => {
+  if (!dotRef.current || !ringRef.current || !tailRef.current) return;
+
+  if (isOverNavbar) {
+    gsap.to(dotRef.current, {
+      background: "rgba(255,255,255,0.8)",
+      boxShadow: "0 0 20px rgba(255,255,255,0.6)",
+      duration: 0.3,
+    });
+
+    gsap.to(ringRef.current, {
+      borderColor: "rgba(255,255,255,0.35)",
+      width: 65,
+      height: 65,
+      duration: 0.3,
+    });
+
+    gsap.to(tailRef.current, {
+      background: "rgba(255,255,255,0.15)",
+      duration: 0.3,
+    });
+
+    dotRef.current.style.mixBlendMode = "normal";
+    ringRef.current.style.mixBlendMode = "normal";
+    tailRef.current.style.mixBlendMode = "normal";
+  } else {
+    gsap.to(dotRef.current, {
+      background: "#FFD54A",
+      boxShadow: "0 0 25px rgba(255,213,74,0.95)",
+      duration: 0.3,
+    });
+
+    gsap.to(ringRef.current, {
+      borderColor: "rgba(255,213,74,0.7)",
+      width: 85,
+      height: 85,
+      duration: 0.3,
+    });
+
+    gsap.to(tailRef.current, {
+      background: "rgba(255,213,74,0.20)",
+      duration: 0.3,
+    });
+
+    dotRef.current.style.mixBlendMode = "difference";
+    ringRef.current.style.mixBlendMode = "difference";
+    tailRef.current.style.mixBlendMode = "difference";
+  }
+}, [isOverNavbar]);
+
 
   useEffect(() => {
     const dot = dotRef.current!;
     const ring = ringRef.current!;
     const tail = tailRef.current!;
 
-    // ================== Cursor Styles ==================
+    
     Object.assign(dot.style, {
       position: "fixed",
       width: "26px",        
