@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+html,
+body{
+  background:#090909;
+}
 body, html {
   cursor: none !important;
 }
@@ -414,6 +417,61 @@ html {
 
   filter:blur(80px);
 }
+.stars-layer{
+ position:absolute;
+ inset:0;
+
+ background-image:
+ radial-gradient(#f25f00 1px, transparent 1px),
+ radial-gradient(#ff8c00 .8px, transparent .8px);
+
+ background-size:
+ 120px 120px,
+ 180px 180px;
+
+ background-position:
+ 0 0,
+ 60px 60px;
+
+ opacity:.18;
+
+ animation:
+ starsMove 20s linear infinite;
+}
+
+@keyframes starsMove{
+ from{
+  transform:translateY(0);
+ }
+ to{
+  transform:translateY(-120px);
+ }
+}
+
+.stars-layer-2{
+ position:absolute;
+ inset:0;
+
+ background-image:
+ radial-gradient(#ff8c00 .5px, transparent .5px);
+
+ background-size:70px 70px;
+
+ opacity:.12;
+
+ animation:
+ starsMove2 12s linear infinite;
+}
+
+@keyframes starsMove2{
+ from{
+  transform:translateY(0);
+ }
+ to{
+  transform:translateY(-200px);
+ }
+}
+
 .light-sweep{
   position:absolute;
 
@@ -435,51 +493,105 @@ html {
 }
 
 .tito-text{
-  background:
-  linear-gradient(
-  180deg,
-  #ffffff,
-  #d7d7d7 35%,
-  #9b9b9b 70%,
-  #5a5a5a 100%
-  );
 
-  -webkit-background-clip:text;
-  color:transparent;
+background:
+linear-gradient(
+180deg,
+#ffffff 0%,
+#d9d9d9 20%,
+#9a9a9a 45%,
+#595959 100%
+);
+-webkit-background-clip:text;
+color:white;
 
-  text-shadow:
-  0 8px 30px rgba(0,0,0,.45);
+filter:drop-shadow(0 8px 25px rgba(0,0,0,.45));
+transform-style:preserve-3d;
+
 }
-
+.tito-letter{
+  display:inline-block;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
 .tito-reflection{
-  opacity:.15;
+ opacity:.4;
 
-  filter:
-  blur(14px)
-  grayscale(100%);
+ transform:
+ scaleY(-1)
+ translateY(-18px);
 
-  transform:
-  scaleY(-1)
-  perspective(600px)
-  rotateX(70deg);
+ filter:
+ blur(4px);
 
-  transform-origin:top;
+ background:
+ linear-gradient(
+ to bottom,
+ rgba(255,255,255,.95),
+ rgba(255,255,255,.15)
+ );
+
+ -webkit-background-clip:text;
+ color:transparent;
+
+ mask-image:
+ linear-gradient(
+ to bottom,
+ rgba(0,0,0,.9),
+ transparent
+ );
+
+ -webkit-mask-image:
+ linear-gradient(
+ to bottom,
+ rgba(0,0,0,.9),
+ transparent
+ );
 }
 .cinematic-mask{
-  position:absolute;
-  inset:0;
+ position:absolute;
+ inset:0;
 
-  background:#090909;
+ background:#f25f00;
 
-  clip-path:
-  ellipse(
-    0% 60%
-    at 50% 50%
-  );
+ clip-path:ellipse(0% 0% at 50% 50%);
+ pointer-events:none;
 
-  pointer-events:none;
+ z-index:40;
+}
+.cinematic-curves{
+position:absolute;
+inset:0;
+pointer-events:none;
+transform-origin:center;
 }
 
+.cinematic-curves::before,
+.cinematic-curves::after{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+width:20vw;
+height:100%;
+
+background:#090909;
+
+z-index:5;
+}
+
+.cinematic-curves::before{
+left:0;
+border-radius:0 100% 100% 0;
+}
+
+.cinematic-curves::after{
+right:0;
+border-radius:100% 0 0 100%;
+}
 @keyframes auroraMove {
   from {
     transform: scale(1) rotate(0deg);

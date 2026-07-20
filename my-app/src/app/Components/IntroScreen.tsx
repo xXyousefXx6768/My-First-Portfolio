@@ -13,10 +13,26 @@ interface IntroScreenProps {
 function IntroScreen({ onComplete }: IntroScreenProps) {
   const introRef = useRef<HTMLDivElement>(null);
 
-
 useEffect(() => {
   const tl = gsap.timeline();
 
+  gsap.to(".stars-layer",{
+ y:-120,
+ duration:20,
+ repeat:-1,
+ ease:"none"
+});
+
+gsap.to(".stars-layer-2",{
+ y:-220,
+ duration:12,
+ repeat:-1,
+ ease:"none"
+});
+
+  gsap.set(".logo-svg",{
+  opacity:0
+});
  const strokes =
 document.querySelectorAll<SVGPathElement>(
 ".logo-wing-stroke,.logo-body-stroke"
@@ -25,115 +41,66 @@ document.querySelectorAll<SVGPathElement>(
 strokes.forEach((path) => {
   const length = path.getTotalLength();
 
-  gsap.set(path, {
-    strokeDasharray: length,
-    strokeDashoffset: length,
-    opacity: 1,
-  });
+
+ gsap.set(path,{
+  strokeDasharray:length,
+  strokeDashoffset:length,
+});
 });
 
 gsap.set(".logo-wing-fill",{
-  opacity:0,
+  opacity:0
 });
 
 gsap.set(".logo-body-fill",{
-  opacity:0,
+  opacity:0
 });
-
-  gsap.set(".logo-wing", {
-  opacity: 0,
-  y: -30,
-});
-
-gsap.set(".logo-body", {
-  opacity: 0,
-  y: 40,
-});
-
-tl.to(".logo-wing", {
-  opacity: 1,
-  y: 0,
-  duration: 1,
-  ease: "expo.out",
-});
-
-tl.to(
-  ".logo-body",
-  {
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    ease: "expo.out",
-  },
-  "-=0.5"
-);
 
 tl.to(".logo-svg",{
   opacity:1,
-  duration:.01
+  scale:1,
+  duration:.3
 });
 
 tl.to(".logo-wing-stroke",{
   strokeDashoffset:0,
-  duration:1.4,
+  duration:.9,
   ease:"power3.out"
 });
 
 tl.to(".logo-wing-fill",{
   opacity:1,
-  duration:.4,
-},"-=.2");
-
-tl.to(".logo-wing-stroke",{
-  opacity:0,
-  duration:.3
-});
+  duration:.2
+},"-=.25");
 
 tl.to(".logo-body-stroke",{
   strokeDashoffset:0,
-  duration:1.7,
+  duration:1,
   ease:"power3.out"
-});
+},"-=.1");
 
 tl.to(".logo-body-fill",{
   opacity:1,
-  duration:.5,
-},"-=.2");
+  duration:.25
+},"-=.25");
 
-tl.to(".logo-body-stroke",{
-  opacity:0,
-  duration:.3
-});
-tl.from(".logo-glow",{
-  scale:.3,
-  opacity:0,
-  duration:1.5,
-  ease:"expo.out"
-},"-=1");
-
-tl.to(".logo-svg",{
-  scale:1.06,
-  duration:1,
-  yoyo:true,
-  repeat:1,
-});
-
-tl.to(".tito-text",{
-  opacity:1,
-  duration:.01
-});
-tl.to(".tito-text",{
-  letterSpacing:"32px",
-  duration:1.3
+tl.set(".tito-text",{
+  opacity:1
 });
 
 tl.from(".tito-letter",{
-  scale:.3,
+  y:80,
   opacity:0,
-  filter:"blur(12px)",
+  rotateX:-90,
   stagger:.08,
-  duration:1.1,
+  duration:1,
   ease:"expo.out"
+});
+
+
+tl.to(".tito-text",{
+  letterSpacing:"32px",
+  duration:1.3
 });
 
 
@@ -150,35 +117,29 @@ tl.to(".light-sweep",{
   ease:"power3.inOut"
 });
 
-tl.to(".tito-letter",{
-  z:300,
-  stagger:0.03,
-  duration:1
-});
+tl.from(
+  ".subtitle",
+  {
+    y: 40,
+    opacity: 0,
+    duration: 0.8,
+  },
+  "-=0.6"
+);
 
-tl.to(".tito-letter",{
-  z:500,
-  stagger:.04,
-  duration:1.2
-});
 
-tl.to(".tito-text",{
-  scale:8,
-  duration:1.8,
-  ease:"expo.inOut"
-});
 
 tl.to(
-  [
-    ".logo-img",
-    ".tito-text",
-    ".tito-reflection"
-  ],
-  {
-    scale:1.1,
-    duration:1,
-    ease:"power2.out"
-  }
+[
+ ".logo-svg",
+ ".tito-text",
+ ".tito-reflection"
+],
+{
+ scale:1.1,
+ duration:1,
+ ease:"power2.out"
+}
 );
 
 tl.to(".tito-reflection",{
@@ -196,15 +157,7 @@ tl.to(".tito-text", {
   duration: 1.5,
 });
 
-tl.from(
-  ".subtitle",
-  {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-  },
-  "-=0.6"
-);
+
 
 tl.to(".logo-glow", {
   scale: 1.4,
@@ -212,18 +165,59 @@ tl.to(".logo-glow", {
   ease: "power2.out",
 }, "-=1");
 
+tl.to(
+[
+ ".logo-svg",
+ ".tito-text",
+ ".tito-reflection",
+ ".subtitle"
+],
+{
+ scale:.92,
+ opacity:.8,
+ duration:.8,
+ ease:"power2.out"
+}
+);
 
+tl.to(".logo-glow",{
+ scale:2.2,
+ opacity:.9,
+ duration:.7,
+ ease:"power2.out"
+});
+
+tl.to(
+[
+ ".logo-svg",
+ ".tito-text",
+ ".tito-reflection",
+ ".subtitle"
+],
+{
+ scale:.85,
+ opacity:0,
+ duration:1,
+ ease:"power3.inOut"
+}
+);
 
 tl.to(".cinematic-mask",{
-  clipPath:
-  "ellipse(150% 150% at 50% 50%)",
-  duration:1.8,
-  ease:"expo.inOut"
-});
+ clipPath:"ellipse(180% 180% at 50% 50%)",
+ duration:1.4,
+ ease:"expo.inOut"
+},"-=0.5");
+
+
+tl.to(".logo-glow",{
+  scale:3,
+  opacity:0,
+  duration:1.5
+},"<");
 
 tl.to(introRef.current,{
   opacity:0,
-  duration:.2,
+  duration:.5,
   onComplete:()=>{
     onComplete();
 
@@ -264,6 +258,9 @@ return () => {
       "
     />
 
+    <div className="stars-layer" />
+<div className="stars-layer-2" />
+
     {/* Grid */}
     <div
       className="
@@ -291,16 +288,22 @@ return () => {
     {/* Center Content */}
     <div className="relative z-20 flex flex-col items-center">
 
-      <LogoSVG
+     <LogoSVG
   className="
   logo-svg
-  opacity-0
   w-[150px]
   md:w-[220px]
-  "
+"
 />
 
-      <div className="relative mt-8">
+     <div
+ className="
+ relative
+ inline-block
+ mt-8
+ [perspective:3000px]
+ "
+>
 
   <h1
     className="
@@ -329,7 +332,6 @@ return () => {
     opacity-0
     absolute
     left-0
-    right-0
     top-full
     text-7xl
     md:text-[9rem]
@@ -358,7 +360,7 @@ return () => {
         md:text-base
         "
       >
-        Frontend Developer
+        Full-stack Developer
       </p>
     </div>
 

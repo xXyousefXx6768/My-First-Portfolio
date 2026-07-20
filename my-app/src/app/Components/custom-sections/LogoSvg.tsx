@@ -5,6 +5,7 @@ export default function LogoSVG({
 }) {
   return (
     <svg
+      style={{ opacity: 0 }}
       className={className}
       viewBox="0 0 600 600"
       xmlns="http://www.w3.org/2000/svg"
