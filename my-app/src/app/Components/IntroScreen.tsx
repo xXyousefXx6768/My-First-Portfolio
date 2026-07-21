@@ -16,6 +16,7 @@ function IntroScreen({ onComplete }: IntroScreenProps) {
 useEffect(() => {
   const tl = gsap.timeline();
 
+
   gsap.to(".stars-layer",{
  y:-120,
  duration:20,
@@ -64,52 +65,48 @@ tl.to(".logo-svg",{
 
 tl.to(".logo-wing-stroke",{
   strokeDashoffset:0,
-  duration:.9,
-  ease:"power3.out"
+  duration:1.4,
+  ease:"power2.inOut"
 });
 
 tl.to(".logo-wing-fill",{
   opacity:1,
-  duration:.2
-},"-=.25");
+  duration:.35
+},"-=.3");
 
 tl.to(".logo-body-stroke",{
   strokeDashoffset:0,
-  duration:1,
-  ease:"power3.out"
-},"-=.1");
+  duration:1.8,
+  ease:"power2.inOut"
+},"-=.15");
 
 tl.to(".logo-body-fill",{
   opacity:1,
-  duration:.25
-},"-=.25");
+  duration:.4
+},"-=.35");
 
 tl.set(".tito-text",{
   opacity:1
 });
 
 tl.from(".tito-letter",{
-  y:80,
+  y:40,
   opacity:0,
-  rotateX:-90,
-  stagger:.08,
-  duration:1,
+  scale:.8,
+  stagger:.05,
+  duration:.7,
   ease:"expo.out"
 });
 
 
-tl.to(".tito-text",{
-  letterSpacing:"32px",
-  duration:1.3
-});
+ tl.to(".tito-text",{
+ letterSpacing:"32px",
+ duration:1.3,
+ force3D:false
+});  
 
 
 
-tl.from(".tito-reflection", {
-  opacity: 0,
-  y: -20,
-  duration: 1,
-}, "-=1");
 
 tl.to(".light-sweep",{
   x:"250%",
@@ -142,10 +139,7 @@ tl.to(
 }
 );
 
-tl.to(".tito-reflection",{
-  opacity:0,
-  duration:.8
-});
+
 
 tl.to(".tito-text", {
   textShadow:
@@ -157,7 +151,12 @@ tl.to(".tito-text", {
   duration: 1.5,
 });
 
-
+tl.set(".tito-letter",{
+ x:0,
+ y:0,
+ scale:1,
+ rotation:0
+});
 
 tl.to(".logo-glow", {
   scale: 1.4,
@@ -191,23 +190,33 @@ tl.to(
 [
  ".logo-svg",
  ".tito-text",
- ".tito-reflection",
  ".subtitle"
 ],
 {
- scale:.85,
+ y:-40,
+ scale:.75,
  opacity:0,
  duration:1,
- ease:"power3.inOut"
+ ease:"power4.in"
 }
 );
 
-tl.to(".cinematic-mask",{
- clipPath:"ellipse(180% 180% at 50% 50%)",
- duration:1.4,
- ease:"expo.inOut"
-},"-=0.5");
+tl.set(".cinematic-mask",{
+ clipPath:"ellipse(0% 0% at 50% 50%)"
+});
 
+tl.to(".logo-glow",{
+ scale:5,
+ opacity:1,
+ duration:.8,
+ ease:"power4.out"
+});
+
+tl.to(".cinematic-mask",{
+ clipPath:"ellipse(150% 150% at 50% 50%)",
+ duration:1.2,
+ ease:"power4.inOut"
+},"-=0.3");
 
 tl.to(".logo-glow",{
   scale:3,
@@ -326,27 +335,7 @@ return () => {
     ))}
   </h1>
 
-  <h1
-    className="
-    tito-reflection
-    opacity-0
-    absolute
-    left-0
-    top-full
-    text-7xl
-    md:text-[9rem]
-    font-black
-    tracking-[18px]
-    text-white/20
-    uppercase
-    scale-y-[-1]
-    blur-sm
-    pointer-events-none
-    "
-  >
-    TITO
-  </h1>
-
+  
 </div>
       <p
         className="

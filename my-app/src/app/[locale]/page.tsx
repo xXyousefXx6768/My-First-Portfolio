@@ -27,10 +27,10 @@ export default function Home() {
   }`}
 >
     
-      <NavBar />
+      <NavBar startAnimation={introFinished}/>
 
       <section  id="home">
-        <HeroSection />
+        <HeroSection startAnimation={introFinished}/>
       </section>
 
       <section id="about">

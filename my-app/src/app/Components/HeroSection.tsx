@@ -11,12 +11,19 @@ import { useTranslations } from "../lib/i18n-provider";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function HeroSection() {
+interface HeroSectionProps {
+  startAnimation: boolean;
+}
+
+function HeroSection({
+  startAnimation,
+}: HeroSectionProps) {
   const imgRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("hero");
 
   useEffect(() => {
+    if (!startAnimation) return;
     if (!imgRef.current || !textRef.current) return;
 
     const ctx = gsap.context(() => {
@@ -124,7 +131,7 @@ function HeroSection() {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [startAnimation]);
 
   const icons = [
     { icon: faSquareLinkedin, link: "https://www.linkedin.com/in/yousef-amr-66873224b", color: "#ff6000" },

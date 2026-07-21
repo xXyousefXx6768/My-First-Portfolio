@@ -14,7 +14,13 @@ import ResponsiveNavBar from "./ResponsiveSections/ResponsiveNavBar";
 
 gsap.registerPlugin(ScrollToPlugin);
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+  startAnimation: boolean;
+}
+
+const NavBar: React.FC<NavBarProps> = ({
+  startAnimation,
+}) => {
   const navRefs = useRef<HTMLLIElement[]>([]);
   const navContainerRef = useRef<HTMLElement | null>(null);
   const logoRef = useRef<HTMLDivElement | null>(null);
@@ -49,6 +55,7 @@ const NavBar: React.FC = () => {
      ✅ DESKTOP HOVER (كما هو)
   ===============================*/
   useEffect(() => {
+   
     navRefs.current.forEach((el) => {
       if (!el) return;
 
@@ -78,7 +85,8 @@ const NavBar: React.FC = () => {
   ===============================*/
   useEffect(() => {
     if (!navContainerRef.current) return;
-
+    if (!startAnimation) return;
+ 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "expo.out" },
@@ -149,7 +157,7 @@ const NavBar: React.FC = () => {
       ctx.revert();
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [startAnimation]);
 
   const splitText = (text: string = "") =>
   text.split("").map((char, i) => (
