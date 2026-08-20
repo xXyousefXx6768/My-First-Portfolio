@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+
+import { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,62 +11,121 @@ interface Props {
   className?: string;
 }
 
-export default function AnimatedTitle({ title, className }: Props) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const titleRef = useRef<HTMLHeadingElement | null>(null);
+export default function AnimatedTitle({
+  title,
+  className = "",
+}: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => {
-    if (!titleRef.current) return;
+  const words = useMemo(() => title.split(" "), [title]);
 
-    // split characters
-    const letters = title.split("");
+  useLayoutEffect(() => {
+    if (!titleRef.current || !containerRef.current) return;
 
-    titleRef.current.innerHTML = letters
+    titleRef.current.innerHTML = words
       .map(
-        (l) =>
-          `<span class="inline-block opacity-0 translate-y-[120%]">${l === " " ? "&nbsp;" : l}</span>`
+        (word) => `
+      <span class="word">
+        ${word
+          .split("")
+          .map(
+            (letter) => `
+            <span class="letter-wrapper">
+              <span class="letter">
+                ${letter}
+              </span>
+            </span>
+          `
+          )
+          .join("")}
+      </span>
+    `
       )
       .join("");
 
-    const spans = Array.from(titleRef.current.querySelectorAll("span"));
+    const letters = gsap.utils.toArray<HTMLElement>(
+      ".letter",
+      titleRef.current
+    );
 
-    const center = Math.floor(spans.length / 2);
-    const timingCurve = spans.map((_, i) => Math.abs(i - center) * 0.05);
+    gsap.set(letters, {
+  y: 90,
+  opacity: 0,
+  scale: 1.15,
+  filter: "blur(10px)",
+});
+
+    gsap.set(".title-mask", {
+      scaleX: 0,
+      transformOrigin: "left center",
+    });
+
+    
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top center",
-        end: "bottom center",
-        scrub: 1,
+        start: "top 78%",
+        toggleActions: "play none none reverse",
       },
     });
 
-    tl.to(spans, {
-      y: "0%",
-      opacity: 1,
-      ease: "power3.out",
-      stagger: {
-        from: "center",
-        amount: 0.1,
-      },
-      delay: (i) => timingCurve[i],
+    tl.to(".title-mask", {
+      scaleX: 1,
+      duration: 0.8,
+      ease: "power4.out",
     });
 
-    return () => tl.scrollTrigger?.kill();
-  }, [title]);
+   tl.to(
+  letters,
+  {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    ease: "expo.out",
+    duration: 1.4,
+    stagger: {
+      each: 0.04,
+      from: "center",
+    },
+  },
+  "-=0.35"
+);
+
+    
+
+    return () => {
+      tl.kill();
+      tl.scrollTrigger?.kill();
+    };
+  }, [words]);
 
   return (
     <section
       ref={containerRef}
-      className={`w-full py-28 flex items-center justify-center ${className}`}
+      className={`w-full py-32 flex justify-center items-center ${className}`}
     >
-      {/* Wrapper that hides overflow */}
-      <div className="overflow-hidden">
+      <div className="relative overflow-hidden">
+
+        <div className=" absolute inset-0 pointer-events-none" />
+
+
         <h2
           ref={titleRef}
-          className="text-5xl md:text-7xl font-bold tracking-tight text-orange-400 select-none"
-        ></h2>
+          className="
+          text-5xl
+          md:text-7xl
+          xl:text-8xl
+          font-bold
+          text-orange-400
+          tracking-tight
+          leading-[1.15]
+          text-center
+          select-none
+          "
+        />
       </div>
     </section>
   );

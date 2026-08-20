@@ -25,6 +25,8 @@ const NavBar: React.FC<NavBarProps> = ({
   const navContainerRef = useRef<HTMLElement | null>(null);
   const logoRef = useRef<HTMLDivElement | null>(null);
   const rightRef = useRef<HTMLDivElement | null>(null);
+  const showTween = useRef<GSAPTween | null>(null);
+  const hideTween = useRef<GSAPTween | null>(null);
 
   const  navItems = [
   { key: "home", target: "home" },
@@ -55,31 +57,71 @@ const NavBar: React.FC<NavBarProps> = ({
      ✅ DESKTOP HOVER (كما هو)
   ===============================*/
   useEffect(() => {
-   
-    navRefs.current.forEach((el) => {
-      if (!el) return;
 
-      const top = el.querySelectorAll(".letter-top");
-      const bottom = el.querySelectorAll(".letter-bottom");
-      const underline = el.querySelector(".underline");
+  const cleanups: (() => void)[] = [];
 
-      const enter = () => {
-        gsap.to(top, { y: "100%", stagger: 0.03, duration: 0.35 });
-        gsap.to(bottom, { y: "0%", stagger: 0.03, duration: 0.35 });
-        gsap.to(underline, { scaleX: 1, duration: 0.4, ease: "expo.out" });
-      };
+  navRefs.current.forEach((el) => {
 
-      const leave = () => {
-        gsap.to(top, { y: "0%", stagger: 0.03, duration: 0.35 });
-        gsap.to(bottom, { y: "-100%", stagger: 0.03, duration: 0.35 });
-        gsap.to(underline, { scaleX: 0, duration: 0.3 });
-      };
+    if (!el) return;
 
-      el.addEventListener("mouseenter", enter);
-      el.addEventListener("mouseleave", leave);
+    const top = el.querySelectorAll(".letter-top");
+    const bottom = el.querySelectorAll(".letter-bottom");
+    const underline = el.querySelector(".underline");
+
+    const enter = () => {
+      gsap.to(top,{
+        y:"100%",
+        stagger:0.03,
+        duration:.35
+      });
+
+      gsap.to(bottom,{
+        y:"0%",
+        stagger:.03,
+        duration:.35
+      });
+
+      gsap.to(underline,{
+        scaleX:1,
+        duration:.4,
+        ease:"expo.out"
+      });
+    };
+
+    const leave = () => {
+      gsap.to(top,{
+        y:"0%",
+        stagger:.03,
+        duration:.35
+      });
+
+      gsap.to(bottom,{
+        y:"-100%",
+        stagger:.03,
+        duration:.35
+      });
+
+      gsap.to(underline,{
+        scaleX:0,
+        duration:.3
+      });
+    };
+
+    el.addEventListener("mouseenter",enter);
+    el.addEventListener("mouseleave",leave);
+
+    cleanups.push(()=>{
+      el.removeEventListener("mouseenter",enter);
+      el.removeEventListener("mouseleave",leave);
     });
-  }, []);
 
+  });
+
+  return ()=>{
+    cleanups.forEach(fn=>fn());
+  };
+
+},[]);
   /* ===============================
      ✅ NAVBAR ENTRANCE + SCROLL BEHAVIOR
   ===============================*/
@@ -122,41 +164,54 @@ const NavBar: React.FC<NavBarProps> = ({
         { x: 0, opacity: 1, duration: 1 },
         "-=0.8"
       );
+
+      showTween.current = gsap.to(navContainerRef.current, {
+  y: 0,
+  duration: 0.6,
+  ease: "power3.out",
+  paused: true,
+});
+
+hideTween.current = gsap.to(navContainerRef.current, {
+  y: -120,
+  duration: 0.6,
+  ease: "power3.out",
+  paused: true,
+});
     });
 
     // ✅ Hide on scroll down / Show on scroll up
     let lastScroll = window.scrollY;
 
     const handleScroll = () => {
-      const currentScroll = window.scrollY;
 
-      if (!navContainerRef.current) return;
+  const currentScroll = window.scrollY;
 
-      if (currentScroll > lastScroll && currentScroll > 80) {
-        // scrolling down
-        gsap.to(navContainerRef.current, {
-          y: -120,
-          duration: 0.6,
-          ease: "power3.out",
-        });
-      } else {
-        // scrolling up
-        gsap.to(navContainerRef.current, {
-          y: 0,
-          duration: 0.6,
-          ease: "power3.out",
-        });
-      }
+  if (currentScroll > lastScroll && currentScroll > 80) {
 
-      lastScroll = currentScroll;
-    };
+    hideTween.current?.restart();
 
+  } else {
+
+    showTween.current?.restart();
+
+  }
+
+  lastScroll = currentScroll;
+
+};
     window.addEventListener("scroll", handleScroll);
 
     return () => {
-      ctx.revert();
-      window.removeEventListener("scroll", handleScroll);
-    };
+
+showTween.current?.kill();
+hideTween.current?.kill();
+
+ctx.revert();
+
+window.removeEventListener("scroll", handleScroll);
+
+};
   }, [startAnimation]);
 
   const splitText = (text: string = "") =>
@@ -209,7 +264,7 @@ const NavBar: React.FC<NavBarProps> = ({
     key={item.key}
     ref={(el) => (navRefs.current[i] = el!)}
     onClick={() => scrollToSection(item.target)}
-    className="relative cursor-pointer overflow-hidden"
+    className="relative cursor-pointer will-change-transform overflow-hidden"
   >
     <span className="inline-block">
       {splitText(t(item.key))}

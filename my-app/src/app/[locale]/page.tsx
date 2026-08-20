@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import GlobalBackground from "../Components/GlobalBackground";
 import NavBar from "../Components/NavBar";
 import AboutMe from "../Components/AboutMe";
 import ContactMe from "../Components/ContactMe";
@@ -17,16 +18,28 @@ export default function Home() {
   const [introFinished, setIntroFinished] = useState(false);
   return (
     <>  
+    
     {!introFinished && (
     <IntroScreen onComplete={() => setIntroFinished(true)} 
     />
     )}
     <main
-  className={`flex flex-col items-center min-h-screen bg-[#0e0b0b] transition-opacity duration-700 ${
-    introFinished ? "opacity-100" : "opacity-0"
-  }`}
+  className={`
+    relative
+    z-10
+    flex
+    flex-col
+    items-center
+    min-h-screen
+    bg-[#0e0b0b]
+    transition-opacity
+    duration-700
+    ${introFinished ? "opacity-100" : "opacity-0"}
+  `}
 >
-    
+  
+  <GlobalBackground />
+
       <NavBar startAnimation={introFinished}/>
 
       <section  id="home">

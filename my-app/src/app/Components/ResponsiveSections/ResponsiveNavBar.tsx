@@ -1,190 +1,423 @@
 "use client";
+
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { X } from "lucide-react";
 import { useTranslations } from "../../lib/i18n-provider";
 
+interface NavItem {
+  key: string;
+  target: string;
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
-  navItems: string[];
+  navItems: NavItem[];
 }
 
-const ResponsiveNavBar: React.FC<Props> = ({ open, onClose, navItems }) => {
+const ResponsiveNavBar: React.FC<Props> = ({
+  open,
+  onClose,
+  navItems,
+}) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemsRef = useRef<HTMLLIElement[]>([]);
+
   const t = useTranslations("navbar");
 
-  /* =========================
-      OPEN – AWWWARDS STYLE
-  ========================== */
+  /* =====================================================
+     OPEN ANIMATION
+  ===================================================== */
+
+  useEffect(() => {
+    if (!open || !containerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(containerRef.current, {
+        yPercent: 100,
+        skewY: 6,
+        transformOrigin: "bottom center",
+      });
+
+      gsap.set(itemsRef.current, {
+        y: 70,
+        opacity: 0,
+        filter: "blur(8px)",
+      });
+
+      const tl = gsap.timeline({
+        defaults: {
+          overwrite: "auto",
+        },
+      });
+
+      // Menu entrance
+      tl.to(containerRef.current, {
+        yPercent: 0,
+        skewY: 0,
+        duration: 1.15,
+        ease: "expo.out",
+      });
+
+      // Items entrance
+      tl.to(
+        itemsRef.current,
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "power4.out",
+        },
+        "-=0.55"
+      );
+    }, containerRef);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [open]);
+
+  /* =====================================================
+     HOVER ANIMATION
+  ===================================================== */
+
   useEffect(() => {
     if (!open) return;
 
-    gsap.set(containerRef.current, {
-      yPercent: 100,
-      skewY: 6,
-      transformOrigin: "bottom center",
-    });
+    const cleanups: (() => void)[] = [];
 
-    gsap.set(itemsRef.current, {
-      y: 60,
-      opacity: 0,
-      filter: "blur(8px)",
-    });
-
-    const tl = gsap.timeline();
-
-    tl.to(containerRef.current, {
-      yPercent: 0,
-      skewY: 0,
-      duration: 1.3,
-      ease: "expo.out",
-    });
-
-    tl.to(
-      itemsRef.current,
-      {
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        stagger: 0.12,
-        duration: 1,
-        ease: "power4.out",
-      },
-      "-=0.5"
-    );
-  }, [open]);
-
-  /* =========================
-      EXIT – SMOOTH COLLAPSE
-  ========================== */
-  const closeWithAnimation = (callback?: () => void) => {
-    const tl = gsap.timeline({
-      onComplete: () => {
-        onClose();
-        callback?.();
-      },
-    });
-
-    tl.to(itemsRef.current, {
-      y: -40,
-      opacity: 0,
-      filter: "blur(6px)",
-      stagger: 0.08,
-      duration: 0.6,
-      ease: "power3.in",
-    });
-
-    tl.to(
-      containerRef.current,
-      {
-        yPercent: 100,
-        skewY: -4,
-        duration: 1,
-        ease: "expo.inOut",
-      },
-      "-=0.3"
-    );
-  };
-
-  /* =========================
-      HOVER – AWWWARDS FEEL
-  ========================== */
-  useEffect(() => {
     itemsRef.current.forEach((el) => {
       if (!el) return;
 
-      const text = el.querySelector(".nav-text");
-      const line = el.querySelector(".nav-line");
-      const glow = el.querySelector(".nav-glow");
+      const text = el.querySelector<HTMLElement>(".nav-text");
+      const line = el.querySelector<HTMLElement>(".nav-line");
+      const glow = el.querySelector<HTMLElement>(".nav-glow");
 
       if (!text || !line || !glow) return;
 
       const enter = () => {
-        gsap.to(text, {
-          y: -8,
-          duration: 0.4,
-          ease: "power3.out",
+        gsap.killTweensOf([text, line, glow]);
+
+        const tl = gsap.timeline({
+          defaults: {
+            overwrite: "auto",
+            ease: "power3.out",
+          },
         });
 
-        gsap.to(line, {
-          scaleX: 1,
-          duration: 0.5,
-          ease: "expo.out",
-        });
+        // Text
+        tl.to(
+          text,
+          {
+            y: -6,
+            color: "#f97316",
+            letterSpacing: "0.025em",
+            duration: 0.45,
+            ease: "power4.out",
+          },
+          0
+        );
 
-        gsap.to(glow, {
-          opacity: 1,
-          duration: 0.4,
-          ease: "power2.out",
-        });
+        // Thin line
+        tl.to(
+          line,
+          {
+            scaleX: 1,
+            opacity: 1,
+            duration: 0.55,
+            ease: "expo.out",
+          },
+          0.05
+        );
+
+        // Subtle glow
+        tl.to(
+          glow,
+          {
+            opacity: 0.45,
+            scale: 1.08,
+            duration: 0.45,
+            ease: "power2.out",
+          },
+          0
+        );
       };
 
       const leave = () => {
-        gsap.to(text, {
-          y: 0,
-          duration: 0.35,
-          ease: "power3.out",
+        gsap.killTweensOf([text, line, glow]);
+
+        const tl = gsap.timeline({
+          defaults: {
+            overwrite: "auto",
+          },
         });
 
-        gsap.to(line, {
-          scaleX: 0,
-          duration: 0.3,
-          ease: "power2.in",
-        });
+        // Text back to white
+        tl.to(
+          text,
+          {
+            y: 0,
+            color: "#ffffff",
+            letterSpacing: "0em",
+            duration: 0.4,
+            ease: "power3.inOut",
+          },
+          0
+        );
 
-        gsap.to(glow, {
-          opacity: 0,
-          duration: 0.25,
-        });
+        // Line disappears
+        tl.to(
+          line,
+          {
+            scaleX: 0,
+            opacity: 0,
+            duration: 0.35,
+            ease: "power3.inOut",
+          },
+          0
+        );
+
+        // Glow disappears
+        tl.to(
+          glow,
+          {
+            opacity: 0,
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out",
+          },
+          0
+        );
       };
 
       el.addEventListener("mouseenter", enter);
       el.addEventListener("mouseleave", leave);
 
-      return () => {
+      cleanups.push(() => {
         el.removeEventListener("mouseenter", enter);
         el.removeEventListener("mouseleave", leave);
-      };
+      });
     });
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
   }, [open]);
+
+  /* =====================================================
+     CLOSE ANIMATION
+  ===================================================== */
+
+  const closeWithAnimation = (target?: string) => {
+    if (!containerRef.current) return;
+
+    const tl = gsap.timeline({
+      defaults: {
+        overwrite: "auto",
+      },
+
+      onComplete: () => {
+        onClose();
+
+        // Scroll AFTER menu completely closes
+        if (target) {
+          requestAnimationFrame(() => {
+            const section = document.getElementById(target);
+
+            if (section) {
+              gsap.to(window, {
+                duration: 1.25,
+                scrollTo: {
+                  y: section,
+                  offsetY: 100,
+                },
+                ease: "power4.inOut",
+              });
+            }
+          });
+        }
+      },
+    });
+
+    // Text exit
+    tl.to(itemsRef.current, {
+      y: -45,
+      opacity: 0,
+      filter: "blur(8px)",
+      stagger: 0.07,
+      duration: 0.5,
+      ease: "power3.in",
+    });
+
+    // Menu collapse
+    tl.to(
+      containerRef.current,
+      {
+        yPercent: 100,
+        skewY: -5,
+        duration: 0.85,
+        ease: "expo.inOut",
+      },
+      "-=0.25"
+    );
+  };
+
+  /* =====================================================
+     CLOSE BUTTON
+  ===================================================== */
+
+  const handleClose = () => {
+    closeWithAnimation();
+  };
+
+  /* =====================================================
+     RENDER
+  ===================================================== */
 
   if (!open) return null;
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center text-white"
+      className="
+        fixed
+        inset-0
+        z-[9999]
+        bg-black
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-white
+        overflow-hidden
+      "
     >
+      {/* =================================================
+          BACKGROUND GLOW
+      ================================================= */}
+
+      <div
+        className="
+          absolute
+          w-[500px]
+          h-[500px]
+          bg-orange-500/10
+          rounded-full
+          blur-[150px]
+          pointer-events-none
+        "
+      />
+
+      {/* =================================================
+          CLOSE BUTTON
+      ================================================= */}
+
       <button
-        onClick={() => closeWithAnimation()}
-        className="absolute top-6 right-6 opacity-70 hover:opacity-100 transition"
+        onClick={handleClose}
+        aria-label="Close menu"
+        className="
+          absolute
+          top-6
+          right-6
+          text-white/60
+          hover:text-orange-500
+          transition-colors
+          duration-300
+          z-20
+        "
       >
-        <X size={32} />
+        <X size={32} strokeWidth={1.5} />
       </button>
 
-      <ul className="flex flex-col gap-16 text-4xl md:text-5xl font-semibold">
+      {/* =================================================
+          NAVIGATION
+      ================================================= */}
+
+      <ul
+        className="
+          relative
+          flex
+          flex-col
+          gap-12
+          text-4xl
+          md:text-5xl
+          font-semibold
+        "
+      >
         {navItems.map((item, i) => (
           <li
-            key={item}
-            ref={(el) => (itemsRef.current[i] = el!)}
-            onClick={() =>
-              closeWithAnimation(() =>
-                document
-                  .getElementById(item)
-                  ?.scrollIntoView({ behavior: "smooth" })
-              )
-            }
-            className="relative cursor-pointer"
+            key={item.key}
+            ref={(el) => {
+              if (el) {
+                itemsRef.current[i] = el;
+              }
+            }}
+            onClick={() => closeWithAnimation(item.target)}
+            className="
+              relative
+              cursor-pointer
+              w-fit
+              group
+            "
           >
-            <span className="nav-text block relative z-10">
-              {t(item)}
+            {/* =================================================
+                TEXT
+            ================================================= */}
+
+            <span
+              className="
+                nav-text
+                block
+                relative
+                z-10
+                text-white
+                will-change-transform
+              "
+            >
+              {t(item.key)}
             </span>
 
-            <span className="nav-line absolute left-0 -bottom-2 h-[2px] w-full bg-white origin-left scale-x-0" />
+            {/* =================================================
+                THIN ANIMATED LINE
+            ================================================= */}
 
-            <span className="nav-glow absolute inset-0 -z-10 opacity-0 blur-3xl bg-white/20" />
+            <span
+              className="
+                nav-line
+                absolute
+                left-0
+                -bottom-3
+                h-[1px]
+                w-full
+                bg-orange-500
+                origin-left
+                scale-x-0
+                opacity-0
+                will-change-transform
+              "
+            />
+
+            {/* =================================================
+                SUBTLE GLOW
+            ================================================= */}
+
+            <span
+              className="
+                nav-glow
+                absolute
+                inset-0
+                -z-10
+                opacity-0
+                scale-100
+                blur-2xl
+                bg-orange-500/20
+                pointer-events-none
+                will-change-transform
+              "
+            />
           </li>
         ))}
       </ul>

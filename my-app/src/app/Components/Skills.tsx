@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
 import {
   FaReact,
   FaHtml5,
@@ -33,8 +33,7 @@ interface Skill {
 
 }
 
- const Skills: React.FC = () => {
-  const skills: Skill[] = [
+const skills: Skill[] = [
     { name: "React JS", icon: <FaReact className="text-sky-400" />, color: "#38bdf8" },
     { name: "JavaScript", icon: <SiJavascript className="text-yellow-400" />, color: "#facc15" },
     { name: "HTML", icon: <FaHtml5 className="text-orange-500" />, color: "#f97316" },
@@ -51,14 +50,45 @@ interface Skill {
     { name: "Vite", icon: <SiVite className="text-violet-500" />, color: "#8b5cf6" },
     { name: "Figma", icon: <FaFigma className="text-pink-500" />, color: "#ec4899" },
     { name: "Framer Motion", icon: <SiFramer className="text-fuchsia-600" />, color: "#c026d3" },
-  ];
+]
  
+ const Skills: React.FC = () => {
+  
+  
+
   const t = useTranslations("skills");
   return (
-    <section className="py-16 px-6 text-center">
-      <div className="absolute top-430 left-50 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
-      <div className="absolute top-500 right-48 w-[450px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+   <section className="relative py-16 px-6 text-center 
+ ">
       
+      <div
+  className="
+  absolute
+  left-0
+  top-1/2
+  -translate-y-1/2
+  w-[350px]
+  h-[350px]
+  bg-orange-500/10
+  blur-[140px]
+  rounded-full
+  pointer-events-none
+  "
+/>
+
+<div
+  className="
+  absolute
+  right-0
+  bottom-0
+  w-[250px]
+  h-[250px]
+  bg-yellow-500/10
+  blur-[120px]
+  rounded-full
+  pointer-events-none
+  "
+/>
       
       <AnimatedTitle title={t("title")} className="text-orange-400" />
 
@@ -67,7 +97,7 @@ interface Skill {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 place-items-center">
         {skills.map((skill, index) => (
-          <SkillCard key ={index} skill={skill} index={index} />
+          <SkillCard key={skill.name} skill={skill} index={index} />
         ))}
       </div>
     </section>
@@ -76,37 +106,48 @@ interface Skill {
 
 export default Skills;
 
-const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) => {
+const SkillCard: React.FC<{ skill: Skill; index: number }> = React.memo(
+({
+  skill,
+  index,
+}: {
+  skill: Skill;
+  index: number;
+}) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const iconRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLParagraphElement | null>(null);
 
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const glowRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+const xTo = useRef<((v:number)=>void)|null>(null);
+
+const yTo = useRef<((v:number)=>void)|null>(null);
+
+  useLayoutEffect(() => {
     if (!cardRef.current || !iconRef.current || !textRef.current) return;
-
+        const ctx = gsap.context(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: cardRef.current,
         start: "top 85%",
+        invalidateOnRefresh:false,
+        once:true,
+        fastScrollEnd:true
       },
-      delay: index * 0.15, // 🔥 Stagger animation
+      delay:index*.06, // 🔥 Stagger animation
     });
 
     tl.fromTo(
       iconRef.current,
       {
-        scale: 0,
-        opacity: 0,
-        filter: "blur(6px)",
+       opacity:0,
+       scale:.8,
         rotate: -20,
       },
       {
         scale: 1,
         opacity: 1,
-        filter: "blur(0px)",
         rotate: 0,
         duration: 0.6,
         ease: "power3.out",
@@ -127,46 +168,87 @@ const SkillCard: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) 
       },
       "-=0.35"
     );
+     }, cardRef);
+
+    return () => ctx.revert();
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
+ 
+    const handleMouseMove = (
+  e: React.MouseEvent<HTMLDivElement>
+) => {
+  if (!glowRef.current) return;
 
+  const rect = e.currentTarget.getBoundingClientRect();
+
+ const x = e.clientX - rect.left - 48;
+
+const y = e.clientY - rect.top - 48;
+
+
+xTo.current = gsap.quickTo(glowRef.current,"x",{
+duration:.15,
+ease:"none"
+});
+
+yTo.current = gsap.quickTo(glowRef.current,"y",{
+duration:.15,
+ease:"none"
+});
+
+xTo.current?.(x);
+
+yTo.current?.(y);
+};
   return (
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative w-40 h-40 backdrop-blur-xl bg-black/40 dark:bg-black/50 border border-white/10 rounded-2xl shadow-[0_0_25px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-[1.03]"
+      onMouseEnter={()=>
+gsap.to(glowRef.current,{
+opacity:.5,
+duration:.2
+})
+}
+     onMouseLeave={()=>
+gsap.to(glowRef.current,{
+opacity:0,
+duration:.25
+})
+}
+      className="relative w-40 h-40 backdrop-blur-xl bg-black/40 dark:bg-black/50 border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer will-change-transform transition-transform duration-300 hover:scale-[1.03]"
       style={{ "--glow-color": skill.color } as React.CSSProperties}
     >
-      {isHovered && (
-        <div
-          className="absolute w-24 h-24 rounded-full blur-2xl opacity-50 pointer-events-none transition-transform duration-150"
-          style={{
-            background: `var(--glow-color)`,
-            left: pos.x - 48,
-            top: pos.y - 48,
-          }}
-        />
-      )}
+    <div
+ref={glowRef}
+style={{
+background:skill.color,
+willChange:"transform,opacity"
+}}
+className="
+absolute
+w-24
+h-24
+rounded-full
+blur-2xl
+pointer-events-none
+opacity-0
+"
+/>
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0  pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/20 via-transparent to-transparent opacity-10" />
         <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/30 via-white/5 to-transparent opacity-20 skew-y-[-8deg]" />
       </div>
 
       <div className="relative flex flex-col items-center space-y-2 z-10">
-        <div ref={iconRef} className="text-5xl" style={{ color: skill.color }}>
+        <div ref={iconRef} className="text-5xl will-change-transform" style={{ color: skill.color }}>
           {skill.icon}
         </div>
-        <p ref={textRef} className="text-sm font-semibold" style={{ color: skill.color }}>
+        <p ref={textRef} className="text-sm font-semibold will-change-transform" style={{ color: skill.color }}>
           {skill.name}
         </p>
       </div>
     </div>
   );
-};
+});

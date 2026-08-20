@@ -23,7 +23,6 @@ export const createClient = () => {
               cookieStore.set(name, value, options || {})
           );
         } catch {
-          // ممكن تتجاهلها لو الكود ده شغال في Server Component
         }
       },
     },

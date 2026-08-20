@@ -20,13 +20,19 @@ const AdminPage: React.FC = () => {
   const [techInput, setTechInput] = useState("");
 
   const [project, setProject] = useState({
-    name: "",
-    tech: [] as string[],
-    desc: "",
-    image: null as File | null,
-    github: "",
-    preview: "",
-  });
+  name: {
+    en: "",
+    de: "",
+  },
+  desc: {
+    en: "",
+    de: "",
+  },
+  tech: [] as string[],
+  image: null as File |null,
+  github:"",
+  preview:"",
+});
 
   // ✅ جلب المشاريع
   const fetchProjects = async () => {
@@ -171,19 +177,67 @@ const AdminPage: React.FC = () => {
       <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-10 max-w-lg mx-auto border border-gray-700">
         <h2 className="text-2xl font-semibold text-amber-400 mb-5">📦 Add New Project</h2>
         <form onSubmit={handleUpload} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Project Name"
-            className="w-full p-2 rounded bg-gray-700"
-            onChange={(e) => setProject({ ...project, name: e.target.value })}
-          />
+        <input
+  placeholder="Project Name EN"
+  className="w-full p-2 rounded bg-gray-700"
+  value={project.name.en}
+  onChange={(e) =>
+    setProject({
+      ...project,
+      name: {
+        ...project.name,
+        en: e.target.value,
+      },
+    })
+  }
+/>
 
-          <textarea
-            placeholder="Project Description"
-            className="w-full p-2 rounded bg-gray-700"
-            rows={3}
-            onChange={(e) => setProject({ ...project, desc: e.target.value })}
-          />
+<input
+  placeholder="Projektname DE"
+  className="w-full p-2 rounded bg-gray-700 mt-2"
+  value={project.name.de}
+  onChange={(e) =>
+    setProject({
+      ...project,
+      name: {
+        ...project.name,
+        de: e.target.value,
+      },
+    })
+  }
+/>
+
+        <textarea
+  placeholder="Description EN"
+  rows={3}
+  className="w-full p-2 rounded bg-gray-700"
+  value={project.desc.en}
+  onChange={(e) =>
+    setProject({
+      ...project,
+      desc: {
+        ...project.desc,
+        en: e.target.value,
+      },
+    })
+  }
+/>
+
+<textarea
+  placeholder="Beschreibung DE"
+  rows={3}
+  className="w-full p-2 rounded bg-gray-700 mt-2"
+  value={project.desc.de}
+  onChange={(e) =>
+    setProject({
+      ...project,
+      desc: {
+        ...project.desc,
+        de: e.target.value,
+      },
+    })
+  }
+/>
 
           {/* ✅ التقنيات */}
           <div>

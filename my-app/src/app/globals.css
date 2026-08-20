@@ -12,12 +12,13 @@ body, html {
 }
 
 
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-michroma);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -54,9 +55,115 @@ body, html {
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-body {
-  font-family: var(--font-michroma);
+html {
+  font-family: var(--font-michroma), sans-serif;
 }
+
+
+.global-grid{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+
+  background-image:
+  linear-gradient(rgba(255,140,0,.05) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,140,0,.05) 1px, transparent 1px);
+
+  background-size:80px 80px;
+}
+
+.site-noise{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+}
+
+.vignette{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+
+  background:
+  radial-gradient(circle at center,
+  transparent 40%,
+  rgba(0,0,0,.7));
+}
+
+.global-orb{
+  position:fixed;
+
+  width:1000px;
+  height:1000px;
+
+  filter:blur(180px);
+
+  opacity:.8;
+
+  left:-200px;
+  top:-100px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,120,0,.12),
+      transparent 70%
+    );
+
+
+
+  pointer-events:none;
+
+  z-index:0;
+
+  animation:
+    orbMove 20s ease-in-out infinite;
+}
+
+.global-stars{
+  position:fixed;
+  inset:0;
+
+  pointer-events:none;
+
+  z-index:0;
+
+  background-image:
+    radial-gradient(#ff8c00 1px, transparent 1px);
+
+  background-size:150px 150px;
+
+  opacity:.05;
+
+  animation:
+    globalStarsMove 30s linear infinite;
+}
+
+.global-stars-2{
+  position:fixed;
+  inset:0;
+
+  pointer-events:none;
+
+  z-index:0;
+
+  background-image:
+    radial-gradient(#ff8c00 .7px, transparent .7px);
+
+  background-size:90px 90px;
+
+  opacity:.03;
+
+  animation:
+    globalStarsMove2 18s linear infinite;
+}
+
 
 /* Shiny Text Effect */
 .shiny-text {
@@ -206,6 +313,7 @@ body {
 .logo-container {
   width: 50px;
   height: 50px;
+  will-change:transform;
 }
 
 
@@ -231,11 +339,11 @@ body {
   border-radius: 8px;
   z-index: 9999;
   overflow: hidden;
-  min-width: 60px; 
+  min-width: 60px;
 }
 
 .lang-item {
-  white-space: nowrap; 
+  white-space: nowrap;
   padding: 8px 12px;
 }
 
@@ -345,7 +453,7 @@ body {
 
 /* خلفية الشريط */
 ::-webkit-scrollbar-track {
-  background: #1E1E1E;
+  background: #080808;
   border-radius: 10px;
 }
 
@@ -366,7 +474,7 @@ body {
 /* لجعل الشريط ناعم جدًا عند التمرير */
 html {
   scroll-behavior: smooth;
-  scrollbar-color: #FA6E00 #1E1E1E;
+  scrollbar-color: #FA6E00 #04020069;
   scrollbar-width: thin;
 }
 
@@ -405,6 +513,41 @@ html {
   100% { background-position: 0% 0%; }
 }
 
+@keyframes orbMove{
+  0%{
+    transform:
+      translate(0,0);
+  }
+
+  50%{
+    transform:
+      translate(35vw,20vh);
+  }
+
+  100%{
+    transform:
+      translate(0,0);
+  }
+}
+@keyframes globalStarsMove{
+  from{
+    transform:translateY(0);
+  }
+
+  to{
+    transform:translateY(-150px);
+  }
+}
+
+@keyframes globalStarsMove2{
+  from{
+    transform:translateY(0);
+  }
+
+  to{
+    transform:translateY(-250px);
+  }
+}
 .aurora{
   background:
     radial-gradient(circle at 30% 40%,
@@ -492,6 +635,9 @@ html {
   filter:blur(10px);
 }
 
+
+
+
 .tito-text{
   position:relative;
   z-index:10;
@@ -551,6 +697,39 @@ border-radius:0 100% 100% 0;
 .cinematic-curves::after{
 right:0;
 border-radius:100% 0 0 100%;
+}
+
+.word{
+
+display:inline-block;
+
+white-space:nowrap;
+
+margin-right:.28em;
+}
+
+.letter-wrapper{
+
+display:inline-block;
+
+overflow:hidden;
+
+vertical-align:top;
+}
+
+.letter{
+
+display:inline-block;
+
+will-change:transform,filter,opacity;
+}
+
+.about-line-mask {
+  overflow: hidden;
+}
+
+.about-line {
+  will-change: transform;
 }
 @keyframes auroraMove {
   from {

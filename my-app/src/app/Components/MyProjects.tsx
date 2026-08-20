@@ -5,8 +5,8 @@ import { supabase } from "@/utils/SupaBase/ServerClient";
 import gsap from "gsap";
 import { useParams } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { 
-  FaReact, FaBootstrap, FaPhp, FaLaravel, FaHtml5 
+import {
+  FaReact, FaBootstrap, FaPhp, FaLaravel, FaHtml5
 } from "react-icons/fa";
 import {
   SiJavascript, SiFramer, SiTailwindcss, SiCss3, SiZap,
@@ -20,13 +20,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface Project {
   id: number | string;
-  name: string;
-  desc: string;
-  image?: string;
-  tech?: string[];
-  preview?: string;
-  github?: string;
-  created_at?: string;
+  name: string | Record<string, string>;
+  desc: string | Record<string, string>;
+  image: string | null;
+  tech: string[];
+  preview: string | null;
+  github: string | null;
+  created_at: string;
 }
 
 const TechIcon: React.FC<{ name: string }> = ({ name }) => {
@@ -52,10 +52,11 @@ const TechIcon: React.FC<{ name: string }> = ({ name }) => {
 
 export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeProj, setActiveProj] = useState<Project | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const projectsSectionRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const params = useParams();
   const locale = params.locale || "en";
@@ -66,66 +67,232 @@ export default function MyProjects() {
   //-----------------------------------
   // 1) FETCH PROJECTS
   //-----------------------------------
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("created_at", { ascending: false });
+  //-----------------------------------
+// 1) FETCH PROJECTS
+//-----------------------------------
+useEffect(() => {
+  let mounted = true;
 
-      if (!error && data) setProjects(data as Project[]);
-    };
+  const fetchProjects = async () => {
+    setLoading(true);
 
-    fetchProjects();
-  }, []);
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        "id, name, desc, image, tech, preview, github, created_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Failed to fetch projects:", error);
+
+      if (mounted) {
+        setProjects([]);
+        setLoading(false);
+      }
+
+      return;
+    }
+
+  if (mounted) {
+  setProjects((data as Project[]) ?? []);
+  setLoading(false);
+
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
+}
+  };
+
+  fetchProjects();
+
+  return () => {
+    mounted = false;
+  };
+}, []);
 
   //-----------------------------------
-  // 2) CARD REVEAL ANIMATION
-  //-----------------------------------
-  useEffect(() => {
-    if (!containerRef.current || projects.length === 0) return;
+// 2) IMAGE LOADING / LAYOUT REFRESH
+//-----------------------------------
+//-----------------------------------
+// 2) IMAGE LOADING / LAYOUT REFRESH
+//-----------------------------------
+useEffect(() => {
+  if (!projects.length) return;
 
-    const cards = containerRef.current.querySelectorAll(".project-card");
-    const triggers: ScrollTrigger[] = [];
+  const section = containerRef.current;
 
-    gsap.killTweensOf(cards);
+  if (!section) return;
 
+  const images = section.querySelectorAll("img");
+
+  if (!images.length) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    });
+
+    return;
+  }
+
+  let loaded = 0;
+
+  const refresh = () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    });
+  };
+
+  const handleLoad = () => {
+    loaded++;
+
+    if (loaded >= images.length) {
+      refresh();
+    }
+  };
+
+  images.forEach((img) => {
+    if (img.complete) {
+      loaded++;
+    } else {
+      img.addEventListener("load", handleLoad);
+    }
+  });
+
+  // لو كل الصور كانت loaded بالفعل
+  if (loaded === images.length) {
+    refresh();
+  }
+
+  return () => {
+    images.forEach((img) => {
+      img.removeEventListener("load", handleLoad);
+    });
+  };
+}, [projects]);
+
+
+
+//-----------------------------------
+// 3) CARD REVEAL ANIMATION
+//-----------------------------------
+useEffect(() => {
+  if (!projects.length) return;
+  if (!projectsSectionRef.current) return;
+
+  const section = projectsSectionRef.current;
+
+  const ctx = gsap.context(() => {
+    const cards = gsap.utils.toArray<HTMLElement>(".project-card");
+
+    if (!cards.length) return;
+
+    // --------------------------------
+    // INITIAL STATE
+    // --------------------------------
     gsap.set(cards, {
       opacity: 0,
-      y: 60,
-      rotateX: 12,
-      scale: 0.96,
-      filter: "blur(8px)",
+      y: 70,
+      scale: 0.94,
+      rotateX: 8,
+
+      // 🔥 COMPLEX MASK
+      clipPath:
+        "polygon(" +
+        "0% 0%, " +
+        "15% 0%, " +
+        "8% 20%, " +
+        "28% 20%, " +
+        "20% 40%, " +
+        "40% 40%, " +
+        "32% 60%, " +
+        "52% 60%, " +
+        "44% 80%, " +
+        "64% 80%, " +
+        "56% 100%, " +
+        "0% 100%" +
+        ")",
+
+      transformPerspective: 1000,
+      transformOrigin: "center bottom",
+      force3D: true,
     });
 
-    const anim = gsap.to(cards, {
-      opacity: 1,
-      y: 0,
-      rotateX: 0,
-      scale: 1,
-      filter: "blur(0)",
-      duration: 1.1,
-      ease: "power4.out",
-      stagger: 0.15,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top center",
-      },
+    // --------------------------------
+    // CREATE TRIGGER FOR EACH CARD
+    // --------------------------------
+    cards.forEach((card) => {
+      gsap.to(card, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotateX: 0,
+
+        // 🔥 REMOVE MASK
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+
+        duration: 0.8,
+        ease: "power3.out",
+
+        scrollTrigger: {
+          trigger: card,
+
+          // نفس التوقيت القديم بالضبط
+          start: "top 84%",
+
+          once: true,
+
+          invalidateOnRefresh: true,
+
+          refreshPriority: 1,
+        },
+      });
     });
 
-    // store this only trigger
-    triggers.push(anim.scrollTrigger!);
+    // --------------------------------
+    // FORCE REFRESH AFTER LAYOUT
+    // --------------------------------
+    const refresh = () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+        });
+      });
+    };
+
+    refresh();
+
+    // --------------------------------
+    // REFRESH WHEN IMAGES CHANGE LAYOUT
+    // --------------------------------
+    const images = section.querySelectorAll("img");
+
+    images.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", refresh);
+      }
+    });
 
     return () => {
-      triggers.forEach((t) => t.kill());
+      images.forEach((img) => {
+        img.removeEventListener("load", refresh);
+      });
     };
-  }, [projects]);
+  }, section);
 
+  return () => {
+    ctx.revert();
+  };
+}, [projects]);
   //-----------------------------------
   // 3) OPEN MODAL
   //-----------------------------------
   const openProj = (proj: Project) => {
-    const card = cardRefs.current[proj.id];
+  const card = cardRefs.current[String(proj.id)];
+
     if (!card) return;
 
     const rect = card.getBoundingClientRect();
@@ -193,7 +360,7 @@ export default function MyProjects() {
     }, 30);
   };
 
-  
+
   const closeModal = () => {
     if (!modalRef.current || !originRect) {
       return setActiveProj(null);
@@ -226,13 +393,16 @@ export default function MyProjects() {
     });
   };
 
-  const getTranslated = (field: any, locale: string) => {
+  const getTranslated = (
+  field: string | Record<string, string> | null | undefined,
+  locale: string
+) => {
   if (!field) return "";
 
-  // لو string عادي
-  if (typeof field === "string") return field;
+  if (typeof field === "string") {
+    return field;
+  }
 
-  // لو object json
   return field[locale] || field.en || "";
 };
     const renderTech = (tech: string[] = []) => (
@@ -249,29 +419,103 @@ export default function MyProjects() {
     </div>
   );
 
- 
+
   return (
-    <main ref={containerRef} className="w-full px-6 md:px-16 py-20 text-white">
+    <main
+
+  className="relative w-full px-6 md:px-16 py-20 text-white"
+>
       <AnimatedTitle title="My Projects" className="text-orange-400" />
-       <div className="absolute top-988 left-57 w-[480px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+
+       <div
+
+className="
+absolute
+left-1/2
+top-1/2
+-translate-x-1/2
+-translate-y-1/2
+w-[700px]
+h-[700px]
+bg-orange-500/10
+blur-[220px]
+rounded-full
+pointer-events-none
+"
+      />
+
+      {loading && (
+  <div
+
+   className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    {[1, 2, 3].map((item) => (
+      <div
+        key={item}
+        className="h-[420px] rounded-2xl bg-white/5 border border-white/10 animate-pulse"
+      />
+    ))}
+  </div>
+)}
+
+{!loading && projects.length === 0 && (
+  <div className="py-20 text-center text-gray-400">
+    No projects available.
+  </div>
+)}
 
       {/* GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {!loading && projects.length > 0 && (
+      <div ref={(el) => {
+    containerRef.current = el;
+    projectsSectionRef.current = el;
+  }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((proj) => (
           <article
-            key={proj.id}
-           ref={(el: HTMLElement | null) => {
-  cardRefs.current[String(proj.id)] = el;
-}}     
-            className="project-card p-5 rounded-2xl bg-[#0f0f0f]/60 backdrop-blur-xl border border-white/10 shadow-[0_6px_25px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_35px_rgba(255,120,50,0.20)] hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 cursor-pointer"
-          >
+  key={proj.id}
+  ref={(el: HTMLElement | null) => {
+    cardRefs.current[String(proj.id)] = el;
+  }}
+  className="
+    project-card
+    relative
+    p-6
+    min-h-[470px]
+    rounded-2xl
+    bg-black/30
+    backdrop-blur-xl
+    border
+    border-white/10
+    shadow-[0_6px_25px_rgba(0,0,0,0.35)]
+    hover:shadow-[0_12px_35px_rgba(255,120,50,0.20)]
+    hover:-translate-y-2
+    hover:scale-[1.03]
+    transition-transform
+    transition-shadow
+    duration-300
+    cursor-pointer
+    overflow-hidden
+    before:absolute
+    before:inset-0
+    before:pointer-events-none
+    before:bg-gradient-to-br
+    before:from-orange-500/5
+    before:to-transparent
+    before:rounded-2xl
+  "
+>
             {proj.image && (
-              <img
-                src={proj.image}
-                alt={proj.name}
-                className="rounded-xl mb-3 align-middle w-full h-44 object-cover shadow-lg shadow-black/40"
-              />
-            )}
+<div className="project-image relative w-full h-52 mb-3 overflow-hidden rounded-xl">
+  <Image
+  src={proj.image}
+  alt={getTranslated(proj.name, locale)}
+  fill
+  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+  className="object-cover shadow-lg shadow-black/40"
+  loading="lazy"
+  unoptimized
+/>
+  </div>
+)}
 
             <h3 className="text-xl font-bold bg-gradient-to-r from-orange-300 to-yellow-300 bg-clip-text text-transparent mb-2">
              {getTranslated(proj.name, locale)}
@@ -304,20 +548,30 @@ export default function MyProjects() {
                 >
                   <FiGithub className="w-5 h-5" />
                 </a>
-                
+
               )}
-              
+
             </div>
             <button
-              onClick={() => openProj(proj)}
-              className="mt-4 flex items-center gap-2 px-4 py-2 bg-black/40 text-white border border-white/20 rounded-xl hover:bg-black/60 transition cursor-pointer"
+              onClick={() => { console.log("BUTTON CLICKED"); openProj(proj); }}
+              className="
+              relative
+              z-10
+              mt-4
+              flex items-center
+              gap-2 px-4 py-2
+              bg-black/40 text-white border
+              border-white/20 rounded-xl
+              hover:bg-black/60 transition cursor-pointer"
             >
               Read More
               <FiExternalLink className="w-4 h-4" />
             </button>
           </article>
-        ))}
+              ))}
       </div>
+)}
+
 
       {/* MODAL */}
       {activeProj && (
@@ -331,19 +585,25 @@ export default function MyProjects() {
           {/* MODAL WINDOW */}
           <div
             ref={modalRef}
-            className="relative z-50 bg-white/6 border border-white/10 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-6 opacity-0 pointer-events-auto max-w-[95vw]"
+            className="relative z-50 bg-white/6 border border-white/10 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-6 opacity-0 pointer-events-auto sm:w-4 max-w-[95vw]"
             role="dialog"
             aria-modal="true"
             aria-label={activeProj.name}
           >
             <div className="md:w-1/2 w-full rounded-xl flex items-center overflow-hidden">
-              {activeProj.image && (
-                <img
-                  src={activeProj.image}
-                  alt={activeProj.name}
-                  className="w-full h-80 object-cover rounded-lg"
-                />
-              )}
+            {activeProj.image && (
+  <div className="relative w-full h-80 rounded-lg overflow-hidden">
+    <Image
+  src={activeProj.image}
+  alt={getTranslated(activeProj.name, locale)}
+  fill
+  sizes="(max-width: 768px) 100vw, 50vw"
+  className="object-cover rounded-lg"
+  loading="eager"
+  unoptimized
+/>
+  </div>
+)}
             </div>
 
             <div className="flex-1">

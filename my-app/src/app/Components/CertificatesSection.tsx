@@ -24,10 +24,20 @@ export default function CertificatesSection() {
   const [activeImg, setActiveImg] = useState<string | null>(null);
 
   // Scroll Animation
-  useEffect(() => {
-    if (!containerRef.current) return;
+  // Scroll Animation
+useEffect(() => {
+  if (!containerRef.current) return;
 
-    const cards = containerRef.current.querySelectorAll(".cert-card");
+  const container = containerRef.current;
+  const cards = container.querySelectorAll<HTMLElement>(".cert-card");
+
+  if (!cards.length) return;
+
+  const ctx = gsap.context(() => {
+
+    // ==========================================
+    // INITIAL STATE
+    // ==========================================
 
     gsap.set(cards, {
       opacity: 0,
@@ -35,43 +45,180 @@ export default function CertificatesSection() {
       scale: 0.9,
       rotateY: 15,
       filter: "blur(10px)",
+
+      // 🔥 Complex geometric mask
+      clipPath:
+        "polygon(" +
+        "50% 42%, " +
+        "58% 36%, " +
+        "64% 42%, " +
+        "72% 38%, " +
+        "68% 48%, " +
+        "82% 50%, " +
+        "68% 54%, " +
+        "74% 64%, " +
+        "62% 58%, " +
+        "58% 68%, " +
+        "50% 58%, " +
+        "42% 68%, " +
+        "38% 58%, " +
+        "26% 64%, " +
+        "32% 54%, " +
+        "18% 50%, " +
+        "32% 48%, " +
+        "26% 38%, " +
+        "36% 42%, " +
+        "42% 36%" +
+        ")",
+
+      transformOrigin: "50% 50%",
+      transformPerspective: 1200,
+      force3D: true,
+      willChange: "transform, opacity, filter, clip-path",
     });
 
-    gsap.to(cards, {
+    // ==========================================
+    // FINAL MASK
+    // ==========================================
+
+    const finalMask =
+      "polygon(" +
+      "0% 0%, " +
+      "12% 2%, " +
+      "25% 0%, " +
+      "38% 2%, " +
+      "50% 0%, " +
+      "62% 2%, " +
+      "75% 0%, " +
+      "88% 2%, " +
+      "100% 0%, " +
+      "98% 18%, " +
+      "100% 32%, " +
+      "98% 50%, " +
+      "100% 68%, " +
+      "98% 82%, " +
+      "100% 100%, " +
+      "88% 98%, " +
+      "75% 100%, " +
+      "62% 98%, " +
+      "50% 100%, " +
+      "38% 98%, " +
+      "25% 100%, " +
+      "12% 98%, " +
+      "0% 100%, " +
+      "2% 82%, " +
+      "0% 68%, " +
+      "2% 50%, " +
+      "0% 32%, " +
+      "2% 18%" +
+      ")";
+
+    // ==========================================
+    // MAIN TIMELINE
+    // ==========================================
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+
+        // 🔒 نفس التوقيت القديم
+        start: "top 75%",
+
+        // 🔒 نفس السلوك القديم
+        once: true,
+      },
+    });
+
+    // ==========================================
+    // CERTIFICATE REVEAL
+    // ==========================================
+
+    tl.to(cards, {
+      onStart: () => {
+  cards.forEach((card, i) => {
+    gsap.to(card, {
+      rotationZ: i % 2 === 0 ? -1.5 : 1.5,
+      duration: 0.25,
+      ease: "power2.out",
+    });
+  });
+},
       opacity: 1,
       y: 0,
       scale: 1,
       rotateY: 0,
       filter: "blur(0px)",
+      clipPath: finalMask,
+
+      // 🔒 نفس التوقيت القديم
       duration: 1.2,
-      ease: "power4.out",
+
+      // 🔥 stagger موجود أصلًا
       stagger: 0.18,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 75%",
-      },
+
+      ease: "power4.out",
     });
-  }, []);
 
-  // Modal Animation
-  useEffect(() => {
-    if (!modalRef.current) return;
+    // ==========================================
+    // MICRO GLITCH / SETTLE
+    // ==========================================
 
-    if (activeImg) {
-      gsap.fromTo(
-        modalRef.current,
-        { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }
-      );
-    }
-  }, [activeImg]);
+    tl.to(
+      cards,
+      {
+        scale: 1.015,
+        duration: 0.12,
+        stagger: 0.035,
+        ease: "power2.out",
+      },
+      "-=0.18"
+    );
+
+    tl.to(cards, {
+      scale: 1,
+      duration: 0.25,
+      stagger: 0.035,
+      ease: "back.out(1.2)",
+    });
+
+  }, container);
+
+  return () => {
+    ctx.revert();
+  };
+}, []);
 
   return (
-    <section className="w-full px-6 md:px-16 py-24 text-white">
+    <section
+  className="
+  relative
+  overflow-hidden
+  w-full
+  px-6
+  md:px-16
+  py-24
+  text-white
+  "
+>
          <div className="w-full flex justify-center mb-16 relative">
                 <AnimatedTitle title=" My Certificates" className="text-orange-400" />
               </div>
-     <div className="absolute top-1520 right-14 w-[480px] h-[450px] bg-gradient-to-r from-yellow-500/60 to-orange-500/30 rounded-full blur-[120px] opacity-50"></div>
+
+<div
+  className="
+  absolute
+  right-0
+  top-1/2
+  -translate-y-1/2
+  w-[450px]
+  h-[450px]
+  bg-orange-500/10
+  rounded-full
+  blur-[180px]
+  "
+/>
+
+
       <div
         ref={containerRef}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
