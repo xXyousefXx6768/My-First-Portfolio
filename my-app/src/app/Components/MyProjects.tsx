@@ -59,8 +59,10 @@ export default function MyProjects() {
   const projectsSectionRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const params = useParams();
-  const locale = params.locale || "en";
-
+const localeParam = params.locale;
+  const locale = Array.isArray(localeParam)
+    ? localeParam[0] || "en"
+    : localeParam || "en";
   // Project card refs index
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
 
