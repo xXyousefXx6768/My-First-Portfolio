@@ -25,118 +25,117 @@ function HeroSection({
   const t = useTranslations("hero");
 
   useEffect(() => {
-    if (!startAnimation) return;
-    if (!imgRef.current || !textRef.current) return;
+  if (!startAnimation) return;
 
-    const ctx = gsap.context(() => {
+  const imageElement = imgRef.current;
+  const textElement = textRef.current;
 
-      const tl = gsap.timeline({
-        defaults: { ease: "power4.out" },
-        delay: 0.3,
-      });
+  if (!imageElement || !textElement) return;
 
-      /* =========================
-         🎬 UNIQUE IMAGE REVEAL
-      ==========================*/
-
-      tl.fromTo(
-        imgRef.current,
-        {
-          opacity: 0,
-          scale: 0,
-          rotate: 8,
-          filter: "blur(40px)",
-          clipPath: "circle(0% at 50% 50%)",
-          force3D:true
-        },
-        {
-          opacity: 1,
-          scale: 1.05,
-          rotate: -2,
-          filter: "blur(10px)",
-          clipPath: "circle(150% at 50% 50%)",
-          duration: 1.8,
-          ease: "expo.out",
-          force3D:true
-        }
-      )
-
-      // settle effect
-      .to(
-        imgRef.current,
-        {
-          scale: 1,
-          rotate: 0,
-          filter: "blur(0px)",
-          duration: 1.2,
-          ease: "power3.out",
-          force3D:true
-        }
-      );
-
-      /* =========================
-         🎬 TEXT CINEMATIC REVEAL
-      ==========================*/
-
-      tl.fromTo(
-        textRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          filter: "blur(12px)",
-        },
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 1.4,
-        },
-        "-=1.4"
-      );
-
-      const children = Array.from(textRef.current.children);
-
-      tl.from(
-        children,
-        {
-          y: 30,
-          opacity: 0,
-          stagger: 0.12,
-          duration: 1,
-          ease: "power3.out",
-        },
-        "-=1"
-      );
-
-      /* =========================
-         🌊 FLOATING MICRO MOTION
-      ==========================*/
-
-      gsap.to(imgRef.current, {
-        y: "+=10",
-        duration: 4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      /* =========================
-         📜 PARALLAX
-      ==========================*/
-
-      gsap.to(imgRef.current, {
-        yPercent: -6,
-        ease: "none",
-        scrollTrigger: {
-          trigger: imgRef.current,
-          scrub: true,
-        },
-      });
-
+  const ctx = gsap.context(() => {
+    const tl = gsap.timeline({
+      defaults: { ease: "power4.out" },
+      delay: 0.3,
     });
 
-    return () => ctx.revert();
-  }, [startAnimation]);
+    /* =========================
+       🎬 UNIQUE IMAGE REVEAL
+    ==========================*/
+
+    tl.fromTo(
+      imageElement,
+      {
+        opacity: 0,
+        scale: 0,
+        rotate: 8,
+        filter: "blur(40px)",
+        clipPath: "circle(0% at 50% 50%)",
+        force3D: true,
+      },
+      {
+        opacity: 1,
+        scale: 1.05,
+        rotate: -2,
+        filter: "blur(10px)",
+        clipPath: "circle(150% at 50% 50%)",
+        duration: 1.8,
+        ease: "expo.out",
+        force3D: true,
+      }
+    )
+
+      // Settle effect
+      .to(imageElement, {
+        scale: 1,
+        rotate: 0,
+        filter: "blur(0px)",
+        duration: 1.2,
+        ease: "power3.out",
+        force3D: true,
+      });
+
+    /* =========================
+       🎬 TEXT CINEMATIC REVEAL
+    ==========================*/
+
+    tl.fromTo(
+      textElement,
+      {
+        opacity: 0,
+        y: 40,
+        filter: "blur(12px)",
+      },
+      {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 1.4,
+      },
+      "-=1.4"
+    );
+
+    const children = Array.from(textElement.children);
+
+    tl.from(
+      children,
+      {
+        y: 30,
+        opacity: 0,
+        stagger: 0.12,
+        duration: 1,
+        ease: "power3.out",
+      },
+      "-=1"
+    );
+
+    /* =========================
+       🌊 FLOATING MICRO MOTION
+    ==========================*/
+
+    gsap.to(imageElement, {
+      y: "+=10",
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+
+    /* =========================
+       📜 PARALLAX
+    ==========================*/
+
+    gsap.to(imageElement, {
+      yPercent: -6,
+      ease: "none",
+      scrollTrigger: {
+        trigger: imageElement,
+        scrub: true,
+      },
+    });
+  });
+
+  return () => ctx.revert();
+}, [startAnimation]);
 
 
 
