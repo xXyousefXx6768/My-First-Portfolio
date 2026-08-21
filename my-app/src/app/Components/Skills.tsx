@@ -25,12 +25,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "../lib/i18n-provider";
 gsap.registerPlugin(ScrollTrigger);
+
 interface Skill {
   name: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   color: string;
-  index?: number
-
+  index?: number;
 }
 
 const skills: Skill[] = [
@@ -51,16 +51,16 @@ const skills: Skill[] = [
     { name: "Figma", icon: <FaFigma className="text-pink-500" />, color: "#ec4899" },
     { name: "Framer Motion", icon: <SiFramer className="text-fuchsia-600" />, color: "#c026d3" },
 ]
- 
+
  const Skills: React.FC = () => {
-  
-  
+
+
 
   const t = useTranslations("skills");
   return (
-   <section className="relative py-16 px-6 text-center 
+   <section className="relative py-16 px-6 text-center
  ">
-      
+
       <div
   className="
   absolute
@@ -89,11 +89,11 @@ const skills: Skill[] = [
   pointer-events-none
   "
 />
-      
+
       <AnimatedTitle title={t("title")} className="text-orange-400" />
 
 
-      
+
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 place-items-center">
         {skills.map((skill, index) => (
@@ -173,7 +173,7 @@ const yTo = useRef<((v:number)=>void)|null>(null);
     return () => ctx.revert();
   }, []);
 
- 
+
     const handleMouseMove = (
   e: React.MouseEvent<HTMLDivElement>
 ) => {
