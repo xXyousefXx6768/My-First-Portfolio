@@ -590,7 +590,7 @@ pointer-events-none
             className="relative z-50 bg-white/6 border border-white/10 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-6 opacity-0 pointer-events-auto sm:w-4 max-w-[95vw]"
             role="dialog"
             aria-modal="true"
-            aria-label={activeProj.name}
+            aria-label={getTranslated(activeProj.name, locale)}
           >
             <div className="md:w-1/2 w-full rounded-xl flex items-center overflow-hidden">
             {activeProj.image && (
