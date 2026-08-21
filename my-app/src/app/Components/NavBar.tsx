@@ -128,7 +128,7 @@ const NavBar: React.FC<NavBarProps> = ({
   useEffect(() => {
     if (!navContainerRef.current) return;
     if (!startAnimation) return;
- 
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "expo.out" },
@@ -262,7 +262,11 @@ window.removeEventListener("scroll", handleScroll);
           {navItems.map((item, i) => (
   <li
     key={item.key}
-    ref={(el) => (navRefs.current[i] = el!)}
+    ref={(el) => {
+      if (el) {
+        navRefs.current[i] = el;
+      }
+    }}
     onClick={() => scrollToSection(item.target)}
     className="relative cursor-pointer will-change-transform overflow-hidden"
   >
