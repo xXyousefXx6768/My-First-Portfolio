@@ -21,7 +21,6 @@ const LenisScrollProvider: FC<LenisScrollProviderProps> = ({
       lerp: 0.08,
       duration: 1.4,
       smoothWheel: true,
-      smoothTouch: false,
     });
 
     lenisRef.current = lenis;
