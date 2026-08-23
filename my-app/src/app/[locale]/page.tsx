@@ -11,20 +11,22 @@ import Skills from "../Components/Skills";
 import Services from "../Components/Services";
 import CertificatesSection from "../Components/CertificatesSection";
 import IntroScreen from "../Components/IntroScreen";
+import SystemsShowcase from "../Components/SystemsShowcase";
 import { useState } from "react";
 
 
 export default function Home() {
   const [introFinished, setIntroFinished] = useState(false);
   return (
-    <>  
-    
+    <>
+
     {!introFinished && (
-    <IntroScreen onComplete={() => setIntroFinished(true)} 
+    <IntroScreen onComplete={() => setIntroFinished(true)}
     />
     )}
     <main
   className={`
+    overflow-hidden
     relative
     z-10
     flex
@@ -37,7 +39,7 @@ export default function Home() {
     ${introFinished ? "opacity-100" : "opacity-0"}
   `}
 >
-  
+
   <GlobalBackground />
 
       <NavBar startAnimation={introFinished}/>
@@ -50,6 +52,10 @@ export default function Home() {
         <AboutMe />
       </section>
 
+        <section className=" w-full" id="systems ">
+        <SystemsShowcase />
+      </section>
+
       <section id="skills">
         <Skills />
       </section>
@@ -57,6 +63,9 @@ export default function Home() {
       <section id="services">
         <Services />
       </section>
+
+
+
 
       <section id="projects">
         <MyProjects />

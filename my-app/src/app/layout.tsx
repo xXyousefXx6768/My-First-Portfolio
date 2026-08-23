@@ -17,7 +17,7 @@ export default function RootLayout({
     <html
   className={michroma.variable}
 >
-  <body className="font-sans overflow-x-hidden">
+  <body className="font-sans w-full  min-h-screen overflow-x-hidden">
     {children}
   </body>
 </html>
