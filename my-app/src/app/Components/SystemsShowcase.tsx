@@ -31,17 +31,14 @@ const SystemsShowcase = () => {
 
     const ctx = gsap.context(() => {
       const section = sectionRef.current!;
-      const END_DISTANCE = 2200;
+      const END_DISTANCE = 1200; // ✅ أقل سكرول: كل “نقلة” تاخد جزء واضح بسرعة
 
       const systemLines = systemLinesRef.current.filter(Boolean);
       const crmItems = crmItemsRef.current.filter(Boolean);
       const aiNodes = aiNodesRef.current.filter(Boolean);
 
-      /* ==========================================
-         3D SPACE (make 3D واضح)
-      ========================================== */
       gsap.set(frameRef.current, {
-        perspective: 1200, // CSS perspective for children
+        perspective: 1200,
         transformStyle: "preserve-3d",
       });
 
@@ -64,9 +61,6 @@ const SystemsShowcase = () => {
         }
       );
 
-      /* ==========================================
-         GRAB INNER TEXT ELEMENTS (no JSX changes)
-      ========================================== */
       const introItems = gsap.utils.toArray<HTMLElement>(
         introRef.current?.querySelectorAll("p,h2") ?? []
       );
@@ -81,21 +75,16 @@ const SystemsShowcase = () => {
 
       const systemsTitle = systemsRef.current?.querySelector("h3") as HTMLElement | null;
       const coreText = systemsRef.current?.querySelector("span") as HTMLElement | null;
-      const coreEl = (coreText?.parentElement as HTMLElement | null) ?? null; // circle container
+      const coreEl = (coreText?.parentElement as HTMLElement | null) ?? null;
 
       const finalItems = gsap.utils.toArray<HTMLElement>(
         finalRef.current?.querySelectorAll("p,h3,span") ?? []
       );
 
-      /* ==========================================
-         INITIAL STATES (NO BLUR, advanced masked + 3D)
-      ========================================== */
-
-      // Helper: masked panel base
       const setPanelHidden = (el: HTMLElement | null) => {
         if (!el) return;
         gsap.set(el, {
-          autoAlpha: 1, // keep visible but masked; we control visibility with clip + z
+          autoAlpha: 1,
           clipPath: "inset(0 0 100% 0)",
           transformOrigin: "50% 100%",
           z: -420,
@@ -103,7 +92,6 @@ const SystemsShowcase = () => {
           rotateY: 0,
           yPercent: 10,
         });
-        // make it "actually not visible" at start (no fade-in look)
         gsap.set(el, { opacity: 1, visibility: "hidden" });
       };
 
@@ -120,7 +108,6 @@ const SystemsShowcase = () => {
       setPanelHidden(aiRef.current);
       setPanelHidden(finalRef.current);
 
-      // Intro text pieces (3D stagger)
       gsap.set(introItems, {
         opacity: 1,
         y: 28,
@@ -130,29 +117,14 @@ const SystemsShowcase = () => {
         transformOrigin: "50% 100%",
       });
 
-      // Website inner parts
-      if (websiteLabel) {
-        gsap.set(websiteLabel, { y: 16, z: -80, rotateX: 70, rotateY: -25 });
-      }
-      if (websiteTitle) {
-        gsap.set(websiteTitle, { y: 18, z: -160, rotateX: 80, rotateY: -35 });
-      }
-      if (websiteRule) {
-        gsap.set(websiteRule, { scaleX: 0, transformOrigin: "50% 50%" });
-      }
+      if (websiteLabel) gsap.set(websiteLabel, { y: 16, z: -80, rotateX: 70, rotateY: -25 });
+      if (websiteTitle) gsap.set(websiteTitle, { y: 18, z: -160, rotateX: 80, rotateY: -35 });
+      if (websiteRule) gsap.set(websiteRule, { scaleX: 0, transformOrigin: "50% 50%" });
 
-      // WebApp inner parts
-      if (webappLabel) {
-        gsap.set(webappLabel, { y: 16, z: -80, rotateX: 70, rotateY: 25 });
-      }
-      if (webappTitle) {
-        gsap.set(webappTitle, { y: 18, z: -160, rotateX: 80, rotateY: 35 });
-      }
-      if (webappSub) {
-        gsap.set(webappSub, { y: 14, z: -80, rotateX: 65, rotateY: 18 });
-      }
+      if (webappLabel) gsap.set(webappLabel, { y: 16, z: -80, rotateX: 70, rotateY: 25 });
+      if (webappTitle) gsap.set(webappTitle, { y: 18, z: -160, rotateX: 80, rotateY: 35 });
+      if (webappSub) gsap.set(webappSub, { y: 14, z: -80, rotateX: 65, rotateY: 18 });
 
-      // Systems: lines draw + core "circle mask reveal"
       gsap.set(systemLines, {
         opacity: 1,
         scaleX: 0,
@@ -167,11 +139,8 @@ const SystemsShowcase = () => {
           z: -80,
         });
       }
-      if (systemsTitle) {
-        gsap.set(systemsTitle, { y: 24, z: -140, rotateX: 80, rotateY: -25 });
-      }
+      if (systemsTitle) gsap.set(systemsTitle, { y: 24, z: -140, rotateX: 80, rotateY: -25 });
 
-      // CRM: items pop 3D (no blur)
       gsap.set(crmItems, {
         autoAlpha: 0,
         y: 18,
@@ -180,15 +149,12 @@ const SystemsShowcase = () => {
         transformOrigin: "50% 100%",
       });
 
-      // counters reset
       if (usersValueRef.current) usersValueRef.current.innerText = "0";
       if (leadsValueRef.current) leadsValueRef.current.innerText = "0";
       if (conversionValueRef.current) conversionValueRef.current.innerText = "0%";
 
-      // AI nodes
       gsap.set(aiNodes, { autoAlpha: 0, scale: 0, z: -80 });
 
-      // Final items
       gsap.set(finalItems, {
         y: 18,
         z: -140,
@@ -197,19 +163,14 @@ const SystemsShowcase = () => {
         transformOrigin: "50% 100%",
       });
 
-      /* ==========================================
-         FULLSCREEN RESET (after pin)
-      ========================================== */
+      // ✅ رجوع للشكل الطبيعي بعد الـ pin
       const clearFullscreen = () => {
         gsap.set(frameRef.current, {
-          clearProps: "width,height,borderRadius,borderWidth,borderColor",
+          clearProps: "width,height,maxWidth,maxHeight,borderRadius,borderWidth,borderColor",
         });
-        gsap.set(section, { clearProps: "padding" });
+        gsap.set(section, { clearProps: "padding,height" });
       };
 
-      /* ==========================================
-         MAIN TIMELINE (Transitions linked)
-      ========================================== */
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -219,13 +180,26 @@ const SystemsShowcase = () => {
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+
+          // ✅ كل “سكروول/وقفة” يقف على ستيب واضح (مرحلة)
+          snap: {
+            snapTo: 1 / 6, // 7 مراحل => 6 انتقالات
+            duration: { min: 0.12, max: 0.35 },
+            delay: 0.02,
+            ease: "power1.inOut",
+          },
+
           onLeave: clearFullscreen,
           onLeaveBack: clearFullscreen,
+
+          // ✅ لو رجعت من تحت، ثبّت fullscreen فورًا عشان مفيش فلاش
           onEnterBack: () => {
-            gsap.set(section, { padding: 0 });
+            gsap.set(section, { padding: 0, height: "100vh" });
             gsap.set(frameRef.current, {
               width: "100%",
               height: "100%",
+              maxWidth: "100%",
+              maxHeight: "100%",
               borderRadius: 0,
               borderWidth: 0,
             });
@@ -234,20 +208,25 @@ const SystemsShowcase = () => {
       });
 
       /* ==========================================
-         BEFORE PIN LOOK → PINNED LOOK (FULLSCREEN)
+         ✅ FULLSCREEN عند بداية الـ pin (طول + عرض)
       ========================================== */
-      tl.to(
-        section,
-        { padding: 0, duration: 0.4, ease: "power2.inOut" },
-        0
-      );
+      tl.to(section, { padding: 0, height: "100vh", duration: 0.4, ease: "power2.inOut" }, 0);
+
       tl.to(
         frameRef.current,
-        { width: "100%", height: "100%", borderRadius: 0, borderWidth: 0, duration: 0.4, ease: "power2.inOut" },
+        {
+          width: "100%",
+          height: "100%",
+          maxWidth: "100%",
+          maxHeight: "100%",
+          borderRadius: 0,
+          borderWidth: 0,
+          duration: 0.4,
+          ease: "power2.inOut",
+        },
         0
       );
 
-      // tiny grid pulse (no blur)
       tl.to(".systems-grid", { opacity: 0.07, duration: 0.14, yoyo: true, repeat: 1, ease: "none" }, 0.05);
 
       /* ==========================================
@@ -281,11 +260,10 @@ const SystemsShowcase = () => {
       );
 
       /* ==========================================
-         INTRO → WEBSITES (handoff transition)
+         INTRO → WEBSITES
       ========================================== */
       tl.add(() => setPanelVisible(websiteRef.current), "+=0.12");
 
-      // outgoing intro as incoming websites (overlap = linked)
       tl.to(
         introItems,
         {
@@ -311,8 +289,8 @@ const SystemsShowcase = () => {
           duration: 0.65,
           ease: "power3.inOut",
           onComplete: () => {
-  gsap.set(introRef.current, { visibility: "hidden" });
-},
+            gsap.set(introRef.current, { visibility: "hidden" });
+          },
         },
         "<"
       );
@@ -332,19 +310,12 @@ const SystemsShowcase = () => {
         "<+=0.15"
       );
 
-      // websites text + rule draw (real animation on text)
-      if (websiteLabel) {
-        tl.to(websiteLabel, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.6, ease: "expo.out" }, "<+=0.08");
-      }
-      if (websiteTitle) {
-        tl.to(websiteTitle, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.8, ease: "expo.out" }, "<+=0.04");
-      }
-      if (websiteRule) {
-        tl.to(websiteRule, { scaleX: 1, duration: 0.5, ease: "power3.out" }, "<+=0.1");
-      }
+      if (websiteLabel) tl.to(websiteLabel, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.6, ease: "expo.out" }, "<+=0.08");
+      if (websiteTitle) tl.to(websiteTitle, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.8, ease: "expo.out" }, "<+=0.04");
+      if (websiteRule) tl.to(websiteRule, { scaleX: 1, duration: 0.5, ease: "power3.out" }, "<+=0.1");
 
       /* ==========================================
-         WEBSITES → WEB APPS (3D flip handoff)
+         WEBSITES → WEB APPS
       ========================================== */
       tl.add(() => setPanelVisible(webAppRef.current), "+=0.08");
 
@@ -358,9 +329,9 @@ const SystemsShowcase = () => {
           clipPath: "inset(100% 0 0 0)",
           duration: 0.75,
           ease: "power4.inOut",
-        onComplete: () => {
-  gsap.set(websiteRef.current, { visibility: "hidden" });
-},
+          onComplete: () => {
+            gsap.set(websiteRef.current, { visibility: "hidden" });
+          },
         },
         "+=0.05"
       );
@@ -385,7 +356,7 @@ const SystemsShowcase = () => {
       if (webappSub) tl.to(webappSub, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.65, ease: "expo.out" }, "<+=0.02");
 
       /* ==========================================
-         WEB APPS → SYSTEMS (draw lines + core reveal)
+         WEB APPS → SYSTEMS
       ========================================== */
       tl.add(() => setPanelVisible(systemsRef.current), "+=0.08");
 
@@ -399,9 +370,9 @@ const SystemsShowcase = () => {
           clipPath: "inset(100% 0 0 0)",
           duration: 0.7,
           ease: "power4.inOut",
-        onComplete: () => {
-  gsap.set(webAppRef.current, { visibility: "hidden" });
-},
+          onComplete: () => {
+            gsap.set(webAppRef.current, { visibility: "hidden" });
+          },
         },
         "+=0.05"
       );
@@ -421,48 +392,21 @@ const SystemsShowcase = () => {
         "<+=0.18"
       );
 
-      // Draw lines (fix: it WILL draw)
-      tl.to(
-        systemLines,
-        {
-          scaleX: 1,
-          duration: 0.65,
-          stagger: 0.08,
-          ease: "power3.out",
-        },
-        "<+=0.05"
-      );
+      tl.to(systemLines, { scaleX: 1, duration: 0.65, stagger: 0.08, ease: "power3.out" }, "<+=0.05");
 
-      // Core "draw" (masked circle reveal)
       if (coreEl) {
-        tl.to(
-          coreEl,
-          {
-            clipPath: "circle(100% at 50% 50%)",
-            scale: 1,
-            rotateZ: 0,
-            z: 0,
-            duration: 0.7,
-            ease: "expo.out",
-          },
-          "<+=0.1"
-        );
+        tl.to(coreEl, { clipPath: "circle(100% at 50% 50%)", scale: 1, rotateZ: 0, z: 0, duration: 0.7, ease: "expo.out" }, "<+=0.1");
       }
 
       if (systemsTitle) {
-        tl.to(
-          systemsTitle,
-          { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.8, ease: "expo.out" },
-          "<+=0.05"
-        );
+        tl.to(systemsTitle, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.8, ease: "expo.out" }, "<+=0.05");
       }
 
-      // subtle architectural breath
       tl.to(systemsRef.current, { scale: 1.03, duration: 0.25, ease: "power2.out" });
       tl.to(systemsRef.current, { scale: 1, duration: 0.25, ease: "power2.inOut" });
 
       /* ==========================================
-         SYSTEMS → CRM (card panel forward)
+         SYSTEMS → CRM
       ========================================== */
       tl.add(() => setPanelVisible(crmRef.current), "+=0.06");
 
@@ -477,8 +421,8 @@ const SystemsShowcase = () => {
           duration: 0.7,
           ease: "power4.inOut",
           onComplete: () => {
-  gsap.set(systemsRef.current, { visibility: "hidden" });
-},
+            gsap.set(systemsRef.current, { visibility: "hidden" });
+          },
         },
         "+=0.05"
       );
@@ -499,21 +443,8 @@ const SystemsShowcase = () => {
         "<+=0.18"
       );
 
-      tl.to(
-        crmItems,
-        {
-          autoAlpha: 1,
-          y: 0,
-          z: 0,
-          rotateX: 0,
-          duration: 0.55,
-          stagger: 0.12,
-          ease: "expo.out",
-        },
-        "<+=0.05"
-      );
+      tl.to(crmItems, { autoAlpha: 1, y: 0, z: 0, rotateX: 0, duration: 0.55, stagger: 0.12, ease: "expo.out" }, "<+=0.05");
 
-      // COUNT UP
       const users = { v: 0 };
       const leads = { v: 0 };
       const conv = { v: 0 };
@@ -557,7 +488,6 @@ const SystemsShowcase = () => {
         "<"
       );
 
-      // card camera micro move
       tl.to(crmRef.current, { yPercent: -2, scale: 1.02, duration: 0.22, ease: "power2.out" });
       tl.to(crmRef.current, { yPercent: 0, scale: 1, duration: 0.22, ease: "power2.inOut" });
 
@@ -574,39 +504,14 @@ const SystemsShowcase = () => {
         clipPath: "inset(100% 0 0 0)",
         duration: 0.7,
         ease: "power4.inOut",
-      onComplete: () => {
-  gsap.set(crmRef.current, { visibility: "hidden" });
-},
+        onComplete: () => {
+          gsap.set(crmRef.current, { visibility: "hidden" });
+        },
       });
 
-      tl.to(
-        aiRef.current,
-        {
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          scale: 1,
-          duration: 0.95,
-          ease: "expo.out",
-        },
-        "<+=0.18"
-      );
+      tl.to(aiRef.current, { visibility: "visible", clipPath: "inset(0 0 0% 0)", z: 0, rotateX: 0, rotateY: 0, yPercent: 0, scale: 1, duration: 0.95, ease: "expo.out" }, "<+=0.18");
 
-      tl.to(
-        aiNodes,
-        {
-          autoAlpha: 1,
-          scale: 1,
-          z: 0,
-          duration: 0.45,
-          stagger: 0.08,
-          ease: "back.out(2.2)",
-        },
-        "<+=0.05"
-      );
+      tl.to(aiNodes, { autoAlpha: 1, scale: 1, z: 0, duration: 0.45, stagger: 0.08, ease: "back.out(2.2)" }, "<+=0.05");
 
       tl.to(aiNodes, {
         x: (i) => Math.cos(i * 1.25) * 34,
@@ -633,39 +538,13 @@ const SystemsShowcase = () => {
         duration: 0.75,
         ease: "power4.inOut",
         onComplete: () => {
-  gsap.set(aiRef.current, { visibility: "hidden" });
-},
+          gsap.set(aiRef.current, { visibility: "hidden" });
+        },
       });
 
-      tl.to(
-        finalRef.current,
-        {
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          scale: 1,
-          duration: 1.05,
-          ease: "expo.out",
-        },
-        "<+=0.18"
-      );
+      tl.to(finalRef.current, { visibility: "visible", clipPath: "inset(0 0 0% 0)", z: 0, rotateX: 0, rotateY: 0, yPercent: 0, scale: 1, duration: 1.05, ease: "expo.out" }, "<+=0.18");
 
-      tl.to(
-        finalItems,
-        {
-          y: 0,
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          duration: 0.85,
-          stagger: 0.06,
-          ease: "expo.out",
-        },
-        "<+=0.05"
-      );
+      tl.to(finalItems, { y: 0, z: 0, rotateX: 0, rotateY: 0, duration: 0.85, stagger: 0.06, ease: "expo.out" }, "<+=0.05");
 
       /* ==========================================
          BACKGROUND MOVEMENT
@@ -798,21 +677,12 @@ const SystemsShowcase = () => {
         {/* CONTENT */}
         <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 md:px-12">
           {/* SCENE 01 — INTRO */}
-          <div
-            ref={introRef}
-            className="absolute inset-0 flex flex-col gap-2 md:gap-3 items-center justify-center text-center"
-          >
+          <div ref={introRef} className="absolute inset-0 flex flex-col gap-2 md:gap-3 items-center justify-center text-center">
             <p className="text-xs md:text-base uppercase tracking-[0.35em] md:tracking-[0.45em] text-orange-400 mb-6 md:mb-8">
               More than websites
             </p>
-
-            <h2 className="text-[clamp(3rem,11vw,8rem)] font-black leading-[0.9] tracking-[-0.05em]">
-              I DON'T JUST
-            </h2>
-
-            <h2 className="text-[clamp(3rem,11vw,8rem)] font-black leading-[0.9] tracking-[-0.05em] text-orange-500">
-              BUILD.
-            </h2>
+            <h2 className="text-[clamp(3rem,11vw,8rem)] font-black leading-[0.9] tracking-[-0.05em]">I DON'T JUST</h2>
+            <h2 className="text-[clamp(3rem,11vw,8rem)] font-black leading-[0.9] tracking-[-0.05em] text-orange-500">BUILD.</h2>
           </div>
 
           {/* SCENE 02 — WEBSITES */}
@@ -821,11 +691,7 @@ const SystemsShowcase = () => {
               <span className="absolute -top-10 left-0 text-[10px] md:text-xs tracking-[0.35em] md:tracking-[0.4em] text-gray-500">
                 01 / DIGITAL EXPERIENCE
               </span>
-
-              <h3 className="text-[clamp(3.2rem,12vw,9rem)] font-black leading-[0.92] tracking-[-0.06em] whitespace-nowrap">
-                WEBSITES
-              </h3>
-
+              <h3 className="text-[clamp(3.2rem,12vw,9rem)] font-black leading-[0.92] tracking-[-0.06em] whitespace-nowrap">WEBSITES</h3>
               <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
             </div>
           </div>
@@ -836,11 +702,9 @@ const SystemsShowcase = () => {
               <span className="absolute -top-10 left-0 text-[10px] md:text-xs tracking-[0.35em] md:tracking-[0.4em] text-gray-500">
                 02 / APPLICATION
               </span>
-
               <h3 className="text-[clamp(3.2rem,12vw,9rem)] font-black leading-[0.92] tracking-[-0.06em] whitespace-nowrap text-orange-500">
                 WEB APPS
               </h3>
-
               <p className="mt-5 md:mt-6 text-xs md:text-base tracking-[0.18em] md:tracking-[0.25em] text-gray-500 uppercase">
                 Interfaces that work.
               </p>
@@ -867,10 +731,7 @@ const SystemsShowcase = () => {
           {/* SCENE 05 — CRM */}
           <div ref={crmRef} className="absolute inset-0 flex items-center justify-center">
             <div className="w-full max-w-3xl rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md overflow-hidden shadow-2xl">
-              <div
-                ref={addCRMItem}
-                className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-white/10"
-              >
+              <div ref={addCRMItem} className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-white/10">
                 <div>
                   <span className="text-orange-500 font-bold">CRM</span>
                   <span className="ml-3 text-[10px] md:text-xs text-gray-500">MANAGEMENT SYSTEM</span>
@@ -881,30 +742,21 @@ const SystemsShowcase = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 md:p-6">
                 <div ref={addCRMItem} className="rounded-xl border border-white/10 p-5 bg-black/30">
                   <p className="text-xs text-gray-500">USERS</p>
-                  <p ref={usersValueRef} className="mt-2 text-3xl font-bold">
-                    1,248
-                  </p>
+                  <p ref={usersValueRef} className="mt-2 text-3xl font-bold">1,248</p>
                 </div>
 
                 <div ref={addCRMItem} className="rounded-xl border border-white/10 p-5 bg-black/30">
                   <p className="text-xs text-gray-500">LEADS</p>
-                  <p ref={leadsValueRef} className="mt-2 text-3xl font-bold text-orange-500">
-                    384
-                  </p>
+                  <p ref={leadsValueRef} className="mt-2 text-3xl font-bold text-orange-500">384</p>
                 </div>
 
                 <div ref={addCRMItem} className="rounded-xl border border-white/10 p-5 bg-black/30">
                   <p className="text-xs text-gray-500">CONVERSION</p>
-                  <p ref={conversionValueRef} className="mt-2 text-3xl font-bold">
-                    92%
-                  </p>
+                  <p ref={conversionValueRef} className="mt-2 text-3xl font-bold">92%</p>
                 </div>
               </div>
 
-              <div
-                ref={addCRMItem}
-                className="mx-5 md:mx-6 mb-6 h-20 rounded-xl border border-white/10 flex items-center px-5"
-              >
+              <div ref={addCRMItem} className="mx-5 md:mx-6 mb-6 h-20 rounded-xl border border-white/10 flex items-center px-5">
                 <div className="w-2 h-2 rounded-full bg-orange-500 mr-4" />
                 <span className="text-xs md:text-sm text-gray-400">
                   Customer activity • Real-time data • Automated workflow
@@ -929,9 +781,7 @@ const SystemsShowcase = () => {
             </div>
 
             <div className="absolute mt-[260px] md:mt-[300px] text-center">
-              <h3 className="text-[clamp(2.5rem,6.5vw,4.5rem)] font-black leading-[0.95] tracking-[-0.05em]">
-                AI SYSTEMS
-              </h3>
+              <h3 className="text-[clamp(2.5rem,6.5vw,4.5rem)] font-black leading-[0.95] tracking-[-0.05em]">AI SYSTEMS</h3>
               <p className="mt-4 text-gray-500 tracking-[0.25em] md:tracking-[0.3em] text-[10px] md:text-xs uppercase">
                 Intelligence • Automation • Integration
               </p>
@@ -939,20 +789,15 @@ const SystemsShowcase = () => {
           </div>
 
           {/* SCENE 07 — FINAL */}
-          <div
-            ref={finalRef}
-            className="absolute inset-0 flex flex-col gap-2 md:gap-3 items-center justify-center text-center"
-          >
+          <div ref={finalRef} className="absolute inset-0 flex flex-col gap-2 md:gap-3 items-center justify-center text-center">
             <p className="text-xs md:text-base uppercase tracking-[0.35em] md:tracking-[0.5em] text-gray-500 mb-6 md:mb-8">
               That's what I build
             </p>
-
             <h3 className="text-[clamp(3.2rem,12vw,9rem)] font-black leading-[0.9] tracking-[-0.06em]">
               DIGITAL
               <br />
               <span className="text-orange-500">SYSTEMS.</span>
             </h3>
-
             <p className="mt-8 md:mt-10 text-gray-500 text-[10px] md:text-sm tracking-[0.25em] md:tracking-[0.35em]">
               WEB APPS • CRM • AI • AUTOMATION
             </p>
