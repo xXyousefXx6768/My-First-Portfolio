@@ -310,7 +310,9 @@ const SystemsShowcase = () => {
           clipPath: "inset(100% 0 0 0)",
           duration: 0.65,
           ease: "power3.inOut",
-          onComplete: () => gsap.set(introRef.current, { visibility: "hidden" }),
+          onComplete: () => {
+  gsap.set(introRef.current, { visibility: "hidden" });
+},
         },
         "<"
       );
@@ -356,7 +358,9 @@ const SystemsShowcase = () => {
           clipPath: "inset(100% 0 0 0)",
           duration: 0.75,
           ease: "power4.inOut",
-          onComplete: () => gsap.set(websiteRef.current, { visibility: "hidden" }),
+        onComplete: () => {
+  gsap.set(websiteRef.current, { visibility: "hidden" });
+},
         },
         "+=0.05"
       );
@@ -395,7 +399,9 @@ const SystemsShowcase = () => {
           clipPath: "inset(100% 0 0 0)",
           duration: 0.7,
           ease: "power4.inOut",
-          onComplete: () => gsap.set(webAppRef.current, { visibility: "hidden" }),
+        onComplete: () => {
+  gsap.set(webAppRef.current, { visibility: "hidden" });
+},
         },
         "+=0.05"
       );
@@ -470,7 +476,9 @@ const SystemsShowcase = () => {
           clipPath: "inset(100% 0 0 0)",
           duration: 0.7,
           ease: "power4.inOut",
-          onComplete: () => gsap.set(systemsRef.current, { visibility: "hidden" }),
+          onComplete: () => {
+  gsap.set(systemsRef.current, { visibility: "hidden" });
+},
         },
         "+=0.05"
       );
@@ -566,7 +574,9 @@ const SystemsShowcase = () => {
         clipPath: "inset(100% 0 0 0)",
         duration: 0.7,
         ease: "power4.inOut",
-        onComplete: () => gsap.set(crmRef.current, { visibility: "hidden" }),
+      onComplete: () => {
+  gsap.set(crmRef.current, { visibility: "hidden" });
+},
       });
 
       tl.to(
@@ -622,7 +632,9 @@ const SystemsShowcase = () => {
         clipPath: "inset(100% 0 0 0)",
         duration: 0.75,
         ease: "power4.inOut",
-        onComplete: () => gsap.set(aiRef.current, { visibility: "hidden" }),
+        onComplete: () => {
+  gsap.set(aiRef.current, { visibility: "hidden" });
+},
       });
 
       tl.to(
