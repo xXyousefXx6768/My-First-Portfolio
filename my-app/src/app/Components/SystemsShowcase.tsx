@@ -20,7 +20,7 @@ const SystemsShowcase = () => {
   const aiRef = useRef<HTMLDivElement | null>(null);
   const finalRef = useRef<HTMLDivElement | null>(null);
 
-  const systemLinesRef = useRef<HTMLDivElement[]>([]);
+  const systemLinesRef = useRef<SVGPathElement[]>([]);
   const crmItemsRef = useRef<HTMLDivElement[]>([]);
   const aiNodesRef = useRef<HTMLDivElement[]>([]);
 
@@ -1774,11 +1774,11 @@ const SystemsShowcase = () => {
     return () => ctx.revert();
   }, []);
 
-  const addSystemLine = (el: HTMLDivElement | null) => {
-    if (el && !systemLinesRef.current.includes(el)) {
-      systemLinesRef.current.push(el);
-    }
-  };
+  const addSystemLine = (el: SVGPathElement | null) => {
+  if (el && !systemLinesRef.current.includes(el)) {
+    systemLinesRef.current.push(el);
+  }
+};
 
   const addCRMItem = (el: HTMLDivElement | null) => {
     if (el && !crmItemsRef.current.includes(el)) {
