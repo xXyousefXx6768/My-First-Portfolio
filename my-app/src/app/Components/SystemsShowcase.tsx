@@ -29,677 +29,849 @@ const SystemsShowcase = () => {
   const conversionValueRef = useRef<HTMLParagraphElement | null>(null);
 
   useLayoutEffect(() => {
-    if (!sectionRef.current || !frameRef.current) return;
+  if (!sectionRef.current || !frameRef.current) return;
 
-    const ctx = gsap.context(() => {
-      const section = sectionRef.current!;
-      const frame = frameRef.current!;
+  const ctx = gsap.context(() => {
+    const section = sectionRef.current!;
+    const frame = frameRef.current!;
 
-      const END_DISTANCE = 3000;
+    /*
+     * =====================================================
+     * MASTER SCROLL CONFIG
+     * =====================================================
+     *
+     * الـ section كله يتحكم فيه Timeline واحد.
+     * كل Phase لها Timeline مستقل.
+     *
+     * لا يوجد Snap.
+     * لا يوجد onEnter/onLeave يغير حالة العناصر فجأة.
+     * كل شيء reversible بشكل طبيعي مع الـ scroll back.
+     */
 
-      const systemLines = systemLinesRef.current.filter(Boolean);
-      const crmItems = crmItemsRef.current.filter(Boolean);
-      const aiNodes = aiNodesRef.current.filter(Boolean);
+    const END_DISTANCE = 6200;
 
-      /* =====================================================
-         HELPERS
-      ===================================================== */
+    /* =====================================================
+       HELPERS
+    ===================================================== */
 
-      const qs = <T extends Element>(
-        root: Element | null,
-        selector: string
-      ): T | null => {
-        if (!root) return null;
-        return root.querySelector(selector) as T | null;
-      };
+    const qs = <T extends Element>(
+      root: Element | null,
+      selector: string
+    ): T | null => {
+      if (!root) return null;
+      return root.querySelector(selector) as T | null;
+    };
 
-      const qsa = <T extends Element>(
-        root: Element | null,
-        selector: string
-      ): T[] => {
-        if (!root) return [];
-        return Array.from(root.querySelectorAll(selector)) as T[];
-      };
+    const qsa = <T extends Element>(
+      root: Element | null,
+      selector: string
+    ): T[] => {
+      if (!root) return [];
+      return Array.from(root.querySelectorAll(selector)) as T[];
+    };
 
-      const drawSVG = (
-        paths: SVGPathElement[],
-        duration = 0.8,
-        stagger = 0.08
-      ) => {
-        paths.forEach((path) => {
-          let length = Number(path.dataset.length);
+    const drawSVG = (paths: SVGPathElement[]) => {
+      paths.forEach((path) => {
+        let length = Number(path.dataset.length);
 
-          if (!length) {
-            length = path.getTotalLength();
-            path.dataset.length = String(length);
-          }
+        if (!length) {
+          length = path.getTotalLength();
+          path.dataset.length = String(length);
+        }
 
-          gsap.set(path, {
-            strokeDasharray: length,
-            strokeDashoffset: length,
-          });
-        });
-
-        return paths;
-      };
-
-      const revealSVG = (
-        paths: SVGPathElement[],
-        duration = 0.8,
-        stagger = 0.08
-      ) => {
-        return gsap.to(paths, {
-          strokeDashoffset: 0,
-          duration,
-          stagger,
-          ease: "power3.out",
-        });
-      };
-
-      const showPanel = (el: HTMLElement | null) => {
-        if (!el) return;
-
-        gsap.set(el, {
-          visibility: "visible",
-          opacity: 1,
-        });
-      };
-
-      const hidePanel = (el: HTMLElement | null) => {
-        if (!el) return;
-
-        gsap.set(el, {
-          visibility: "hidden",
-        });
-      };
-
-      /* =====================================================
-         FRAME
-      ===================================================== */
-
-      gsap.set(frame, {
-        width: "100%",
-        height: "3.5rem",
-        maxWidth: "80rem",
-        maxHeight: "3.5rem",
-        borderRadius: "9999px",
-        borderWidth: 1,
-        borderColor: "rgba(249,115,22,.25)",
-        backgroundColor: "#000000",
-        overflow: "hidden",
-        perspective: 1400,
-        transformStyle: "preserve-3d",
-        force3D: true,
-      });
-
-      /* =====================================================
-         PANEL INITIAL STATE
-      ===================================================== */
-
-      const panels = [
-        introRef.current,
-        craftRef.current,
-        websiteRef.current,
-        webAppRef.current,
-        systemsRef.current,
-        crmRef.current,
-        aiRef.current,
-        finalRef.current,
-      ].filter(Boolean) as HTMLDivElement[];
-
-      panels.forEach((panel) => {
-        gsap.set(panel, {
-          autoAlpha: 0,
-          visibility: "hidden",
-          clipPath: "inset(100% 0 0 0)",
-          z: -500,
-          rotateX: 55,
-          rotateY: 0,
-          yPercent: 10,
-          transformOrigin: "50% 100%",
-          force3D: true,
-          backfaceVisibility: "hidden",
+        gsap.set(path, {
+          strokeDasharray: length,
+          strokeDashoffset: length,
         });
       });
+    };
 
-      /* =====================================================
-         SCROLL HINT
-      ===================================================== */
+    /* =====================================================
+       FRAME INITIAL STATE
+    ===================================================== */
 
-      gsap.set(hintRef.current, {
-        autoAlpha: 1,
-        y: 0,
-      });
+    gsap.set(frame, {
+      width: "100%",
+      height: "3.5rem",
+      maxWidth: "80rem",
+      maxHeight: "3.5rem",
+      borderRadius: "9999px",
+      borderWidth: 1,
+      borderColor: "rgba(249,115,22,.25)",
+      backgroundColor: "#000000",
+      overflow: "hidden",
+      perspective: 1400,
+      transformStyle: "preserve-3d",
+      force3D: true,
+    });
 
-      const scrollArrow = qsa<SVGPathElement>(
-        hintRef.current,
-        ".scroll-draw"
-      );
+    /* =====================================================
+       PANELS
+    ===================================================== */
 
-      drawSVG(scrollArrow);
+    const panels = [
+      introRef.current,
+      craftRef.current,
+      websiteRef.current,
+      webAppRef.current,
+      systemsRef.current,
+      crmRef.current,
+      aiRef.current,
+      finalRef.current,
+    ].filter(Boolean) as HTMLDivElement[];
 
-      gsap.to(".scroll-hint-arrow", {
-        y: 6,
-        opacity: 0.55,
-        duration: 1,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
+    /*
+     * مهم:
+     *
+     * مفيش visibility:hidden هنا.
+     * كل panel يفضل موجود في الـDOM
+     * والتحكم يكون بالـopacity + clipPath + transform.
+     *
+     * ده يمنع مشكلة إن panel يفضل hidden
+     * أثناء الـforward animation.
+     */
 
-      /* =====================================================
-         INTRO ELEMENTS
-      ===================================================== */
+    gsap.set(panels, {
+      opacity: 0,
+      clipPath: "inset(100% 0 0 0)",
+      z: -500,
+      rotateX: 55,
+      rotateY: 0,
+      yPercent: 10,
+      transformOrigin: "50% 100%",
+      force3D: true,
+      backfaceVisibility: "hidden",
+    });
 
-      const introItems = qsa<HTMLElement>(
-        introRef.current,
-        "[data-intro]"
-      );
+    /* =====================================================
+       SCROLL HINT
+    ===================================================== */
 
-      const introStroke = qsa<SVGPathElement>(
-        introRef.current,
-        ".draw-path"
-      );
+    gsap.set(hintRef.current, {
+      opacity: 1,
+      y: 0,
+    });
 
-      drawSVG(introStroke);
+    const scrollArrow = qsa<SVGPathElement>(
+      hintRef.current,
+      ".scroll-draw"
+    );
 
-      gsap.set(introItems, {
+    drawSVG(scrollArrow);
+
+    /*
+     * الـloop ده خارج الـmaster timeline
+     * لكنه لا يؤثر على الـscroll position.
+     */
+
+    const hintFloat = gsap.to(".scroll-hint-arrow", {
+      y: 6,
+      opacity: 0.55,
+      duration: 1,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+
+    /* =====================================================
+       INTRO ELEMENTS
+    ===================================================== */
+
+    const introItems = qsa<HTMLElement>(
+      introRef.current,
+      "[data-intro]"
+    );
+
+    const introStroke = qsa<SVGPathElement>(
+      introRef.current,
+      ".draw-path"
+    );
+
+    drawSVG(introStroke);
+
+    gsap.set(introItems, {
+      opacity: 0,
+      y: 35,
+      z: -150,
+      rotateX: 70,
+      filter: "blur(8px)",
+    });
+
+    /* =====================================================
+       CRAFT
+    ===================================================== */
+
+    const craftItems = qsa<HTMLElement>(
+      craftRef.current,
+      "[data-craft]"
+    );
+
+    const craftIcons = qsa<SVGElement>(
+      craftRef.current,
+      ".craft-icon"
+    );
+
+    const craftPaths = qsa<SVGPathElement>(
+      craftRef.current,
+      ".craft-draw"
+    );
+
+    const craftArrow = qsa<SVGPathElement>(
+      craftRef.current,
+      ".craft-arrow"
+    );
+
+    drawSVG(craftPaths);
+    drawSVG(craftArrow);
+
+    gsap.set(craftItems, {
+      opacity: 0,
+      y: 25,
+      z: -180,
+      rotateX: 75,
+      filter: "blur(10px)",
+    });
+
+    gsap.set(craftIcons, {
+      opacity: 0,
+      scale: 0.75,
+      rotate: -12,
+    });
+
+    /* =====================================================
+       WEBSITE
+    ===================================================== */
+
+    const websiteLabel = qs<HTMLElement>(
+      websiteRef.current,
+      "[data-website-label]"
+    );
+
+    const websiteTitle = qs<HTMLElement>(
+      websiteRef.current,
+      "[data-website-title]"
+    );
+
+    const websiteSub = qs<HTMLElement>(
+      websiteRef.current,
+      "[data-website-sub]"
+    );
+
+    const websiteLine = qs<SVGPathElement>(
+      websiteRef.current,
+      ".website-line"
+    );
+
+    const websiteIcons = qsa<SVGPathElement>(
+      websiteRef.current,
+      ".website-draw"
+    );
+
+    if (websiteLine) drawSVG([websiteLine]);
+    drawSVG(websiteIcons);
+
+    gsap.set(
+      [websiteLabel, websiteTitle, websiteSub].filter(Boolean),
+      {
         opacity: 0,
-        y: 35,
-        z: -150,
-        rotateX: 70,
-        filter: "blur(8px)",
-      });
-
-      /* =====================================================
-         CRAFT
-      ===================================================== */
-
-      const craftItems = qsa<HTMLElement>(
-        craftRef.current,
-        "[data-craft]"
-      );
-
-      const craftIcons = qsa<SVGElement>(
-        craftRef.current,
-        ".craft-icon"
-      );
-
-      const craftPaths = qsa<SVGPathElement>(
-        craftRef.current,
-        ".craft-draw"
-      );
-
-      const craftArrow = qsa<SVGPathElement>(
-        craftRef.current,
-        ".craft-arrow"
-      );
-
-      drawSVG(craftPaths);
-      drawSVG(craftArrow);
-
-      gsap.set(craftItems, {
-        opacity: 0,
-        y: 25,
-        z: -180,
-        rotateX: 75,
-        filter: "blur(10px)",
-      });
-
-      gsap.set(craftIcons, {
-        opacity: 0,
-        scale: 0.75,
-        rotate: -12,
-      });
-
-      /* =====================================================
-         WEBSITE
-      ===================================================== */
-
-      const websiteLabel = qs<HTMLElement>(
-        websiteRef.current,
-        "[data-website-label]"
-      );
-
-      const websiteTitle = qs<HTMLElement>(
-        websiteRef.current,
-        "[data-website-title]"
-      );
-
-      const websiteSub = qs<HTMLElement>(
-        websiteRef.current,
-        "[data-website-sub]"
-      );
-
-      const websiteLine = qs<SVGPathElement>(
-        websiteRef.current,
-        ".website-line"
-      );
-
-      const websiteIcons = qsa<SVGPathElement>(
-        websiteRef.current,
-        ".website-draw"
-      );
-
-      if (websiteLine) drawSVG([websiteLine]);
-      drawSVG(websiteIcons);
-
-      gsap.set(
-        [websiteLabel, websiteTitle, websiteSub].filter(Boolean),
-        {
-          opacity: 0,
-          y: 30,
-          z: -160,
-          rotateX: 70,
-          filter: "blur(9px)",
-        }
-      );
-
-      /* =====================================================
-         WEB APPS
-      ===================================================== */
-
-      const webAppLabel = qs<HTMLElement>(
-        webAppRef.current,
-        "[data-webapp-label]"
-      );
-
-      const webAppTitle = qs<HTMLElement>(
-        webAppRef.current,
-        "[data-webapp-title]"
-      );
-
-      const webAppSub = qs<HTMLElement>(
-        webAppRef.current,
-        "[data-webapp-sub]"
-      );
-
-      const webAppIcons = qsa<SVGPathElement>(
-        webAppRef.current,
-        ".webapp-draw"
-      );
-
-      const webAppRing = qs<SVGCircleElement>(
-        webAppRef.current,
-        ".webapp-ring"
-      );
-
-      drawSVG(webAppIcons);
-
-      if (webAppRing) {
-        const len = 2 * Math.PI * 42;
-
-        gsap.set(webAppRing, {
-          strokeDasharray: len,
-          strokeDashoffset: len,
-        });
-      }
-
-      gsap.set(
-        [webAppLabel, webAppTitle, webAppSub].filter(Boolean),
-        {
-          opacity: 0,
-          y: 30,
-          z: -170,
-          rotateX: 70,
-          filter: "blur(9px)",
-        }
-      );
-
-      /* =====================================================
-         SYSTEMS
-      ===================================================== */
-
-      const systemsTitle = qs<HTMLElement>(
-        systemsRef.current,
-        "[data-systems-title]"
-      );
-
-      const systemsSub = qs<HTMLElement>(
-        systemsRef.current,
-        "[data-systems-sub]"
-      );
-
-      const coreEl = qs<HTMLElement>(
-        systemsRef.current,
-        "[data-core]"
-      );
-
-      const systemDraw = qsa<SVGPathElement>(
-        systemsRef.current,
-        ".system-draw"
-      );
-
-      const systemNodeDraw = qsa<SVGCircleElement>(
-        systemsRef.current,
-        ".system-node"
-      );
-
-      drawSVG(systemDraw);
-
-      gsap.set(systemNodeDraw, {
-        scale: 0,
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.set(
-        [systemsTitle, systemsSub].filter(Boolean),
-        {
-          opacity: 0,
-          y: 30,
-          z: -170,
-          rotateX: 70,
-          filter: "blur(10px)",
-        }
-      );
-
-      if (coreEl) {
-        gsap.set(coreEl, {
-          opacity: 0,
-          scale: 0.5,
-          rotate: -25,
-        });
-      }
-
-      /* =====================================================
-         CRM
-      ===================================================== */
-
-      const crmTitle = qs<HTMLElement>(
-        crmRef.current,
-        "[data-crm-title]"
-      );
-
-      const crmSubtitle = qs<HTMLElement>(
-        crmRef.current,
-        "[data-crm-sub]"
-      );
-
-      const crmChart = qsa<SVGPathElement>(
-        crmRef.current,
-        ".crm-draw"
-      );
-
-      const crmChartDots = qsa<SVGCircleElement>(
-        crmRef.current,
-        ".crm-dot"
-      );
-
-      drawSVG(crmChart);
-
-      gsap.set(crmChartDots, {
-        scale: 0,
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.set(
-        [crmTitle, crmSubtitle].filter(Boolean),
-        {
-          opacity: 0,
-          y: 20,
-          filter: "blur(8px)",
-        }
-      );
-
-      gsap.set(crmItems, {
-        autoAlpha: 0,
-        y: 20,
-        z: -80,
-        rotateX: 30,
-      });
-
-      if (usersValueRef.current) {
-        usersValueRef.current.innerText = "0";
-      }
-
-      if (leadsValueRef.current) {
-        leadsValueRef.current.innerText = "0";
-      }
-
-      if (conversionValueRef.current) {
-        conversionValueRef.current.innerText = "0%";
-      }
-
-      /* =====================================================
-         AI
-      ===================================================== */
-
-      const aiTitle = qs<HTMLElement>(
-        aiRef.current,
-        "[data-ai-title]"
-      );
-
-      const aiSub = qs<HTMLElement>(
-        aiRef.current,
-        "[data-ai-sub]"
-      );
-
-      const aiCore = qs<HTMLElement>(
-        aiRef.current,
-        "[data-ai-core]"
-      );
-
-      const aiPaths = qsa<SVGPathElement>(
-        aiRef.current,
-        ".ai-draw"
-      );
-
-      const aiCircles = qsa<SVGCircleElement>(
-        aiRef.current,
-        ".ai-circle"
-      );
-
-      drawSVG(aiPaths);
-
-      gsap.set(aiCircles, {
-        scale: 0,
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.set(aiNodes, {
-        autoAlpha: 0,
-        scale: 0,
-      });
-
-      gsap.set(
-        [aiTitle, aiSub].filter(Boolean),
-        {
-          opacity: 0,
-          y: 25,
-          filter: "blur(10px)",
-        }
-      );
-
-      if (aiCore) {
-        gsap.set(aiCore, {
-          opacity: 0,
-          scale: 0.5,
-        });
-      }
-
-      /* =====================================================
-         FINAL
-      ===================================================== */
-
-      const finalItems = qsa<HTMLElement>(
-        finalRef.current,
-        "[data-final]"
-      );
-
-      const finalPaths = qsa<SVGPathElement>(
-        finalRef.current,
-        ".final-draw"
-      );
-
-      drawSVG(finalPaths);
-
-      gsap.set(finalItems, {
-        opacity: 0,
-        y: 25,
+        y: 30,
         z: -160,
         rotateX: 70,
+        filter: "blur(9px)",
+      }
+    );
+
+    /* =====================================================
+       WEB APPS
+    ===================================================== */
+
+    const webAppLabel = qs<HTMLElement>(
+      webAppRef.current,
+      "[data-webapp-label]"
+    );
+
+    const webAppTitle = qs<HTMLElement>(
+      webAppRef.current,
+      "[data-webapp-title]"
+    );
+
+    const webAppSub = qs<HTMLElement>(
+      webAppRef.current,
+      "[data-webapp-sub]"
+    );
+
+    const webAppIcons = qsa<SVGPathElement>(
+      webAppRef.current,
+      ".webapp-draw"
+    );
+
+    const webAppRing = qs<SVGCircleElement>(
+      webAppRef.current,
+      ".webapp-ring"
+    );
+
+    drawSVG(webAppIcons);
+
+    if (webAppRing) {
+      const len = 2 * Math.PI * 42;
+
+      gsap.set(webAppRing, {
+        strokeDasharray: len,
+        strokeDashoffset: len,
+      });
+    }
+
+    gsap.set(
+      [webAppLabel, webAppTitle, webAppSub].filter(Boolean),
+      {
+        opacity: 0,
+        y: 30,
+        z: -170,
+        rotateX: 70,
+        filter: "blur(9px)",
+      }
+    );
+
+    /* =====================================================
+       SYSTEMS
+    ===================================================== */
+
+    const systemsTitle = qs<HTMLElement>(
+      systemsRef.current,
+      "[data-systems-title]"
+    );
+
+    const systemsSub = qs<HTMLElement>(
+      systemsRef.current,
+      "[data-systems-sub]"
+    );
+
+    const coreEl = qs<HTMLElement>(
+      systemsRef.current,
+      "[data-core]"
+    );
+
+    const systemDraw = qsa<SVGPathElement>(
+      systemsRef.current,
+      ".system-draw"
+    );
+
+    const systemNodeDraw = qsa<SVGCircleElement>(
+      systemsRef.current,
+      ".system-node"
+    );
+
+    drawSVG(systemDraw);
+
+    gsap.set(systemNodeDraw, {
+      scale: 0,
+      transformOrigin: "50% 50%",
+    });
+
+    gsap.set(
+      [systemsTitle, systemsSub].filter(Boolean),
+      {
+        opacity: 0,
+        y: 30,
+        z: -170,
+        rotateX: 70,
         filter: "blur(10px)",
+      }
+    );
+
+    if (coreEl) {
+      gsap.set(coreEl, {
+        opacity: 0,
+        scale: 0.5,
+        rotate: -25,
+      });
+    }
+
+    /* =====================================================
+       CRM
+    ===================================================== */
+
+    const crmTitle = qs<HTMLElement>(
+      crmRef.current,
+      "[data-crm-title]"
+    );
+
+    const crmSubtitle = qs<HTMLElement>(
+      crmRef.current,
+      "[data-crm-sub]"
+    );
+
+    const crmChart = qsa<SVGPathElement>(
+      crmRef.current,
+      ".crm-draw"
+    );
+
+    const crmChartDots = qsa<SVGCircleElement>(
+      crmRef.current,
+      ".crm-dot"
+    );
+
+    drawSVG(crmChart);
+
+    gsap.set(crmChartDots, {
+      scale: 0,
+      transformOrigin: "50% 50%",
+    });
+
+    gsap.set(
+      [crmTitle, crmSubtitle].filter(Boolean),
+      {
+        opacity: 0,
+        y: 20,
+        filter: "blur(8px)",
+    });
+
+    const crmItems = crmItemsRef.current.filter(Boolean);
+
+    gsap.set(crmItems, {
+      opacity: 0,
+      y: 20,
+      z: -80,
+      rotateX: 30,
+    });
+
+    if (usersValueRef.current) {
+      usersValueRef.current.innerText = "0";
+    }
+
+    if (leadsValueRef.current) {
+      leadsValueRef.current.innerText = "0";
+    }
+
+    if (conversionValueRef.current) {
+      conversionValueRef.current.innerText = "0%";
+    }
+
+    /* =====================================================
+       AI
+    ===================================================== */
+
+    const aiTitle = qs<HTMLElement>(
+      aiRef.current,
+      "[data-ai-title]"
+    );
+
+    const aiSub = qs<HTMLElement>(
+      aiRef.current,
+      "[data-ai-sub]"
+    );
+
+    const aiCore = qs<HTMLElement>(
+      aiRef.current,
+      "[data-ai-core]"
+    );
+
+    const aiPaths = qsa<SVGPathElement>(
+      aiRef.current,
+      ".ai-draw"
+    );
+
+    const aiCircles = qsa<SVGCircleElement>(
+      aiRef.current,
+      ".ai-circle"
+    );
+
+    drawSVG(aiPaths);
+
+    gsap.set(aiCircles, {
+      scale: 0,
+      transformOrigin: "50% 50%",
+    });
+
+    const aiNodes = aiNodesRef.current.filter(Boolean);
+
+    gsap.set(aiNodes, {
+      opacity: 0,
+      scale: 0,
+    });
+
+    gsap.set(
+      [aiTitle, aiSub].filter(Boolean),
+      {
+        opacity: 0,
+        y: 25,
+        filter: "blur(10px)",
+      }
+    );
+
+    if (aiCore) {
+      gsap.set(aiCore, {
+        opacity: 0,
+        scale: 0.5,
+      });
+    }
+
+    /* =====================================================
+       FINAL
+    ===================================================== */
+
+    const finalItems = qsa<HTMLElement>(
+      finalRef.current,
+      "[data-final]"
+    );
+
+    const finalPaths = qsa<SVGPathElement>(
+      finalRef.current,
+      ".final-draw"
+    );
+
+    drawSVG(finalPaths);
+
+    gsap.set(finalItems, {
+      opacity: 0,
+      y: 25,
+      z: -160,
+      rotateX: 70,
+      filter: "blur(10px)",
+    });
+
+    /* =====================================================
+       MASTER TIMELINE
+    ===================================================== */
+
+    const tl = gsap.timeline({
+      paused: true,
+      defaults: {
+        overwrite: "auto",
+      },
+    });
+
+    /* =====================================================
+       OPEN FRAME
+    ===================================================== */
+
+    tl.to(
+      section,
+      {
+        padding: 0,
+        height: "100vh",
+        minHeight: "100vh",
+        duration: 0.7,
+        ease: "power3.inOut",
+      },
+      0
+    );
+
+    tl.to(
+      frame,
+      {
+        width: "100%",
+        height: "100%",
+        maxWidth: "100%",
+        maxHeight: "100%",
+        borderRadius: 0,
+        borderWidth: 0,
+        borderColor: "transparent",
+        duration: 0.7,
+        ease: "power3.inOut",
+      },
+      0
+    );
+
+    tl.to(
+      hintRef.current,
+      {
+        opacity: 0,
+        y: 10,
+        duration: 0.25,
+        ease: "power2.out",
+      },
+      0.03
+    );
+
+    /* =====================================================
+       HELPER:
+       ENTER / EXIT EACH PHASE
+    ===================================================== */
+
+    const enterPhase = (
+      phase: HTMLElement,
+      duration = 0.9
+    ) => {
+      const phaseTl = gsap.timeline();
+
+      phaseTl.to(phase, {
+        opacity: 1,
+        clipPath: "inset(0% 0% 0% 0%)",
+        z: 0,
+        rotateX: 0,
+        rotateY: 0,
+        yPercent: 0,
+        duration,
+        ease: "expo.out",
       });
 
-      /* =====================================================
-         FULLSCREEN STATE
-      ===================================================== */
+      return phaseTl;
+    };
 
-      const setFullscreen = () => {
-        gsap.set(section, {
-          padding: 0,
-          minHeight: "100vh",
-          height: "100vh",
-        });
+    const exitPhase = (
+      phase: HTMLElement,
+      rotateY = -18
+    ) => {
+      const phaseTl = gsap.timeline();
 
-        gsap.set(frame, {
-          width: "100%",
-          height: "100%",
-          maxWidth: "100%",
-          maxHeight: "100%",
-          borderRadius: 0,
-          borderWidth: 0,
-          borderColor: "transparent",
-          backgroundColor: "#000000",
-        });
-      };
-
-      const setInitialBar = () => {
-        gsap.set(section, {
-          padding: "1.75rem",
-          minHeight: "100vh",
-          height: "auto",
-        });
-
-        gsap.set(frame, {
-          width: "100%",
-          height: "3.5rem",
-          maxWidth: "80rem",
-          maxHeight: "3.5rem",
-          borderRadius: "9999px",
-          borderWidth: 1,
-          borderColor: "rgba(249,115,22,.25)",
-          backgroundColor: "#000000",
-        });
-      };
-
-      /* =====================================================
-         TIMELINE
-      ===================================================== */
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: `+=${END_DISTANCE}`,
-          scrub: 1.7,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-
-          snap: {
-            snapTo: 1 / 7,
-            duration: {
-              min: 0.25,
-              max: 0.8,
-            },
-            delay: 0.06,
-            ease: "power2.inOut",
-          },
-
-          onEnter: () => {
-            setFullscreen();
-          },
-
-          onEnterBack: () => {
-            setFullscreen();
-
-            gsap.set(hintRef.current, {
-              autoAlpha: 0,
-            });
-          },
-
-          onLeave: () => {
-            gsap.set(hintRef.current, {
-              autoAlpha: 0,
-            });
-          },
-
-          onLeaveBack: () => {
-            setInitialBar();
-
-            gsap.set(hintRef.current, {
-              autoAlpha: 1,
-              y: 0,
-            });
-          },
-        },
+      phaseTl.to(phase, {
+        opacity: 0,
+        clipPath: "inset(100% 0 0 0)",
+        z: -600,
+        rotateY,
+        rotateX: -16,
+        yPercent: -8,
+        duration: 0.8,
+        ease: "power4.inOut",
       });
 
-      /* =====================================================
-         PIN OPENING
-      ===================================================== */
+      return phaseTl;
+    };
 
-      tl.to(
-        section,
+    /* =====================================================
+       PHASE 01 — INTRO
+    ===================================================== */
+
+    const introTl = gsap.timeline();
+
+    introTl.add(enterPhase(introRef.current!, 0.95));
+
+    introTl.to(
+      introItems,
+      {
+        opacity: 1,
+        y: 0,
+        z: 0,
+        rotateX: 0,
+        filter: "blur(0px)",
+        duration: 0.8,
+        stagger: 0.09,
+        ease: "expo.out",
+      },
+      "<+=0.08"
+    );
+
+    introTl.to(
+      introStroke,
+      {
+        strokeDashoffset: 0,
+        duration: 0.9,
+        stagger: 0.08,
+        ease: "power3.out",
+      },
+      "<+=0.1"
+    );
+
+    introTl.to(
+      ".intro-orange-word",
+      {
+        color: "#ffffff",
+        duration: 0.35,
+        ease: "power2.inOut",
+      },
+      "+=0.1"
+    );
+
+    introTl.to(
+      ".intro-orange-word",
+      {
+        color: "#f97316",
+        scaleX: 1.08,
+        duration: 0.4,
+        ease: "power2.out",
+      }
+    );
+
+    /*
+     * HOLD
+     *
+     * مهم عشان المستخدم يلحق يشوف المرحلة
+     */
+    introTl.to({}, { duration: 0.35 });
+
+    introTl.add(exitPhase(introRef.current!, 12));
+
+    tl.add(introTl);
+
+    /* =====================================================
+       PHASE 02 — CRAFT
+    ===================================================== */
+
+    const craftTl = gsap.timeline();
+
+    /*
+     * Background يبدأ مع الـphase
+     * ويفضل موجود أثناء الـphase بالكامل.
+     */
+
+    craftTl.to(
+      frame,
+      {
+        backgroundColor: "rgba(249,115,22,0.11)",
+        duration: 0.55,
+        ease: "power2.inOut",
+      },
+      0
+    );
+
+    craftTl.to(
+      ".craft-orb",
+      {
+        opacity: 0.9,
+        scale: 1,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      0
+    );
+
+    craftTl.add(enterPhase(craftRef.current!, 0.95), 0.05);
+
+    craftTl.to(
+      craftItems,
+      {
+        opacity: 1,
+        y: 0,
+        z: 0,
+        rotateX: 0,
+        filter: "blur(0px)",
+        duration: 0.75,
+        stagger: 0.08,
+        ease: "expo.out",
+      },
+      "<+=0.08"
+    );
+
+    craftTl.to(
+      craftIcons,
+      {
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+        duration: 0.35,
+        stagger: 0.12,
+        ease: "back.out(1.7)",
+      },
+      "<+=0.08"
+    );
+
+    craftTl.to(
+      craftPaths,
+      {
+        strokeDashoffset: 0,
+        duration: 0.8,
+        stagger: 0.16,
+        ease: "power3.out",
+      },
+      "<+=0.08"
+    );
+
+    craftTl.to(
+      craftArrow,
+      {
+        strokeDashoffset: 0,
+        duration: 1.1,
+        ease: "power4.inOut",
+      },
+      "<+=0.15"
+    );
+
+    craftTl.fromTo(
+      ".craft-arrow-head",
+      {
+        opacity: 0,
+        scale: 0,
+        transformOrigin: "50% 50%",
+      },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.35,
+        ease: "back.out(2)",
+      },
+      "-=0.2"
+    );
+
+    craftTl.to(
+      ".craft-highlight",
+      {
+        color: "#ffffff",
+        letterSpacing: "0.08em",
+        duration: 0.35,
+        ease: "power2.out",
+      },
+      "-=0.2"
+    );
+
+    craftTl.to(
+      ".craft-highlight",
+      {
+        color: "#f97316",
+        letterSpacing: "0.01em",
+        duration: 0.45,
+        ease: "power2.inOut",
+      }
+    );
+
+    craftTl.to({}, { duration: 0.6 });
+
+    craftTl.add(exitPhase(craftRef.current!, -18));
+
+    /*
+     * الخلفية ترجع للأسود في نهاية craft فقط.
+     */
+
+    craftTl.to(
+      frame,
+      {
+        backgroundColor: "#000000",
+        duration: 0.75,
+        ease: "power3.inOut",
+      },
+      "<+=0.05"
+    );
+
+    craftTl.to(
+      ".craft-orb",
+      {
+        opacity: 0,
+        scale: 1.4,
+        duration: 0.65,
+        ease: "power3.inOut",
+      },
+      "<"
+    );
+
+    tl.add(craftTl);
+
+    /* =====================================================
+       PHASE 03 — WEBSITES
+    ===================================================== */
+
+    const websiteTl = gsap.timeline();
+
+    websiteTl.add(enterPhase(websiteRef.current!, 0.95));
+
+    if (websiteLabel) {
+      websiteTl.to(
+        websiteLabel,
         {
-          padding: 0,
-          height: "100vh",
-          duration: 0.7,
-          ease: "power3.inOut",
-        },
-        0
-      );
-
-      tl.to(
-        frame,
-        {
-          width: "100%",
-          height: "100%",
-          maxWidth: "100%",
-          maxHeight: "100%",
-          borderRadius: 0,
-          borderWidth: 0,
-          duration: 0.7,
-          ease: "power3.inOut",
-        },
-        0
-      );
-
-      tl.to(
-        hintRef.current,
-        {
-          autoAlpha: 0,
-          y: 10,
-          duration: 0.25,
-          ease: "power2.out",
-        },
-        0.03
-      );
-
-      /* =====================================================
-         INTRO
-      ===================================================== */
-
-      tl.add(() => showPanel(introRef.current), 0.05);
-
-      tl.to(
-        introRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
+          opacity: 1,
+          y: 0,
           z: 0,
           rotateX: 0,
-          yPercent: 0,
-          duration: 1,
+          filter: "blur(0px)",
+          duration: 0.55,
           ease: "expo.out",
         },
-        0.08
+        "<+=0.08"
       );
+    }
 
-      tl.to(
-        introItems,
+    if (websiteTitle) {
+      websiteTl.to(
+        websiteTitle,
         {
           opacity: 1,
           y: 0,
@@ -707,961 +879,219 @@ const SystemsShowcase = () => {
           rotateX: 0,
           filter: "blur(0px)",
           duration: 0.8,
-          stagger: 0.09,
           ease: "expo.out",
         },
         "<+=0.08"
       );
+    }
 
-      tl.to(
-        introStroke,
+    websiteTl.to(
+      websiteIcons,
+      {
+        strokeDashoffset: 0,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power3.out",
+      },
+      "<+=0.05"
+    );
+
+    if (websiteLine) {
+      websiteTl.to(
+        websiteLine,
         {
           strokeDashoffset: 0,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: "power3.out",
-        },
-        "<+=0.1"
-      );
-
-      /* TEXT MUTATION */
-
-      tl.to(
-        qs<HTMLElement>(introRef.current, ".intro-orange-word"),
-        {
-          color: "#ffffff",
-          duration: 0.35,
-          ease: "power2.inOut",
-        },
-        "+=0.1"
-      );
-
-      tl.to(
-        qs<HTMLElement>(introRef.current, ".intro-orange-word"),
-        {
-          color: "#f97316",
-          scaleX: 1.08,
-          duration: 0.4,
-          ease: "power2.out",
-        }
-      );
-
-      /* INTRO EXIT */
-
-      tl.to(
-        introRef.current,
-        {
-          z: -550,
-          rotateY: 12,
-          rotateX: -30,
-          yPercent: -10,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(introRef.current),
-        },
-        "+=0.3"
-      );
-
-      /* =====================================================
-         CRAFT — ORANGE BACKGROUND STARTS
-      ===================================================== */
-
-      tl.add(() => showPanel(craftRef.current), "<+=0.08");
-
-      tl.to(
-        frame,
-        {
-          backgroundColor: "rgba(249,115,22,0.11)",
-          duration: 0.55,
-          ease: "power2.inOut",
-        },
-        "<"
-      );
-
-      /* Orange atmosphere stays through entire craft stage */
-
-      tl.to(
-        ".craft-orb",
-        {
-          opacity: 0.9,
-          scale: 1,
           duration: 0.8,
           ease: "power3.out",
         },
-        "<"
+        "<+=0.08"
       );
+    }
 
-      tl.to(
-        craftRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          yPercent: 0,
-          duration: 0.95,
-          ease: "expo.out",
-        },
-        "<+=0.1"
-      );
-
-      tl.to(
-        craftItems,
+    if (websiteSub) {
+      websiteTl.to(
+        websiteSub,
         {
           opacity: 1,
           y: 0,
           z: 0,
           rotateX: 0,
           filter: "blur(0px)",
-          duration: 0.75,
-          stagger: 0.08,
+          duration: 0.65,
+          ease: "power3.out",
+        },
+        "<+=0.12"
+      );
+    }
+
+    websiteTl.to(
+      ".website-word-highlight",
+      {
+        color: "#f97316",
+        scaleX: 1.06,
+        duration: 0.35,
+        ease: "power2.out",
+      },
+      "-=0.2"
+    );
+
+    websiteTl.to({}, { duration: 0.35 });
+
+    websiteTl.add(exitPhase(websiteRef.current!, -35));
+
+    tl.add(websiteTl);
+
+    /* =====================================================
+       PHASE 04 — WEB APPS
+    ===================================================== */
+
+    const webAppTl = gsap.timeline();
+
+    webAppTl.add(enterPhase(webAppRef.current!, 0.95));
+
+    if (webAppLabel) {
+      webAppTl.to(
+        webAppLabel,
+        {
+          opacity: 1,
+          y: 0,
+          z: 0,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 0.55,
           ease: "expo.out",
         },
         "<+=0.08"
       );
+    }
 
-      /* CRAFT ICON DRAW */
+    if (webAppTitle) {
+      webAppTl.to(
+        webAppTitle,
+        {
+          opacity: 1,
+          y: 0,
+          z: 0,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 0.8,
+          ease: "expo.out",
+        },
+        "<+=0.06"
+      );
+    }
 
-      tl.to(
-        craftIcons,
+    if (webAppRing) {
+      webAppTl.to(
+        webAppRing,
+        {
+          strokeDashoffset: 0,
+          duration: 1,
+          ease: "power3.out",
+        },
+        "<+=0.1"
+      );
+    }
+
+    webAppTl.to(
+      webAppIcons,
+      {
+        strokeDashoffset: 0,
+        duration: 0.75,
+        stagger: 0.1,
+        ease: "power3.out",
+      },
+      "<+=0.12"
+    );
+
+    if (webAppSub) {
+      webAppTl.to(
+        webAppSub,
+        {
+          opacity: 1,
+          y: 0,
+          z: 0,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 0.65,
+          ease: "power3.out",
+        },
+        "<+=0.08"
+      );
+    }
+
+    webAppTl.to(
+      ".webapp-highlight",
+      {
+        color: "#ffffff",
+        duration: 0.25,
+        ease: "power2.out",
+      },
+      "+=0.05"
+    );
+
+    webAppTl.to(
+      ".webapp-highlight",
+      {
+        color: "#f97316",
+        duration: 0.35,
+        ease: "power2.out",
+      }
+    );
+
+    webAppTl.to({}, { duration: 0.5 });
+
+    webAppTl.add(exitPhase(webAppRef.current!, 35));
+
+    tl.add(webAppTl);
+
+    /* =====================================================
+       PHASE 05 — SYSTEMS
+    ===================================================== */
+
+    const systemsTl = gsap.timeline();
+
+    systemsTl.add(enterPhase(systemsRef.current!, 0.95));
+
+    systemsTl.to(
+      systemDraw,
+      {
+        strokeDashoffset: 0,
+        duration: 0.9,
+        stagger: 0.08,
+        ease: "power3.out",
+      },
+      "<+=0.1"
+    );
+
+    systemsTl.to(
+      systemNodeDraw,
+      {
+        scale: 1,
+        duration: 0.4,
+        stagger: 0.08,
+        ease: "back.out(2)",
+      },
+      "<+=0.15"
+    );
+
+    if (coreEl) {
+      systemsTl.to(
+        coreEl,
         {
           opacity: 1,
           scale: 1,
           rotate: 0,
-          duration: 0.35,
-          stagger: 0.12,
+          duration: 0.75,
           ease: "back.out(1.7)",
         },
-        "<+=0.08"
-      );
-
-      tl.to(
-        craftPaths,
-        {
-          strokeDashoffset: 0,
-          duration: 0.8,
-          stagger: 0.16,
-          ease: "power3.out",
-        },
-        "<+=0.08"
-      );
-
-      /* BIG ARROW DRAW */
-
-      tl.to(
-        craftArrow,
-        {
-          strokeDashoffset: 0,
-          duration: 1.1,
-          ease: "power4.inOut",
-        },
-        "<+=0.15"
-      );
-
-      /* ARROW HEAD */
-
-      tl.fromTo(
-        ".craft-arrow-head",
-        {
-          opacity: 0,
-          scale: 0,
-          transformOrigin: "50% 50%",
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.35,
-          ease: "back.out(2)",
-        },
-        "-=0.2"
-      );
-
-      /* TEXT MUTATION */
-
-      tl.to(
-        ".craft-highlight",
-        {
-          color: "#ffffff",
-          letterSpacing: "0.08em",
-          duration: 0.35,
-          ease: "power2.out",
-        },
-        "-=0.2"
-      );
-
-      tl.to(
-        ".craft-highlight",
-        {
-          color: "#f97316",
-          letterSpacing: "0.01em",
-          duration: 0.45,
-          ease: "power2.inOut",
-        }
-      );
-
-      /* CRAFT HOLD */
-
-      tl.to({}, { duration: 0.35 });
-
-      /* =====================================================
-         CRAFT → WEBSITE
-      ===================================================== */
-
-      tl.to(
-        frame,
-        {
-          backgroundColor: "#000000",
-          duration: 0.75,
-          ease: "power3.inOut",
-        },
-        "+=0.05"
-      );
-
-      tl.to(
-        ".craft-orb",
-        {
-          opacity: 0,
-          scale: 1.4,
-          duration: 0.65,
-          ease: "power3.inOut",
-        },
-        "<"
-      );
-
-      tl.to(
-        craftRef.current,
-        {
-          z: -600,
-          rotateY: -18,
-          rotateX: -18,
-          yPercent: -8,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(craftRef.current),
-        }
-      );
-
-      /* =====================================================
-         WEBSITES
-      ===================================================== */
-
-      tl.add(() => showPanel(websiteRef.current), "<+=0.08");
-
-      tl.to(
-        websiteRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          duration: 0.95,
-          ease: "expo.out",
-        },
-        "<+=0.12"
-      );
-
-      if (websiteLabel) {
-        tl.to(
-          websiteLabel,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.55,
-            ease: "expo.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      if (websiteTitle) {
-        tl.to(
-          websiteTitle,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.8,
-            ease: "expo.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      tl.to(
-        websiteIcons,
-        {
-          strokeDashoffset: 0,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: "power3.out",
-        },
-        "<+=0.05"
-      );
-
-      if (websiteLine) {
-        tl.to(
-          websiteLine,
-          {
-            strokeDashoffset: 0,
-            duration: 0.8,
-            ease: "power3.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      if (websiteSub) {
-        tl.to(
-          websiteSub,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.65,
-            ease: "power3.out",
-          },
-          "<+=0.12"
-        );
-      }
-
-      tl.to(
-        ".website-word-highlight",
-        {
-          color: "#f97316",
-          scaleX: 1.06,
-          duration: 0.35,
-          ease: "power2.out",
-        },
-        "-=0.2"
-      );
-
-      tl.to({}, { duration: 0.25 });
-
-      /* WEBSITE EXIT */
-
-      tl.to(
-        websiteRef.current,
-        {
-          z: -600,
-          rotateY: -35,
-          rotateX: -12,
-          yPercent: -8,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(websiteRef.current),
-        }
-      );
-
-      /* =====================================================
-         WEB APPS
-      ===================================================== */
-
-      tl.add(() => showPanel(webAppRef.current), "<+=0.08");
-
-      tl.to(
-        webAppRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          duration: 0.95,
-          ease: "expo.out",
-        },
         "<+=0.1"
       );
+    }
 
-      if (webAppLabel) {
-        tl.to(
-          webAppLabel,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.55,
-            ease: "expo.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      if (webAppTitle) {
-        tl.to(
-          webAppTitle,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.8,
-            ease: "expo.out",
-          },
-          "<+=0.06"
-        );
-      }
-
-      if (webAppRing) {
-        tl.to(
-          webAppRing,
-          {
-            strokeDashoffset: 0,
-            duration: 1,
-            ease: "power3.out",
-          },
-          "<+=0.1"
-        );
-      }
-
-      tl.to(
-        webAppIcons,
-        {
-          strokeDashoffset: 0,
-          duration: 0.75,
-          stagger: 0.1,
-          ease: "power3.out",
-        },
-        "<+=0.12"
-      );
-
-      if (webAppSub) {
-        tl.to(
-          webAppSub,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.65,
-            ease: "power3.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      tl.to(
-        ".webapp-highlight",
-        {
-          color: "#ffffff",
-          duration: 0.25,
-          ease: "power2.out",
-        },
-        "+=0.05"
-      );
-
-      tl.to(
-        ".webapp-highlight",
-        {
-          color: "#f97316",
-          duration: 0.35,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to({}, { duration: 0.25 });
-
-      /* =====================================================
-         SYSTEMS
-      ===================================================== */
-
-      tl.to(
-        webAppRef.current,
-        {
-          z: -600,
-          rotateY: 35,
-          rotateX: -12,
-          yPercent: -8,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(webAppRef.current),
-        }
-      );
-
-      tl.add(() => showPanel(systemsRef.current), "<+=0.08");
-
-      tl.to(
-        systemsRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          duration: 0.95,
-          ease: "expo.out",
-        },
-        "<+=0.1"
-      );
-
-      tl.to(
-        systemDraw,
-        {
-          strokeDashoffset: 0,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: "power3.out",
-        },
-        "<+=0.1"
-      );
-
-      tl.to(
-        systemNodeDraw,
-        {
-          scale: 1,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "back.out(2)",
-        },
-        "<+=0.15"
-      );
-
-      if (coreEl) {
-        tl.to(
-          coreEl,
-          {
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            duration: 0.75,
-            ease: "back.out(1.7)",
-          },
-          "<+=0.1"
-        );
-      }
-
-      if (systemsTitle) {
-        tl.to(
-          systemsTitle,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.75,
-            ease: "expo.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      if (systemsSub) {
-        tl.to(
-          systemsSub,
-          {
-            opacity: 1,
-            y: 0,
-            z: 0,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 0.6,
-            ease: "power3.out",
-          },
-          "<+=0.1"
-        );
-      }
-
-      tl.to(
-        ".systems-highlight",
-        {
-          color: "#f97316",
-          letterSpacing: "0.08em",
-          duration: 0.4,
-          ease: "power2.out",
-        },
-        "-=0.1"
-      );
-
-      tl.to(
-        systemsRef.current,
-        {
-          scale: 1.04,
-          duration: 0.35,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to(
-        systemsRef.current,
-        {
-          scale: 1,
-          duration: 0.35,
-          ease: "power2.inOut",
-        }
-      );
-
-      /* =====================================================
-         CRM
-      ===================================================== */
-
-      tl.to(
-        systemsRef.current,
-        {
-          z: -620,
-          rotateY: -22,
-          rotateX: -18,
-          yPercent: -8,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(systemsRef.current),
-        }
-      );
-
-      tl.add(() => showPanel(crmRef.current), "<+=0.08");
-
-      tl.to(
-        crmRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          duration: 0.95,
-          ease: "expo.out",
-        },
-        "<+=0.1"
-      );
-
-      if (crmTitle) {
-        tl.to(
-          crmTitle,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.55,
-            ease: "expo.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      if (crmSubtitle) {
-        tl.to(
-          crmSubtitle,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.55,
-            ease: "power3.out",
-          },
-          "<+=0.06"
-        );
-      }
-
-      tl.to(
-        crmItems,
-        {
-          autoAlpha: 1,
-          y: 0,
-          z: 0,
-          rotateX: 0,
-          duration: 0.65,
-          stagger: 0.11,
-          ease: "expo.out",
-        },
-        "<+=0.1"
-      );
-
-      const users = { v: 0 };
-      const leads = { v: 0 };
-      const conv = { v: 0 };
-
-      tl.to(
-        users,
-        {
-          v: 1248,
-          duration: 0.7,
-          ease: "expo.out",
-          onUpdate: () => {
-            if (usersValueRef.current) {
-              usersValueRef.current.innerText =
-                Math.round(users.v).toLocaleString();
-            }
-          },
-        },
-        "<+=0.08"
-      );
-
-      tl.to(
-        leads,
-        {
-          v: 384,
-          duration: 0.65,
-          ease: "expo.out",
-          onUpdate: () => {
-            if (leadsValueRef.current) {
-              leadsValueRef.current.innerText =
-                Math.round(leads.v).toLocaleString();
-            }
-          },
-        },
-        "<"
-      );
-
-      tl.to(
-        conv,
-        {
-          v: 92,
-          duration: 0.65,
-          ease: "expo.out",
-          onUpdate: () => {
-            if (conversionValueRef.current) {
-              conversionValueRef.current.innerText =
-                `${Math.round(conv.v)}%`;
-            }
-          },
-        },
-        "<"
-      );
-
-      tl.to(
-        crmChart,
-        {
-          strokeDashoffset: 0,
-          duration: 1,
-          ease: "power3.out",
-        },
-        "<+=0.08"
-      );
-
-      tl.to(
-        crmChartDots,
-        {
-          scale: 1,
-          duration: 0.35,
-          stagger: 0.1,
-          ease: "back.out(2)",
-        },
-        "<+=0.35"
-      );
-
-      tl.to(
-        ".crm-highlight",
-        {
-          color: "#ffffff",
-          duration: 0.3,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to(
-        ".crm-highlight",
-        {
-          color: "#f97316",
-          duration: 0.35,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to({}, { duration: 0.3 });
-
-      /* =====================================================
-         AI
-      ===================================================== */
-
-      tl.to(
-        crmRef.current,
-        {
-          z: -620,
-          rotateY: 22,
-          rotateX: -18,
-          yPercent: -8,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(crmRef.current),
-        }
-      );
-
-      tl.add(() => showPanel(aiRef.current), "<+=0.08");
-
-      tl.to(
-        aiRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          duration: 0.95,
-          ease: "expo.out",
-        },
-        "<+=0.1"
-      );
-
-      tl.to(
-        aiPaths,
-        {
-          strokeDashoffset: 0,
-          duration: 0.85,
-          stagger: 0.08,
-          ease: "power3.out",
-        },
-        "<+=0.08"
-      );
-
-      tl.to(
-        aiCircles,
-        {
-          scale: 1,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: "back.out(2)",
-        },
-        "<+=0.1"
-      );
-
-      tl.to(
-        aiNodes,
-        {
-          autoAlpha: 1,
-          scale: 1,
-          duration: 0.45,
-          stagger: 0.08,
-          ease: "back.out(2)",
-        },
-        "<+=0.1"
-      );
-
-      if (aiCore) {
-        tl.to(
-          aiCore,
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.65,
-            ease: "back.out(1.8)",
-          },
-          "<+=0.05"
-        );
-      }
-
-      if (aiTitle) {
-        tl.to(
-          aiTitle,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.65,
-            ease: "expo.out",
-          },
-          "<+=0.08"
-        );
-      }
-
-      if (aiSub) {
-        tl.to(
-          aiSub,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.55,
-            ease: "power3.out",
-          },
-          "<+=0.1"
-        );
-      }
-
-      tl.to(
-        aiNodes,
-        {
-          x: (i) => Math.cos(i * 1.25) * 34,
-          y: (i) => Math.sin(i * 1.25) * 34,
-          duration: 0.8,
-          stagger: 0.02,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to(
-        ".ai-highlight",
-        {
-          color: "#ffffff",
-          duration: 0.25,
-        }
-      );
-
-      tl.to(
-        ".ai-highlight",
-        {
-          color: "#f97316",
-          duration: 0.35,
-        }
-      );
-
-      tl.to({}, { duration: 0.3 });
-
-      /* =====================================================
-         FINAL
-      ===================================================== */
-
-      tl.to(
-        aiRef.current,
-        {
-          z: -650,
-          rotateY: -18,
-          rotateX: -18,
-          yPercent: -10,
-          clipPath: "inset(100% 0 0 0)",
-          duration: 0.85,
-          ease: "power4.inOut",
-          onComplete: () => hidePanel(aiRef.current),
-        }
-      );
-
-      tl.add(() => showPanel(finalRef.current), "<+=0.08");
-
-      tl.to(
-        finalRef.current,
-        {
-          autoAlpha: 1,
-          visibility: "visible",
-          clipPath: "inset(0 0 0% 0)",
-          z: 0,
-          rotateX: 0,
-          rotateY: 0,
-          yPercent: 0,
-          duration: 1,
-          ease: "expo.out",
-        },
-        "<+=0.1"
-      );
-
-      tl.to(
-        finalItems,
+    if (systemsTitle) {
+      systemsTl.to(
+        systemsTitle,
         {
           opacity: 1,
           y: 0,
@@ -1669,110 +1099,575 @@ const SystemsShowcase = () => {
           rotateX: 0,
           filter: "blur(0px)",
           duration: 0.75,
-          stagger: 0.08,
           ease: "expo.out",
         },
         "<+=0.08"
       );
+    }
 
-      tl.to(
-        finalPaths,
+    if (systemsSub) {
+      systemsTl.to(
+        systemsSub,
         {
-          strokeDashoffset: 0,
-          duration: 0.9,
-          stagger: 0.1,
+          opacity: 1,
+          y: 0,
+          z: 0,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 0.6,
           ease: "power3.out",
+        },
+        "<+=0.1"
+      );
+    }
+
+    systemsTl.to(
+      ".systems-highlight",
+      {
+        color: "#f97316",
+        letterSpacing: "0.08em",
+        duration: 0.4,
+        ease: "power2.out",
+      },
+      "-=0.1"
+    );
+
+    systemsTl.to(
+      systemsRef.current,
+      {
+        scale: 1.04,
+        duration: 0.35,
+        ease: "power2.out",
+      }
+    );
+
+    systemsTl.to(
+      systemsRef.current,
+      {
+        scale: 1,
+        duration: 0.35,
+        ease: "power2.inOut",
+      }
+    );
+
+    systemsTl.to({}, { duration: 0.45 });
+
+    systemsTl.add(exitPhase(systemsRef.current!, -22));
+
+    tl.add(systemsTl);
+
+    /* =====================================================
+       PHASE 06 — CRM
+    ===================================================== */
+
+    const crmTl = gsap.timeline();
+
+    crmTl.add(enterPhase(crmRef.current!, 0.95));
+
+    if (crmTitle) {
+      crmTl.to(
+        crmTitle,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.55,
+          ease: "expo.out",
+        },
+        "<+=0.08"
+      );
+    }
+
+    if (crmSubtitle) {
+      crmTl.to(
+        crmSubtitle,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.55,
+          ease: "power3.out",
+        },
+        "<+=0.06"
+      );
+    }
+
+    crmTl.to(
+      crmItems,
+      {
+        opacity: 1,
+        y: 0,
+        z: 0,
+        rotateX: 0,
+        duration: 0.65,
+        stagger: 0.11,
+        ease: "expo.out",
+      },
+      "<+=0.1"
+    );
+
+    const users = { v: 0 };
+    const leads = { v: 0 };
+    const conv = { v: 0 };
+
+    crmTl.to(
+      users,
+      {
+        v: 1248,
+        duration: 0.7,
+        ease: "expo.out",
+        onUpdate: () => {
+          if (usersValueRef.current) {
+            usersValueRef.current.innerText =
+              Math.round(users.v).toLocaleString();
+          }
+        },
+      },
+      "<+=0.08"
+    );
+
+    crmTl.to(
+      leads,
+      {
+        v: 384,
+        duration: 0.65,
+        ease: "expo.out",
+        onUpdate: () => {
+          if (leadsValueRef.current) {
+            leadsValueRef.current.innerText =
+              Math.round(leads.v).toLocaleString();
+          }
+        },
+      },
+      "<"
+    );
+
+    crmTl.to(
+      conv,
+      {
+        v: 92,
+        duration: 0.65,
+        ease: "expo.out",
+        onUpdate: () => {
+          if (conversionValueRef.current) {
+            conversionValueRef.current.innerText =
+              `${Math.round(conv.v)}%`;
+          }
+        },
+      },
+      "<"
+    );
+
+    crmTl.to(
+      crmChart,
+      {
+        strokeDashoffset: 0,
+        duration: 1,
+        ease: "power3.out",
+      },
+      "<+=0.08"
+    );
+
+    crmTl.to(
+      crmChartDots,
+      {
+        scale: 1,
+        duration: 0.35,
+        stagger: 0.1,
+        ease: "back.out(2)",
+      },
+      "<+=0.35"
+    );
+
+    crmTl.to(
+      ".crm-highlight",
+      {
+        color: "#ffffff",
+        duration: 0.3,
+        ease: "power2.out",
+      }
+    );
+
+    crmTl.to(
+      ".crm-highlight",
+      {
+        color: "#f97316",
+        duration: 0.35,
+        ease: "power2.out",
+      }
+    );
+
+    crmTl.to({}, { duration: 0.55 });
+
+    crmTl.add(exitPhase(crmRef.current!, 22));
+
+    tl.add(crmTl);
+
+    /* =====================================================
+       PHASE 07 — AI
+    ===================================================== */
+
+    const aiTl = gsap.timeline();
+
+    aiTl.add(enterPhase(aiRef.current!, 0.95));
+
+    aiTl.to(
+      aiPaths,
+      {
+        strokeDashoffset: 0,
+        duration: 0.85,
+        stagger: 0.08,
+        ease: "power3.out",
+      },
+      "<+=0.08"
+    );
+
+    aiTl.to(
+      aiCircles,
+      {
+        scale: 1,
+        duration: 0.4,
+        stagger: 0.08,
+        ease: "back.out(2)",
+      },
+      "<+=0.1"
+    );
+
+    aiTl.to(
+      aiNodes,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.45,
+        stagger: 0.08,
+        ease: "back.out(2)",
+      },
+      "<+=0.1"
+    );
+
+    if (aiCore) {
+      aiTl.to(
+        aiCore,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.65,
+          ease: "back.out(1.8)",
         },
         "<+=0.05"
       );
+    }
 
-      tl.to(
-        ".final-highlight",
+    if (aiTitle) {
+      aiTl.to(
+        aiTitle,
         {
-          color: "#ffffff",
-          scaleX: 0.96,
-          duration: 0.3,
-        }
-      );
-
-      tl.to(
-        ".final-highlight",
-        {
-          color: "#f97316",
-          scaleX: 1.04,
-          duration: 0.4,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to(
-        finalRef.current,
-        {
-          scale: 1.025,
-          duration: 0.45,
-          ease: "power2.out",
-        }
-      );
-
-      tl.to(
-        finalRef.current,
-        {
-          scale: 1,
-          duration: 0.45,
-          ease: "power2.inOut",
-        }
-      );
-
-      /* =====================================================
-         BACKGROUND MOTION
-      ===================================================== */
-
-      gsap.to(".systems-grid", {
-        backgroundPosition: "120px 80px",
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: `+=${END_DISTANCE}`,
-          scrub: true,
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.65,
+          ease: "expo.out",
         },
-      });
+        "<+=0.08"
+      );
+    }
 
-      gsap.to(".systems-orb-left", {
+    if (aiSub) {
+      aiTl.to(
+        aiSub,
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.55,
+          ease: "power3.out",
+        },
+        "<+=0.1"
+      );
+    }
+
+    aiTl.to(
+      aiNodes,
+      {
+        x: (i) => Math.cos(i * 1.25) * 34,
+        y: (i) => Math.sin(i * 1.25) * 34,
+        duration: 0.8,
+        stagger: 0.02,
+        ease: "power2.out",
+      }
+    );
+
+    aiTl.to(
+      ".ai-highlight",
+      {
+        color: "#ffffff",
+        duration: 0.25,
+      }
+    );
+
+    aiTl.to(
+      ".ai-highlight",
+      {
+        color: "#f97316",
+        duration: 0.35,
+      }
+    );
+
+    aiTl.to({}, { duration: 0.55 });
+
+    aiTl.add(exitPhase(aiRef.current!, -18));
+
+    tl.add(aiTl);
+
+    /* =====================================================
+       PHASE 08 — FINAL
+    ===================================================== */
+
+    const finalTl = gsap.timeline();
+
+    finalTl.add(enterPhase(finalRef.current!, 1));
+
+    finalTl.to(
+      finalItems,
+      {
+        opacity: 1,
+        y: 0,
+        z: 0,
+        rotateX: 0,
+        filter: "blur(0px)",
+        duration: 0.75,
+        stagger: 0.08,
+        ease: "expo.out",
+      },
+      "<+=0.08"
+    );
+
+    finalTl.to(
+      finalPaths,
+      {
+        strokeDashoffset: 0,
+        duration: 0.9,
+        stagger: 0.1,
+        ease: "power3.out",
+      },
+      "<+=0.05"
+    );
+
+    finalTl.to(
+      ".final-highlight",
+      {
+        color: "#ffffff",
+        scaleX: 0.96,
+        duration: 0.3,
+      }
+    );
+
+    finalTl.to(
+      ".final-highlight",
+      {
+        color: "#f97316",
+        scaleX: 1.04,
+        duration: 0.4,
+        ease: "power2.out",
+      }
+    );
+
+    finalTl.to(
+      finalRef.current,
+      {
+        scale: 1.025,
+        duration: 0.45,
+        ease: "power2.out",
+      }
+    );
+
+    finalTl.to(
+      finalRef.current,
+      {
+        scale: 1,
+        duration: 0.45,
+        ease: "power2.inOut",
+      }
+    );
+
+    /*
+     * Hold final state.
+     * عشان لما توصل لآخر section ما يحصلش exit مفاجئ.
+     */
+    finalTl.to({}, { duration: 0.6 });
+
+    tl.add(finalTl);
+
+    /* =====================================================
+       BACKGROUND MOTION
+       مربوطة بنفس الـmaster timeline
+       بدل ScrollTriggers منفصلة.
+    ===================================================== */
+
+    tl.to(
+      ".systems-grid",
+      {
+        backgroundPosition: "120px 80px",
+        duration: 2,
+        ease: "none",
+      },
+      0
+    );
+
+    tl.to(
+      ".systems-orb-left",
+      {
         x: 180,
         y: -120,
+        duration: 2,
         ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: `+=${END_DISTANCE}`,
-          scrub: true,
-        },
-      });
+      },
+      0
+    );
 
-      gsap.to(".systems-orb-right", {
+    tl.to(
+      ".systems-orb-right",
+      {
         x: -160,
         y: 100,
+        duration: 2,
         ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: `+=${END_DISTANCE}`,
-          scrub: true,
-        },
-      });
+      },
+      0
+    );
 
-      /* =====================================================
-         REFRESH
-      ===================================================== */
+    /*
+     * لأن background tweens فوق كلها duration قصير بالنسبة
+     * للـtimeline، نمدهم لحد نهاية الـmaster timeline.
+     */
 
+    gsap.set(
+      [
+        ".systems-grid",
+        ".systems-orb-left",
+        ".systems-orb-right",
+      ],
+      {
+        willChange: "transform",
+      }
+    );
+
+    /*
+     * =====================================================
+     * SINGLE SCROLLTRIGGER
+     * =====================================================
+     *
+     * هنا النقطة المهمة:
+     *
+     * - no snap
+     * - no onEnter reset
+     * - no onLeave reset
+     * - no visibility manipulation
+     * - الـtimeline نفسها هي الحالة الوحيدة للحركة
+     */
+
+    const scrollTrigger = ScrollTrigger.create({
+  trigger: section,
+  start: "top top",
+  end: `+=${END_DISTANCE}`,
+
+  pin: true,
+  pinSpacing: true,
+  anticipatePin: 1,
+
+  scrub: 0.5,
+
+  animation: tl,
+
+  invalidateOnRefresh: true,
+  fastScrollEnd: false,
+
+  onEnterBack: () => {
+    gsap.set(section, {
+      padding: 0,
+      minHeight: "100vh",
+      height: "100vh",
+    });
+
+    gsap.set(frame, {
+      width: "100%",
+      height: "100%",
+      maxWidth: "100%",
+      maxHeight: "100%",
+      borderRadius: 0,
+      borderWidth: 0,
+      borderColor: "transparent",
+      backgroundColor: "#000000",
+    });
+
+    gsap.set(hintRef.current, {
+      autoAlpha: 0,
+    });
+  },
+
+  onLeave: () => {
+    gsap.set(frame, {
+      borderWidth: 1,
+      borderColor: "rgba(249,115,22,.45)",
+      boxShadow:
+        "inset 0 0 0 1px rgba(249,115,22,.15), 0 0 45px rgba(249,115,22,.08)",
+    });
+
+    gsap.set(hintRef.current, {
+      autoAlpha: 0,
+    });
+  },
+
+  onLeaveBack: () => {
+    gsap.set(section, {
+      padding: "1.75rem",
+      minHeight: "100vh",
+      height: "auto",
+    });
+
+    gsap.set(frame, {
+      width: "100%",
+      height: "3.5rem",
+      maxWidth: "80rem",
+      maxHeight: "3.5rem",
+      borderRadius: "9999px",
+      borderWidth: 1,
+      borderColor: "rgba(249,115,22,.25)",
+      backgroundColor: "#000000",
+      boxShadow: "none",
+    });
+
+    gsap.set(hintRef.current, {
+      autoAlpha: 1,
+    });
+  },
+});
+
+    /*
+     * =====================================================
+     * REFRESH
+     * =====================================================
+     */
+
+    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
-    }, sectionRef);
+    });
 
-    return () => ctx.revert();
-  }, []);
+    /* =====================================================
+       CLEANUP
+    ===================================================== */
+
+    return () => {
+      hintFloat.kill();
+      scrollTrigger.kill();
+      tl.kill();
+    };
+  }, sectionRef);
+
+  return () => ctx.revert();
+}, []);
 
   const addSystemLine = (el: SVGPathElement | null) => {
   if (el && !systemLinesRef.current.includes(el)) {
@@ -2028,7 +1923,7 @@ const SystemsShowcase = () => {
             <h2
               data-intro
               className="
-                text-[clamp(3rem,11vw,8rem)]
+                text-[clamp(2.4rem,8vw,6.5rem)]
                 font-black
                 leading-[0.85]
                 tracking-[-0.06em]
@@ -2048,7 +1943,7 @@ const SystemsShowcase = () => {
             >
               <h2
                 className="
-                  text-[clamp(3rem,11vw,8rem)]
+                  text-[clamp(2.6rem,9vw,6.5rem)]
                   font-black
                   leading-[0.85]
                   tracking-[-0.06em]
@@ -2139,7 +2034,7 @@ const SystemsShowcase = () => {
                 className="
                   mt-4
                   md:mt-6
-                  text-[clamp(2.5rem,8vw,6rem)]
+                  text-[clamp(2.2rem,7vw,5.2rem)]
                   font-black
                   leading-[0.9]
                   tracking-[-0.065em]
@@ -2186,8 +2081,8 @@ const SystemsShowcase = () => {
                 <svg
                   viewBox="0 0 500 80"
                   className="
-                    w-[70vw]
-                    max-w-[500px]
+                    w-[60vw]
+                    max-w-[420px]
                     h-auto
                     overflow-visible
                   "
@@ -2237,10 +2132,10 @@ const SystemsShowcase = () => {
                 <div className="flex flex-col items-center gap-3">
                   <div
                     className="
-                      w-14
-                      h-14
-                      md:w-20
-                      md:h-20
+                      w-12
+                      h-12
+                      md:w-16
+                      md:h-16
                       rounded-2xl
                       border
                       border-orange-500/20
@@ -2251,7 +2146,7 @@ const SystemsShowcase = () => {
                     "
                   >
                     <svg
-                      className="craft-icon w-7 h-7 md:w-10 md:h-10"
+                      className="craft-icon w-6 h-6 md:w-8 md:h-8"
                       viewBox="0 0 40 40"
                       fill="none"
                     >
@@ -2293,10 +2188,10 @@ const SystemsShowcase = () => {
                 <div className="flex flex-col items-center gap-3">
                   <div
                     className="
-                      w-14
-                      h-14
-                      md:w-20
-                      md:h-20
+                      w-12
+                      h-12
+                      md:w-16
+                      md:h-16
                       rounded-2xl
                       border
                       border-orange-500/20
@@ -2307,7 +2202,7 @@ const SystemsShowcase = () => {
                     "
                   >
                     <svg
-                      className="craft-icon w-7 h-7 md:w-10 md:h-10"
+                      className="craft-icon w-6 h-6 md:w-8 md:h-8"
                       viewBox="0 0 40 40"
                       fill="none"
                     >
@@ -2358,10 +2253,10 @@ const SystemsShowcase = () => {
                 <div className="flex flex-col items-center gap-3">
                   <div
                     className="
-                      w-14
-                      h-14
-                      md:w-20
-                      md:h-20
+                      w-12
+                      h-12
+                      md:w-16
+                      md:h-16
                       rounded-2xl
                       border
                       border-orange-500/20
@@ -2372,7 +2267,7 @@ const SystemsShowcase = () => {
                     "
                   >
                     <svg
-                      className="craft-icon w-7 h-7 md:w-10 md:h-10"
+                      className="craft-icon w-6 h-6 md:w-8 md:h-8"
                       viewBox="0 0 40 40"
                       fill="none"
                     >
@@ -2447,7 +2342,7 @@ const SystemsShowcase = () => {
                 <h3
                   data-website-title
                   className="
-                    text-[clamp(3.2rem,12vw,9rem)]
+                    text-[clamp(2.8rem,9.5vw,7rem)]
                     font-black
                     leading-[0.85]
                     tracking-[-0.07em]
@@ -2509,18 +2404,18 @@ const SystemsShowcase = () => {
                   md:mt-10
                   flex
                   justify-center
-                  gap-7
-                  md:gap-12
+                  gap-5
+                  md:gap-9
                 "
               >
                 {/* Browser */}
 
                 <svg
                   className="
-                    w-9
-                    h-9
-                    md:w-12
-                    md:h-12
+                w-7
+                h-7
+                md:w-10
+                md:h-10
                   "
                   viewBox="0 0 48 48"
                   fill="none"
@@ -2565,7 +2460,7 @@ const SystemsShowcase = () => {
                 {/* Mobile */}
 
                 <svg
-                  className="w-9 h-9 md:w-12 md:h-12"
+                  className="w-7 h-7 md:w-10 md:h-10"
                   viewBox="0 0 48 48"
                   fill="none"
                 >
@@ -2592,7 +2487,7 @@ const SystemsShowcase = () => {
                 {/* Globe */}
 
                 <svg
-                  className="w-9 h-9 md:w-12 md:h-12"
+                  className="w-7 h-7 md:w-10 md:h-10"
                   viewBox="0 0 48 48"
                   fill="none"
                 >
@@ -2652,7 +2547,7 @@ const SystemsShowcase = () => {
                 data-webapp-title
                 className="
                   mt-5
-                  text-[clamp(3.1rem,11vw,8rem)]
+                  text-[clamp(2.7rem,9vw,7rem)]
                   font-black
                   leading-[0.85]
                   tracking-[-0.07em]
@@ -2691,7 +2586,7 @@ const SystemsShowcase = () => {
                   mt-9
                   md:mt-12
                   mx-auto
-                  w-[min(82vw,560px)]
+                  w-[min(78vw,500px)]
                   aspect-[16/8]
                   border
                   border-white/10
@@ -2785,8 +2680,8 @@ const SystemsShowcase = () => {
                   top-1/2
                   -translate-x-1/2
                   -translate-y-1/2
-                  w-[95vw]
-                  max-w-[700px]
+                  w-[82vw]
+                  max-w-[620px]
                   h-auto
                   pointer-events-none
                 "
@@ -2928,9 +2823,9 @@ const SystemsShowcase = () => {
               <h3
                 data-systems-title
                 className="
-                  mt-24
-                  md:mt-36
-                  text-[clamp(3rem,11vw,8rem)]
+                  mt-20
+                  md:mt-28
+                  text-[clamp(2.6rem,9vw,6.5rem)]
                   font-black
                   leading-[0.85]
                   tracking-[-0.07em]
@@ -3270,8 +3165,8 @@ const SystemsShowcase = () => {
                   top-1/2
                   -translate-x-1/2
                   -translate-y-1/2
-                  w-[95vw]
-                  max-w-[700px]
+                  w-[82vw]
+                  max-w-[620px]
                   h-auto
                 "
                 fill="none"
@@ -3486,9 +3381,9 @@ const SystemsShowcase = () => {
               <h3
                 data-ai-title
                 className="
-                  mt-24
+                  mt-20
                   md:mt-32
-                  text-[clamp(2.6rem,7vw,5rem)]
+                  text-[clamp(2.3rem,6vw,4.3rem)]
                   font-black
                   leading-[0.9]
                   tracking-[-0.06em]
