@@ -23,26 +23,21 @@ export default function AnimatedTitle({
   useLayoutEffect(() => {
     if (!titleRef.current || !containerRef.current) return;
 
-    titleRef.current.innerHTML = words
-      .map(
-        (word) => `
+  titleRef.current.innerHTML = words
+  .map(
+    (word) => `
       <span class="word">
         ${word
           .split("")
           .map(
-            (letter) => `
-            <span class="letter-wrapper">
-              <span class="letter">
-                ${letter}
-              </span>
-            </span>
-          `
+            (letter) =>
+              `<span class="letter-wrapper"><span class="letter">${letter}</span></span>`
           )
           .join("")}
       </span>
     `
-      )
-      .join("");
+  )
+  .join("");
 
     const letters = gsap.utils.toArray<HTMLElement>(
       ".letter",
@@ -54,6 +49,7 @@ export default function AnimatedTitle({
   opacity: 0,
   scale: 1.15,
   filter: "blur(10px)",
+  letterSpacing: "-0.02em",
 });
 
     gsap.set(".title-mask", {
@@ -61,7 +57,7 @@ export default function AnimatedTitle({
       transformOrigin: "left center",
     });
 
-    
+
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -94,7 +90,7 @@ export default function AnimatedTitle({
   "-=0.35"
 );
 
-    
+
 
     return () => {
       tl.kill();
@@ -105,7 +101,7 @@ export default function AnimatedTitle({
   return (
     <section
       ref={containerRef}
-      className={`w-full py-32 flex justify-center items-center ${className}`}
+      className={`w-full py-30 flex justify-center items-center ${className}`}
     >
       <div className="relative overflow-hidden">
 
@@ -115,9 +111,9 @@ export default function AnimatedTitle({
         <h2
           ref={titleRef}
           className="
-          text-5xl
-          md:text-7xl
-          xl:text-8xl
+          text-4xl
+          md:text-6xl
+          xl:text-7xl
           font-bold
           text-orange-400
           tracking-tight

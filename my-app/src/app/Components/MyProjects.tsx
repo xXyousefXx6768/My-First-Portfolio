@@ -56,7 +56,7 @@ export default function MyProjects() {
   const [activeProj, setActiveProj] = useState<Project | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const projectsSectionRef = useRef<HTMLDivElement | null>(null);
+  const projectsSectionRef = useRef<HTMLElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const params = useParams();
 const localeParam = params.locale;
@@ -226,33 +226,52 @@ useEffect(() => {
     // --------------------------------
     // CREATE TRIGGER FOR EACH CARD
     // --------------------------------
-    cards.forEach((card) => {
-      gsap.to(card, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        rotateX: 0,
+    cards.forEach((card, index) => {
+  gsap.fromTo(
+    card,
+    {
+      opacity: 0,
+      y: 70,
+      scale: 0.94,
+      rotateX: 8,
+      clipPath:
+        "polygon(" +
+        "0% 0%, " +
+        "15% 0%, " +
+        "8% 20%, " +
+        "28% 20%, " +
+        "20% 40%, " +
+        "40% 40%, " +
+        "32% 60%, " +
+        "52% 60%, " +
+        "44% 80%, " +
+        "64% 80%, " +
+        "56% 100%, " +
+        "0% 100%" +
+        ")",
+    },
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      rotateX: 0,
+      clipPath:
+        "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
 
-        // 🔥 REMOVE MASK
-        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+      duration: 0.8,
+      delay: index * 0.06,
+      ease: "power3.out",
 
-        duration: 0.8,
-        ease: "power3.out",
-
-        scrollTrigger: {
-          trigger: card,
-
-          // نفس التوقيت القديم بالضبط
-          start: "top 84%",
-
-          once: true,
-
-          invalidateOnRefresh: true,
-
-          refreshPriority: 1,
-        },
-      });
-    });
+      scrollTrigger: {
+        trigger: projectsSectionRef.current,
+        start: "top 72%",
+        once: true,
+        invalidateOnRefresh: true,
+        fastScrollEnd: false,
+      },
+    }
+  );
+});
 
     // --------------------------------
     // FORCE REFRESH AFTER LAYOUT
@@ -424,7 +443,7 @@ useEffect(() => {
 
   return (
     <main
-
+  ref={projectsSectionRef}
   className="relative w-full px-6 md:px-16 py-20 text-white"
 >
       <AnimatedTitle title="My Projects" className="text-orange-400" />
@@ -467,10 +486,10 @@ pointer-events-none
 
       {/* GRID */}
       {!loading && projects.length > 0 && (
-      <div ref={(el) => {
-    containerRef.current = el;
-    projectsSectionRef.current = el;
-  }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+  ref={containerRef}
+  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+>
         {projects.map((proj) => (
           <article
   key={proj.id}
@@ -587,14 +606,30 @@ pointer-events-none
           {/* MODAL WINDOW */}
           <div
             ref={modalRef}
-            className="relative z-50 bg-white/6 border border-white/10 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-6 opacity-0 pointer-events-auto sm:w-4 max-w-[95vw]"
+            className="
+    relative
+    z-50
+    bg-white/6
+    border border-white/10
+    rounded-2xl md:rounded-3xl
+    p-4 sm:p-6 md:p-8
+    flex
+    flex-col md:flex-row
+    gap-5 md:gap-7
+    opacity-0
+    pointer-events-auto
+    w-[92vw]
+    max-w-[820px]
+    max-h-[85vh]
+    overflow-y-auto
+  "
             role="dialog"
             aria-modal="true"
             aria-label={getTranslated(activeProj.name, locale)}
           >
             <div className="md:w-1/2 w-full rounded-xl flex items-center overflow-hidden">
             {activeProj.image && (
-  <div className="relative w-full h-80 rounded-lg overflow-hidden">
+  <div className="relative w-full h-52 sm:h-64 md:h-80 rounded-lg overflow-hidden">
     <Image
   src={activeProj.image}
   alt={getTranslated(activeProj.name, locale)}

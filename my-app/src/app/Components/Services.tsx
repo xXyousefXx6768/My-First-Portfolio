@@ -253,39 +253,55 @@ useLayoutEffect(() => {
     // EACH CARD HAS ITS OWN SCROLL TRIGGER
     // ==========================================
 
-    cards.forEach((card, index) => {
-      const isFirstRow = index < 3;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+const isTablet = window.matchMedia(
+  "(min-width: 768px) and (max-width: 1023px)"
+).matches;
 
-      gsap.to(card, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        rotationX: 0,
-        filter: "blur(0px)",
-        clipPath: fullMask,
+cards.forEach((card, index) => {
+  let delay = 0;
+  let start = "top 82%";
 
-        duration: 0.9,
+  if (isMobile) {
+    // Mobile
+    delay = index * 0.06;
+    start = "top 94%";
+  } else if (isTablet) {
+    // Tablet
+    delay = index * 0.08;
+    start = "top 90%";
+  } else {
+    // Desktop — نفس الأنيميشن الحالي
+    const isFirstRow = index < 3;
 
-        delay: isFirstRow
-          ? index * 0.12
-          : (index - 3) * 0.12,
+    delay = isFirstRow
+      ? index * 0.12
+      : (index - 3) * 0.12;
 
-        ease: "expo.out",
+    start = "top 82%";
+  }
 
-        scrollTrigger: {
-          trigger: card,
+  gsap.to(card, {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotationX: 0,
+    filter: "blur(0px)",
+    clipPath: fullMask,
 
-          // الكارت نفسه لازم يقرب من الشاشة
-          start: "top 82%",
+    duration: 0.9,
+    delay,
+    ease: "expo.out",
 
-          once: true,
-
-          invalidateOnRefresh: true,
-
-          fastScrollEnd: true,
-        },
-      });
-    });
+    scrollTrigger: {
+      trigger: card,
+      start,
+      once: true,
+      invalidateOnRefresh: true,
+      fastScrollEnd: false,
+    },
+  });
+});
 
     // ==========================================
     // REFRESH AFTER LAYOUT
@@ -394,7 +410,6 @@ if(!quick) return;
       md:px-16
       py-24
       text-white
-      [content-visibility:auto]
       [contain:layout_paint]
       "
     >

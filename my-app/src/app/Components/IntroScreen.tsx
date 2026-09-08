@@ -167,765 +167,466 @@ tl.to(".logo-svg", {
   ease: "sine.inOut",
 });
 // ==========================================
-// CINEMATIC TITO GLITCH REVEAL
+// TITO — CINEMATIC MATERIALIZE
+// STAGE 01
 // ==========================================
 
-// ==========================================
-// CINEMATIC TITO GLITCH REVEAL
-// ==========================================
-
-const letters = gsap.utils.toArray<HTMLElement>(".tito-letter");
+// نحتفظ بـ fills لأننا هنستخدمها لاحقًا
 const fills = gsap.utils.toArray<HTMLElement>(".tito-fill");
-
-
-// ==========================================
-// TITO — INTERNAL COLOR FILL
-// ==========================================
-
-gsap.set(fills, {
-  clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
-  opacity: 0,
-});
-
-gsap.set(
-  [".glitch-line", ".glitch-red", ".glitch-cyan"],
-  {
-    opacity: 0,
-    x: 0,
-    y: 0,
-    scaleX: 0,
-    scaleY: 1,
-    skewX: 0,
-  }
-);
-
-// ==========================================
-// TITO — CINEMATIC REVEAL INITIAL STATE
-// ==========================================
-
-gsap.set(".tito-text", {
-  opacity: 0,
-  y: 18,
-  scale: 0.96,
-  scaleY: 0.72,
-  filter: "blur(12px)",
-  transformOrigin: "50% 50%",
-  willChange: "transform, filter, opacity",
-});
-
-gsap.set(letters, {
-  opacity: 0,
-  x: 0,
-  y: 8,
-  scaleX: 0.92,
-  scaleY: 0.85,
-  filter: "blur(5px)",
-  transformOrigin: "50% 50%",
-  willChange: "transform, filter, opacity",
-});
-
-// ==========================================
-// 1 — CINEMATIC FADE IN
-// ==========================================
-
-// ==========================================
-// 1 — TITO ENERGY IGNITION
-// ==========================================
-
-tl.to(".tito-text", {
-  opacity: 0.35,
-  y: 10,
-  scale: 0.985,
-  scaleY: 0.88,
-  filter: "blur(6px)",
-  duration: 0.12,
-  ease: "power2.out",
-});
-
-tl.to(".tito-text", {
-  opacity: 1,
-  y: 0,
-  scale: 1,
-  scaleY: 1,
-  filter: "blur(0px)",
-  duration: 0.22,
-  ease: "expo.out",
-});
-
-// ==========================================
-// 3 — LETTERS MATERIALIZE
-// ==========================================
-
-tl.to(
-  letters,
-  {
-    opacity: 1,
-    x: 0,
-    y: 0,
-    scaleX: 1,
-    scaleY: 1,
-    filter: "blur(0px)",
-    duration: 0.22,
-    stagger: {
-      each: 0.045,
-      from: "random",
-    },
-    ease: "power3.out",
-  },
-  "-=0.18"
-);
-
-// ==========================================
-// 3 — RGB SPLIT
-// ==========================================
-
-// الأحمر
-tl.to(
-  letters,
-  {
-    x: -5,
-    skewX: -8,
-    scaleX: 0.94,
-    duration: 0.12,
-    stagger: {
-      each: 0.035,
-      from: "random",
-    },
-    ease: "power4.out",
-
-    onStart: () => {
-      letters.forEach((letter) => {
-      letter.style.textShadow = `
-  -5px 0 0 rgba(255,0,60,.75),
-  5px 0 0 rgba(0,220,255,.75),
-  0 0 14px rgba(255,120,0,.35)
-`;
-      });
-    },
-  }
-);
-
-// ==========================================
-// 4 — GLITCH SNAP
-// ==========================================
-
-tl.to(letters, {
-x: 6,
-skewX: 7,
-scaleX: 1.04,
-
-  duration: 0.11,
-
-  stagger: {
-    each: 0.025,
-    from: "random",
-  },
-
-  ease: "power4.inOut",
-});
-
-// ==========================================
-// 5 — HORIZONTAL DIGITAL JITTER
-// ==========================================
-
-tl.to(letters, {
-x: -3,
-y: 1,
-skewX: -4,
-
-  duration: 0.08,
-
-  stagger: {
-    each: 0.018,
-    from: "random",
-  },
-
-  ease: "none",
-});
-
-// ==========================================
-// 6 — SECOND RGB HIT
-// ==========================================
-
-tl.to(letters, {
-  x: 4,
-y: -1,
-skewX: 5,
-scaleX: 0.98,
-
-  duration: 0.09,
-
-  stagger: {
-    each: 0.02,
-    from: "random",
-  },
-
-  ease: "none",
-});
-
-// ==========================================
-// 7 — GLITCH BREAK
-// ==========================================
-
-tl.to(letters, {
-  x: 0,
-  y: 0,
-  skewX: 0,
-  scaleX: 1,
-
-  duration: 0.18,
-
-  stagger: {
-    each: 0.025,
-    from: "random",
-  },
-
-  ease: "power4.out",
-});
-
-// ==========================================
-// 8 — SECONDARY FLICKER
-// ==========================================
-
-tl.to(
-  ".tito-text",
-  {
-    opacity: 0.35,
-    duration: 0.07,
-    ease: "none",
-  }
-);
-
-tl.to(".tito-text", {
-  opacity: 1,
-  duration: 0.12,
-  ease: "none",
-});
-
-tl.to(".tito-text", {
-  opacity: 0.55,
-  duration: 0.055,
-  ease: "none",
-});
-
-tl.to(".tito-text", {
-  opacity: 1,
-  duration: 0.16,
-  ease: "power2.out",
-});
-
-// ==========================================
-// 9 — REMOVE RGB DISTORTION
-// ==========================================
-
-tl.to(letters, {
-  x: 0,
-  y: 0,
-  skewX: 0,
-  scaleX: 1,
-
-  duration: 0.25,
-
-  stagger: {
-    each: 0.025,
-    from: "start",
-  },
-
-  ease: "expo.out",
-
-  onComplete: () => {
-    letters.forEach((letter) => {
-      letter.style.textShadow = "none";
-    });
-  },
-});
-
-// ==========================================
-// 10 — FINAL CINEMATIC SETTLE
-// ==========================================
-
-tl.to(".tito-text", {
-  opacity: 1,
-  scale: 1,
-  filter: "blur(0px)",
-  duration: 0.4,
-  ease: "expo.out",
-});
-
-
-// ==========================================
-// ULTRA FAST CINEMATIC GLITCH
-// ==========================================
-
-const glitchLetters = gsap.utils.toArray<HTMLElement>(".tito-letter");
 
 // ------------------------------------------
 // INITIAL STATE
 // ------------------------------------------
 
-gsap.set(".glitch-line", {
-  opacity: 0,
-  scaleX: 0,
-  scaleY: 1,
-  x: 0,
+gsap.set(".tito-text", {
+  opacity: 1,
   y: 0,
+  scale: 1,
+  scaleY: 1,
+  filter: "none",
+  clipPath: "none",
+  transformOrigin: "50% 50%",
+  willChange: "transform, opacity, filter",
 });
 
-gsap.set(
-  [".glitch-red", ".glitch-cyan"],
-  {
-    opacity: 0,
-    x: 0,
-    y: 0,
-    scaleX: 1,
-    skewX: 0,
-  }
-);
+gsap.set(".tito-base", {
+  opacity: 1,
+  color: "#ffffff",
+});
 
-// ==========================================
-// GLITCH HIT #1
-// ==========================================
-
-// الشريط نفسه شبه invisible
-tl.to(
-  ".glitch-line",
-  {
-    opacity: 0.18,
-    scaleX: 1.1,
-    scaleY: 1.8,
-    x: -10,
-    duration: 0.035,
-    ease: "none",
-  },
-  "-=0.18"
-);
-
-// RGB layers تظهر للحظة
-tl.to(
-  ".glitch-red",
-  {
-    opacity: 0.7,
-    x: -14,
-    skewX: -12,
-    scaleX: 1.04,
-    duration: 0.035,
-    ease: "none",
-  },
-  "<"
-);
-
-tl.to(
-  ".glitch-cyan",
-  {
-    opacity: 0.7,
-    x: 14,
-    skewX: 12,
-    scaleX: 0.96,
-    duration: 0.035,
-    ease: "none",
-  },
-  "<"
-);
-
-// ==========================================
-// HARD SNAP
-// ==========================================
-
-tl.to(
-  glitchLetters,
-  {
-    x: (i) => (i % 2 === 0 ? -9 : 9),
-    y: (i) => (i % 2 === 0 ? 3 : -3),
-    skewX: (i) => (i % 2 === 0 ? -10 : 10),
-    scaleX: (i) => (i % 2 === 0 ? 0.91 : 1.09),
-
-    duration: 0.025,
-
-    stagger: {
-      each: 0.008,
-      from: "random",
-    },
-
-    ease: "none",
-  },
-  "<"
-);
-
-// ==========================================
-// GLITCH CUT
-// ==========================================
-
-tl.set(".glitch-line", {
+gsap.set(fills, {
   opacity: 0,
-  scaleX: 0.5,
 });
 
-tl.set(
-  [".glitch-red", ".glitch-cyan"],
-  {
-    opacity: 0,
-  }
-);
+gsap.set(".tito-letter", {
+  opacity: 0,
+  y: 14,
+  x: 0,
+  scaleX: 1,
+  scaleY: 1,
+  skewX: 0,
+  filter: "blur(7px)",
+  textShadow: "none",
+  transformOrigin: "50% 50%",
+  willChange: "transform, opacity, filter",
+});
 
-// ==========================================
-// GLITCH HIT #2
-// ==========================================
-
-tl.to(
-  glitchLetters,
-  {
-    x: (i) => (i % 2 === 0 ? 12 : -12),
-    y: (i) => (i % 2 === 0 ? -4 : 4),
-    skewX: (i) => (i % 2 === 0 ? 14 : -14),
-    scaleX: (i) => (i % 2 === 0 ? 1.12 : 0.88),
-
-    duration: 0.028,
-
-    stagger: {
-      each: 0.006,
-      from: "random",
-    },
-
-    ease: "none",
-  }
-);
-
-// RGB دوبل
-tl.to(
-  ".glitch-red",
-  {
-    opacity: 0.8,
-    x: -18,
-    skewX: -16,
-    scaleX: 1.08,
-    duration: 0.025,
-    ease: "none",
-  },
-  "<"
-);
-
-tl.to(
-  ".glitch-cyan",
-  {
-    opacity: 0.8,
-    x: 18,
-    skewX: 16,
-    scaleX: 0.92,
-    duration: 0.025,
-    ease: "none",
-  },
-  "<"
-);
-
-// ==========================================
-// INSTANT COLLAPSE
-// ==========================================
-
-tl.set(
-  [".glitch-red", ".glitch-cyan"],
-  {
-    opacity: 0,
-    x: 0,
-    skewX: 0,
-  }
-);
-
-// ==========================================
-// FINAL MICRO DISTORTION
-// ==========================================
-
-tl.to(
-  glitchLetters,
-  {
-    x: (i) => (i % 2 === 0 ? -4 : 4),
-    y: (i) => (i % 2 === 0 ? 1 : -1),
-    skewX: (i) => (i % 2 === 0 ? -5 : 5),
-    scaleX: (i) => (i % 2 === 0 ? 0.97 : 1.03),
-
-    duration: 0.02,
-
-    stagger: {
-      each: 0.004,
-      from: "random",
-    },
-
-    ease: "none",
-  }
-);
-
-// ==========================================
-// CLEAN SNAP BACK
-// ==========================================
-
-tl.to(
-  glitchLetters,
-  {
-    x: 0,
-    y: 0,
-    scaleX: 1,
-    skewX: 0,
-
-    duration: 0.12,
-
-    stagger: {
-      each: 0.008,
-      from: "random",
-    },
-
-    ease: "expo.out",
-  }
-);
-
-// تأكيد أن كل عناصر الجليتش اختفت
-tl.set(
-  [".glitch-line", ".glitch-red", ".glitch-cyan"],
-  {
-    opacity: 0,
-    x: 0,
-    y: 0,
-    scaleX: 1,
-    scaleY: 1,
-    skewX: 0,
-  }
-);
+// ------------------------------------------
+// CENTER → OUT MATERIALIZE
+// ------------------------------------------
 
 tl.to(".tito-letter", {
-  x: 0,
+  opacity: 1,
   y: 0,
-  scaleX: 1,
-  skewX: 0,
-
-  duration: 0.18,
-
+  filter: "blur(0px)",
+  duration: 0.24,
   stagger: {
-    each: 0.018,
-    from: "random",
+    each: 0.075,
+    from: "center",
   },
-
   ease: "expo.out",
 });
 
+// ------------------------------------------
+// RGB DIGITAL ARRIVAL
+// ------------------------------------------
 
-
-
-
-// ==========================================
-// TITO — FINAL EXPANSION
-// ==========================================
-
-tl.to(".tito-text", {
-  letterSpacing: "32px",
-  duration: 0.15,
-  force3D: false,
-  ease: "power2.out"
-});
-
-// ==========================================
-// TITO — AWWWARDS LIQUID COLOR PASS
-// RICH ORANGE LIQUID FLOW
-// ==========================================
-
-
-// ==========================================
-// 03 — ENERGY COLLAPSE
-// ==========================================
-
-tl.to(".tito-text", {
-  textShadow: `
-    0 0 3px rgba(255,170,70,.75),
-    0 0 10px rgba(255,120,0,.60),
-    0 0 25px rgba(255,90,0,.38),
-    0 0 55px rgba(255,60,0,.20)
-  `,
-  filter: "brightness(1.08)",
-  duration: 0.10,
-});
-
-// ==========================================
-// 04 — CINEMATIC BREATH
-// ==========================================
-
-tl.to(".tito-text", {
-  textShadow: `
-    0 0 5px rgba(255,190,100,.85),
-    0 0 15px rgba(255,130,20,.65),
-    0 0 35px rgba(255,100,0,.42),
-    0 0 75px rgba(255,70,0,.20)
-  `,
-
-  filter: "brightness(1.16)",
-
-  duration: 0.20,
-
-  ease: "sine.inOut"
-});
-
-
-// ==========================================
-// 05 — FINAL AWWWARDS LOCK
-// ==========================================
-
-tl.to(".tito-text", {
-  textShadow: `
-    0 0 3px rgba(255,150,50,.65),
-    0 0 9px rgba(255,110,0,.45),
-    0 0 22px rgba(255,80,0,.28),
-    0 0 50px rgba(255,50,0,.14)
-  `,
-
-  filter: "brightness(1.04)",
-
-  duration: 0.22,
-
-  ease: "power2.out"
-});
-
-// ==========================================
-// TITO — CINEMATIC GLOW IGNITION
-// START IMMEDIATELY AFTER EXPANSION
-// ==========================================
-
-
-
-tl.to(".tito-text", {
-  textShadow: `
-    0 0 10px rgba(255,120,0,.45),
-    0 0 28px rgba(255,120,0,.30),
-    0 0 65px rgba(255,120,0,.16)
-  `,
-  duration: 0.22,
-  ease: "power2.out"
-});
-
-// ==========================================
-// TITO — GLOW BREATH
-// ==========================================
-
-tl.to(".tito-text", {
-  textShadow: `
-    0 0 16px rgba(255,120,0,.70),
-    0 0 42px rgba(255,120,0,.48),
-    0 0 95px rgba(255,120,0,.28)
-  `,
-  filter: "brightness(1.16)",
-  duration: 0.14,
-});
-
-tl.to(".tito-text", {
- textShadow: `
-    0 0 7px rgba(255,120,0,.32),
-    0 0 22px rgba(255,120,0,.20),
-    0 0 50px rgba(255,120,0,.10)
-  `,
-  duration: 0.14,
-  ease: "sine.inOut"
-});
-
-tl.to(".tito-text", {
-textShadow: `
-    0 0 13px rgba(255,120,0,.58),
-    0 0 35px rgba(255,120,0,.38),
-    0 0 80px rgba(255,120,0,.20)
-  `,
-  duration: 0.12,
-  ease: "sine.inOut"
-});
-
-
-
-
-tl.to(".light-sweep", {
-  x: "250%",
-  duration: 0.55,
-  ease: "power3.inOut"
-});
-
-tl.from(
-  ".subtitle",
+tl.to(
+  ".tito-letter",
   {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    force3D:true
+    x: (i) => (i % 2 === 0 ? -7 : 7),
+    y: (i) => (i % 2 === 0 ? 2 : -2),
+    skewX: (i) => (i % 2 === 0 ? -12 : 12),
+    scaleX: (i) => (i % 2 === 0 ? 0.95 : 1.05),
+    textShadow: (i) =>
+      i % 2 === 0
+        ? "-7px 0 rgba(255,0,70,.9), 6px 0 rgba(0,240,255,.65), 0 0 18px rgba(255,120,0,.25)"
+        : "7px 0 rgba(0,240,255,.9), -6px 0 rgba(255,0,70,.65), 0 0 18px rgba(255,120,0,.25)",
+    duration: 0.085,
+    stagger: {
+      each: 0.02,
+      from: "center",
+    },
+    ease: "none",
   },
-  "-=0.6"
+  "-=0.12"
 );
+
+// ------------------------------------------
+// GLITCH SETTLE
+// ------------------------------------------
+
+tl.to(".tito-letter", {
+  x: 0,
+  skewX: 0,
+  textShadow: "none",
+  duration: 0.14,
+  stagger: {
+    each: 0.025,
+    from: "center",
+  },
+  ease: "power3.out",
+});
+
+// ------------------------------------------
+// FINAL WHITE LOCK
+// ------------------------------------------
+
+tl.set(".tito-text", {
+  opacity: 1,
+  y: 0,
+  scale: 1,
+  filter: "none",
+});
+
+tl.set(".tito-base", {
+  opacity: 1,
+  color: "#ffffff",
+});
+
+tl.set(fills, {
+  opacity: 0,
+});
+// ==========================================
+// STAGE 2 — CINEMATIC GLITCH + COLOR SNAP
+// ==========================================
+
+// تجهيز طبقات الجليتش
+gsap.set(
+  [
+    ".glitch-red",
+    ".glitch-cyan",
+    ".glitch-line",
+  ],
+  {
+    opacity: 0,
+  }
+);
+
+// ------------------------------
+// GLITCH HIT #1 — بداية التشويش
+// ------------------------------
+tl.to(".glitch-red", {
+  opacity: 0.75,
+  x: -5,
+  skewX: -10,
+  duration: 0.045,
+  ease: "none",
+});
+
+tl.to(".glitch-cyan", {
+  opacity: 0.65,
+  x: 5,
+  skewX: 8,
+  duration: 0.045,
+  ease: "none",
+}, "<");
+
+tl.to(".tito-text", {
+  x: 2,
+  skewX: -2,
+  duration: 0.045,
+  ease: "none",
+}, "<");
+
+
+// ------------------------------
+// CUT
+// ------------------------------
+tl.set(
+  [
+    ".glitch-red",
+    ".glitch-cyan",
+    ".tito-text",
+  ],
+  {
+    x: 0,
+    skewX: 0,
+  }
+);
+
+tl.set(
+  [
+    ".glitch-red",
+    ".glitch-cyan",
+  ],
+  {
+    opacity: 0,
+  }
+);
+
+
+// ------------------------------
+// GLITCH HIT #2 — أسرع وأقوى
+// ------------------------------
+tl.to(".glitch-red", {
+  opacity: 1,
+  x: -14,
+  y: 3,
+  skewX: -20,
+  scaleX: 1.08,
+  duration: 0.04,
+  ease: "none",
+});
+
+tl.to(".glitch-cyan", {
+  opacity: 1,
+  x: 14,
+  y: -3,
+  skewX: 18,
+  scaleX: 0.94,
+  duration: 0.04,
+  ease: "none",
+}, "<");
+
+tl.to(".tito-text", {
+  x: () => gsap.utils.random(-6, 6),
+  y: () => gsap.utils.random(-3, 3),
+  skewX: () => gsap.utils.random(-6, 6),
+  duration: 0.04,
+  ease: "none",
+}, "<");
 
 
 
 tl.to(
-[
- ".logo-svg",
- ".tito-text",
- ".tito-reflection"
-],
-{
- scale:1.1,
- duration:1,
- ease:"power2.out"
-}
-);
-
-fills.forEach((fill) => {
-
-  // ==========================================
-  // TITO — FAST ORANGE LIQUID FILL
-  // ==========================================
-
-  gsap.set(fill, {
-    opacity: 0,
-    clipPath: "inset(0 100% 0 0)",
-    filter: `
-      brightness(1.08)
-      saturate(1.35)
-      drop-shadow(0 0 6px rgba(255,120,0,.28))
-    `,
-  });
-
-  // 01 — FAST IGNITION
-  tl.to(fill, {
-    opacity: 1,
-    clipPath: "inset(0 65% 0 0)",
-    duration: 0.07,
-    ease: "none",
-  });
-
-  // 02 — FAST LIQUID FLOW
-  tl.to(fill, {
-    clipPath: "inset(0 0% 0 0)",
-    duration: 0.18,
-    ease: "none",
-  });
-
-  // 03 — QUICK SETTLE
-  tl.to(fill, {
-    clipPath: "inset(0 -2% 0 -1%)",
-    filter: `
-      brightness(1.18)
-      saturate(1.45)
-      drop-shadow(0 0 9px rgba(255,120,0,.38))
-    `,
+  ".glitch-line",
+  {
+    opacity: 0.95,
+    scaleX: 1.35,
+    scaleY: 2.2,
+    x: () => gsap.utils.random(-18, 18),
+    y: () => gsap.utils.random(-10, 10),
     duration: 0.04,
     ease: "none",
-  });
+    stagger: 0, // كلهم مع بعض
+  },
+  "<"
+);
 
+// ✅ COLOR SNAP DURING GLITCH (not after)
+tl.set(
+  fills,
+  {
+    opacity: 1,
+    color: "#ff6a00",
+    clipPath: "none",
+    filter: "none",
+  },
+  "<"
+);
+
+tl.set(
+  ".tito-base",
+  {
+    opacity: 0,
+  },
+  "<"
+);
+// ------------------------------
+// CUT
+// ------------------------------
+tl.set(
+  [
+    ".glitch-red",
+    ".glitch-cyan",
+    ".glitch-line",
+  ],
+  {
+    opacity: 0,
+  }
+);
+
+tl.set(".tito-text", {
+  x: 0,
+  skewX: 0,
 });
 
 
 // ==========================================
-// TITO — FINAL ORANGE LOCK
-// KEEP THE WHOLE WORD ORANGE
+// COLOR SNAP
+// اللون يتغير فجأة أثناء الجليتش
+// ==========================================
+
+
+
+// ------------------------------
+// AFTER-SNAP GLITCH
+// ------------------------------
+tl.to(".tito-text", {
+  x: -3,
+  skewX: 3,
+  duration: 0.035,
+  ease: "none",
+});
+
+tl.to(".tito-text", {
+  x: 3,
+  skewX: -3,
+  duration: 0.035,
+  ease: "none",
+});
+
+
+// ------------------------------
+// GLITCH COLLAPSE
+// ------------------------------
+tl.to(
+  [
+    ".glitch-red",
+    ".glitch-cyan",
+    ".glitch-line",
+  ],
+  {
+    opacity: 0,
+    x: 0,
+    skewX: 0,
+    scaleX: 1,
+    duration: 0.07,
+    ease: "power2.out",
+  }
+);
+
+tl.to(".tito-text", {
+  x: 0,
+  skewX: 0,
+  duration: 0.08,
+  ease: "power2.out",
+});
+// ==========================================
+// STAGE 3 — CINEMATIC SETTLE
+// TITO PRESENCE LOCK
+// ==========================================
+
+// بداية الـ settle:
+// ضغط بسيط جدًا من غير ما الحروف تتحرك لوحدها
+tl.to(".tito-text", {
+  scaleX: 0.985,
+  scaleY: 0.99,
+  y: -1,
+  duration: 0.16,
+  ease: "power2.out",
+});
+
+// ==========================================
+// MICRO EXPANSION
+// ==========================================
+
+tl.to(".tito-text", {
+  scaleX: 1,
+  scaleY: 1,
+  y: 0,
+  duration: 0.28,
+  ease: "power2.out",
+});
+
+// ==========================================
+// CINEMATIC PRESENCE
+// ==========================================
+
+tl.to(".tito-text", {
+  filter: `
+    brightness(1.05)
+    drop-shadow(0 0 6px rgba(255,120,0,.10))
+    drop-shadow(0 0 18px rgba(255,100,0,.05))
+  `,
+  duration: 0.22,
+  ease: "power2.out",
+});
+
+// ==========================================
+// LOCK
+// ==========================================
+
+tl.to(".tito-text", {
+  filter: "none",
+  duration: 0.28,
+  ease: "power2.inOut",
+});
+
+// ==========================================
+// STAGE 4 — COLOR CONFIRM
+// اللون اتغير بالفعل أثناء الـ GLITCH
 // ==========================================
 
 tl.set(fills, {
   opacity: 1,
+  color: "#ff6a00",
   clipPath: "inset(0 0% 0 0)",
-  filter: `
-    brightness(1.08)
-    saturate(1.35)
-    drop-shadow(0 0 6px rgba(255,120,0,.28))
-  `,
+  filter: "none",
 });
+
+tl.set(".tito-base", {
+  opacity: 0,
+});
+
+// ==========================================
+// STAGE 5 — COLOR LOCK + REFLECTION
+// ==========================================
+
+// ------------------------------------------
+// 01 — ORANGE COLOR LOCK
+// ------------------------------------------
+
+// نثبت الـ TITO باللون البرتقالي
+// من غير زيادة في الـ glow
+tl.set(fills, {
+  opacity: 1,
+  clipPath: "inset(0 0% 0 0)",
+  filter: "none",
+});
+
+// ------------------------------------------
+// 02 — CLEAN WHITE BASE
+// ------------------------------------------
+
+// نخلي الـ base موجود تحته
+// عشان اللون يفضل نضيف ومش يحصل flicker
+tl.set(".tito-base", {
+  opacity: 0,
+});
+
+// ------------------------------------------
+// 03 — SUBTLE COLOR PRESENCE
+// ------------------------------------------
+
+tl.to(".tito-text", {
+  filter: `
+    brightness(1.06)
+    drop-shadow(0 0 6px rgba(255,120,0,.14))
+    drop-shadow(0 0 18px rgba(255,100,0,.06))
+  `,
+  duration: 0.22,
+  ease: "power2.out",
+});
+
+// ------------------------------------------
+// 04 — REFLECTION PREP
+// ------------------------------------------
+
+// الـ reflection نفسه مش ظاهر عندك في JSX حاليًا،
+// لذلك لا نضيف عنصر وهمي أو نحرّك selector غير موجود.
+// المرحلة الحالية تثبت اللون فقط.
+tl.set(".tito-text", {
+  scaleX: 1,
+  scaleY: 1,
+  y: 0,
+});
+
+// ------------------------------------------
+// 05 — COLOR LOCK
+// ------------------------------------------
+
+tl.to(".tito-text", {
+  filter: `
+    brightness(1.03)
+    drop-shadow(0 0 4px rgba(255,120,0,.10))
+    drop-shadow(0 0 12px rgba(255,100,0,.04))
+  `,
+  duration: 0.30,
+  ease: "sine.inOut",
+});
+
 
 
 
@@ -1229,7 +930,58 @@ return () => {
   TITO
 </div>
 
-  <h1
+  <div
+  className="
+    glitch-line
+    absolute
+    left-0
+    top-1/2
+    -translate-y-1/2
+    h-[2px]
+    w-full
+    bg-orange-300
+    pointer-events-none
+    z-[50]
+    opacity-0
+    origin-left
+    shadow-[0_0_8px_rgba(255,140,40,.8)]
+  "
+/>
+
+<div
+  className="
+    glitch-line
+    absolute
+    left-0
+    top-[42%]
+    h-[2px]
+    w-full
+    bg-white/60
+    pointer-events-none
+    z-[50]
+    opacity-0
+    origin-left
+    shadow-[0_0_10px_rgba(0,240,255,.55)]
+  "
+/>
+
+<div
+  className="
+    glitch-line
+    absolute
+    left-0
+    top-[58%]
+    h-[2px]
+    w-full
+    bg-red-500/60
+    pointer-events-none
+    z-[50]
+    opacity-0
+    origin-left
+    shadow-[0_0_10px_rgba(255,0,70,.55)]
+  "
+/>
+<h1
   className="
     tito-text
     will-change-transform
@@ -1238,8 +990,10 @@ return () => {
     md:text-[9rem]
     font-black
     tracking-[18px]
+    leading-none
     uppercase
     flex
+   overflow-visible
   "
 >
   {"TITO".split("").map((letter, index) => (
@@ -1249,7 +1003,7 @@ return () => {
         tito-letter
         relative
         inline-block
-        overflow-hidden
+
       "
     >
       {/* Original Letter */}
@@ -1258,22 +1012,23 @@ return () => {
       </span>
 
       {/* Internal Color Fill */}
-      <span
-        className="
-  tito-fill
-  absolute
-  inset-0
-  block
-  text-orange-500
-  pointer-events-none
-  will-change-[clip-path,filter]
-"
-      >
+    <span
+  className="
+    tito-fill
+    absolute
+    inset-0
+    block
+    text-orange-500
+    pointer-events-none
+    will-change-[clip-path]
+  "
+>
         {letter}
       </span>
     </span>
   ))}
 </h1>
+
 
 </div>
       <p
