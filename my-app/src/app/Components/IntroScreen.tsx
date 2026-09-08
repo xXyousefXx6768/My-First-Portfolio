@@ -721,46 +721,11 @@ tl.to(".logo-glow", {
   ease: "expo.in",
 });
 
-// ==========================================
-// CINEMATIC WAVE MASK
-// ==========================================
-
-// Initial state
-gsap.set(".cinematic-mask", {
-  clipPath: "ellipse(0% 0% at 50% 50%)",
+tl.to(".logo-glow", {
+  scale: 8,
   opacity: 1,
-  scale: 1,
-  transformOrigin: "50% 50%",
-  background: "#ff6500",
-});
-
-// ==========================================
-// WAVE EXPANSION
-// ==========================================
-
-tl.to(".cinematic-mask", {
-  clipPath: "ellipse(75% 65% at 50% 50%)",
   duration: 0.35,
-  ease: "power3.in",
-});
-// ==========================================
-// FULL SCREEN COVER
-// ==========================================
-
-tl.to(".cinematic-mask", {
-  clipPath: "ellipse(100% 100% at 50% 50%)",
-  duration: 0.35,
-  ease: "expo.inOut",
-});
-
-// ==========================================
-// FINAL OVERFLOW
-// ==========================================
-
-tl.to(".cinematic-mask", {
-  scale: 1.35,
-  duration: 0.25,
-  ease: "power4.in",
+  ease: "expo.in",
 });
 // ==========================================
 // ENERGY COLLAPSE
@@ -775,6 +740,69 @@ tl.to(
     ease: "power4.out",
   },
   "-=0.55"
+);
+
+// ==========================================
+// LIGHT SWEEP TRANSITION (AWWWARDS-LIKE, LIGHTWEIGHT)
+// No clip-path. Just opacity + transform.
+// ==========================================
+
+gsap.set(".transition-wash", { autoAlpha: 0 });
+gsap.set(".transition-sweep", { autoAlpha: 0, xPercent: -160 });
+
+tl.to(
+  ".transition-wash",
+  {
+    autoAlpha: 1,
+    duration: 0.18,
+    ease: "power1.out",
+  },
+  "+=0.02"
+);
+
+tl.to(
+  ".transition-sweep",
+  {
+    autoAlpha: 1,
+    xPercent: 190,
+    duration: 0.55,
+    ease: "power3.inOut",
+  },
+  "<"
+);
+
+// Pull content slightly back + fade for cinematic handoff
+tl.to(
+  [".logo-svg", ".tito-text", ".subtitle"],
+  {
+    opacity: 0,
+    scale: 0.985,
+    y: -6,
+    duration: 0.42,
+    ease: "power2.inOut",
+  },
+  "<+=0.06"
+);
+
+// Fade overlays out (reveals the site cleanly)
+tl.to(
+  ".transition-wash",
+  {
+    autoAlpha: 0,
+    duration: 0.35,
+    ease: "power2.inOut",
+  },
+  "-=0.16"
+);
+
+tl.to(
+  ".transition-sweep",
+  {
+    autoAlpha: 0,
+    duration: 0.22,
+    ease: "power2.out",
+  },
+  "-=0.20"
 );
 
 // ==========================================
@@ -1056,11 +1084,36 @@ return () => {
   "
 />
 
-    <div className="
-    cinematic-mask
+{/* LIGHT TRANSITION OVERLAYS (NO CLIP-PATH) */}
+<div
+  className="
+    transition-wash
     absolute
-    inset-0 z-[99990]
-    pointer-events-none" />
+    inset-0
+    z-[99990]
+    pointer-events-none
+    opacity-0
+    bg-[radial-gradient(circle_at_50%_45%,rgba(249,115,22,0.28),transparent_55%),linear-gradient(115deg,rgba(249,115,22,0.18),transparent_70%)]
+  "
+/>
+
+<div
+  className="
+    transition-sweep
+    absolute
+    -inset-y-[35%]
+    left-[-35%]
+    w-[70%]
+    rotate-[-12deg]
+    z-[99995]
+    pointer-events-none
+    opacity-0
+    mix-blend-screen
+    will-change-transform
+    bg-[linear-gradient(90deg,transparent,rgba(249,115,22,0.85),rgba(255,255,255,0.75),rgba(249,115,22,0.85),transparent)]
+  "
+/>
+
   </div>
 );
 }
