@@ -4,13 +4,37 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "../lib/i18n-provider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSquareLinkedin,
+  faSquareGithub,
+  faSquareInstagram,
+  faSquareFacebook,
+} from "@fortawesome/free-brands-svg-icons";
 
 gsap.registerPlugin(ScrollTrigger);
 
 function Footer() {
   const footerRef = useRef<HTMLElement | null>(null);
   const t = useTranslations("footer");
-
+const icons = [
+  {
+    icon: faSquareLinkedin,
+    link: "https://www.linkedin.com/in/yousef-amr-66873224b",
+  },
+  {
+    icon: faSquareGithub,
+    link: "https://github.com/xXyousefXx6768",
+  },
+  {
+    icon: faSquareInstagram,
+    link: "https://www.instagram.com/yousef_amr24",
+  },
+  {
+    icon: faSquareFacebook,
+    link: "https://www.facebook.com/share/1DMa2oSiss/",
+  },
+];
   useEffect(() => {
     const footer = footerRef.current;
 
@@ -299,6 +323,91 @@ if (!footer) return;
         "top 92%"
       );
 
+      /* ==========================================
+   SOCIAL LINKS
+========================================== */
+
+const socialItems = gsap.utils.toArray<HTMLElement>(
+  ".footer-social-item"
+);
+
+socialItems.forEach((item, index) => {
+  reveal(
+    item,
+    {
+      opacity: 0,
+      y: 35,
+      scale: 0.75,
+      rotate: index % 2 === 0 ? -8 : 8,
+      filter: "blur(8px)",
+    },
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      rotate: 0,
+      filter: "blur(0px)",
+      duration: 0.8,
+      delay: index * 0.08,
+      ease: "back.out(1.5)",
+    },
+    "top 92%"
+  );
+
+  const icon = item.querySelector(".footer-social-icon");
+  const glow = item.querySelector(".footer-social-glow");
+
+  item.addEventListener("mouseenter", () => {
+    gsap.to(item, {
+      y: -8,
+      scale: 1.08,
+      duration: 0.35,
+      ease: "expo.out",
+    });
+
+    gsap.to(icon, {
+      rotate: 8,
+      scale: 1.08,
+      color: "#fb923c",
+      filter:
+        "drop-shadow(0 0 12px rgba(249,115,22,0.65))",
+      duration: 0.35,
+      ease: "power3.out",
+    });
+
+    gsap.to(glow, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.35,
+      ease: "power3.out",
+    });
+  });
+
+  item.addEventListener("mouseleave", () => {
+    gsap.to(item, {
+      y: 0,
+      scale: 1,
+      duration: 0.4,
+      ease: "expo.out",
+    });
+
+    gsap.to(icon, {
+      rotate: 0,
+      scale: 1,
+      color: "#ff6000",
+      filter: "none",
+      duration: 0.4,
+      ease: "power3.out",
+    });
+
+    gsap.to(glow, {
+      opacity: 0,
+      scale: 0.75,
+      duration: 0.35,
+      ease: "power3.out",
+    });
+  });
+});
       /* ==========================================
          CLOSING STATEMENT
          DIFFERENT ANIMATION
@@ -669,6 +778,142 @@ if (!footer) return;
             {t("signature")}
           </span>
         </div>
+
+        {/* ==========================================
+    SOCIAL LINKS
+========================================== */}
+
+<div className="mt-14 md:mt-18">
+  <div
+    className="
+      mb-6
+      text-[9px]
+      md:text-[10px]
+      uppercase
+      tracking-[0.28em]
+      text-gray-500
+    "
+  >
+    SOCIALS
+  </div>
+
+  <div
+    className="
+      flex
+      items-center
+      justify-between
+      w-full
+      max-w-3xl
+      mx-auto
+      px-2
+      sm:px-6
+      md:px-0
+    "
+  >
+    {icons.map((item, index) => (
+      <a
+        key={index}
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Social link ${index + 1}`}
+        className="
+          footer-social-item
+          relative
+          group
+          flex
+          items-center
+          justify-center
+          w-16
+          h-16
+          sm:w-18
+          sm:h-18
+          md:w-20
+          md:h-20
+          will-change-transform
+        "
+      >
+        {/* Glow */}
+        <span
+          className="
+            footer-social-glow
+            absolute
+            inset-0
+            rounded-full
+            bg-orange-500/10
+            blur-xl
+            opacity-0
+            scale-75
+            pointer-events-none
+          "
+        />
+
+        {/* Outer Ring */}
+        <span
+          className="
+            absolute
+            inset-0
+            rounded-full
+            border
+            border-orange-500/10
+            transition-colors
+            duration-300
+            group-hover:border-orange-500/40
+          "
+        />
+
+        {/* Inner Ring */}
+        <span
+          className="
+            absolute
+            inset-[6px]
+            rounded-full
+            border
+            border-white/[0.04]
+            group-hover:border-orange-400/20
+            transition-colors
+            duration-300
+          "
+        />
+
+        {/* Icon */}
+        <FontAwesomeIcon
+          icon={item.icon}
+          className="
+            footer-social-icon
+            relative
+            z-10
+            text-[2rem]
+            sm:text-[2.2rem]
+            md:text-[2.6rem]
+            text-orange-500
+            will-change-transform
+          "
+        />
+
+        {/* Hover Dot */}
+        <span
+          className="
+            absolute
+            -top-1
+            right-1
+            w-2
+            h-2
+            rounded-full
+            bg-orange-500
+            opacity-0
+            scale-0
+            group-hover:opacity-100
+            group-hover:scale-100
+            transition-all
+            duration-300
+            shadow-[0_0_10px_rgba(249,115,22,0.8)]
+          "
+        />
+      </a>
+    ))}
+  </div>
+</div>
 
         {/* ==========================================
             CLOSING

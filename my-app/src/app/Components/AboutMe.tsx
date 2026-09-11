@@ -246,7 +246,7 @@ const imageReveal = () => {
       duration: 0.95,
       ease: "power4.out",
     },
-    "+=0.12"
+  "-=0.25"
   );
 
   tl.to(

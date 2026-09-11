@@ -124,47 +124,54 @@ navbar?.addEventListener("pointerleave", leaveNavbar);
   }
 
   // --- DESKTOP ---
-  gsap.set(dot, {
-    autoAlpha: 1,
-    scale: 1,
-  });
+gsap.set(dot, {
+  autoAlpha: 1,
+  scale: 1,
+});
 
-  gsap.set(ring, {
-    autoAlpha: 1,
-    scale: 1,
-  });
+gsap.set(ring, {
+  autoAlpha: 1,
+  scale: 1,
+  width: 85,
+  height: 85,
+  borderColor: "rgba(255,213,74,0.7)",
+  backgroundColor: "transparent",
+});
 
-  gsap.set(tail, {
-    autoAlpha: 0.7,
-    scale: 1,
-  });
+gsap.set(tail, {
+  autoAlpha: 0.7,
+  scale: 1,
+  backgroundColor: "rgba(255,140,40,0.10)",
+});
 
-  if (isOverNavbar) {
-    gsap.to(dot, {
-      background: "rgba(255,140,40,0.95)",
-      boxShadow: "0 0 22px rgba(255,140,40,0.65)",
-      duration: 0.3,
-      overwrite: "auto",
-    });
+dot.style.mixBlendMode = "normal";
 
-    gsap.to(ring, {
-      borderColor: "rgba(255,140,40,0.55)",
-      width: 85,
-      height: 85,
-      duration: 0.3,
-      overwrite: "auto",
-    });
+// X-Ray base effect
+ring.style.mixBlendMode = "difference";
+tail.style.mixBlendMode = "normal";
 
-    gsap.to(tail, {
-      background: "rgba(255,140,40,0.18)",
-      duration: 0.3,
-      overwrite: "auto",
-    });
+gsap.to(dot, {
+  background: "rgba(255,140,40,0.95)",
+  boxShadow: "0 0 16px rgba(255, 140, 40, 0.12)",
+  duration: 0.25,
+  overwrite: "auto",
+});
 
-    dot.style.mixBlendMode = "normal";
-    ring.style.mixBlendMode = "normal";
-    tail.style.mixBlendMode = "normal";
-  }
+gsap.to(ring, {
+  width: 85,
+  height: 85,
+  borderColor: "rgba(255, 115, 0, 0.58)",
+  backgroundColor: "rgba(255,255,255,0.03)",
+  duration: 0.3,
+  ease: "power3.out",
+  overwrite: "auto",
+});
+
+gsap.to(tail, {
+  backgroundColor: "rgba(249, 120, 8, 0.24)",
+  duration: 0.3,
+  overwrite: "auto",
+});
 }, [isOverNavbar, mode]);
 
   // Movement + interactions
