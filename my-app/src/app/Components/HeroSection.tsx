@@ -149,9 +149,7 @@ function HeroSection({
     card
   );
 
-  const innerBorder = card.querySelector(
-    ".hero-inner-border"
-  ) as HTMLElement | null;
+
 
   const image = card.querySelector("img") as HTMLImageElement | null;
 
@@ -183,13 +181,7 @@ function HeroSection({
   });
 
   // Inner border
-  if (innerBorder) {
-    gsap.set(innerBorder, {
-      scale: 0.94,
-      opacity: 0,
-      transformOrigin: "center center",
-    });
-  }
+
 
   // Image
   gsap.set(image, {
@@ -198,219 +190,218 @@ function HeroSection({
   });
 
   // =========================================================
-  // SHOW
+// SHOW
+// =========================================================
+
+const showBorders = () => {
+  gsap.killTweensOf([
+    top,
+    bottom,
+    left,
+    right,
+    image,
+    card,
+  ]);
+
+  // IMAGE SCALE
+  gsap.to(image, {
+    scale: 1.1,
+    duration: 0.7,
+    ease: "power3.out",
+    overwrite: "auto",
+  });
+
+  // TOP
+  gsap.to(top, {
+    scaleX: 1,
+    duration: 0.5,
+    ease: "expo.out",
+    overwrite: "auto",
+  });
+
+  // RIGHT
+  gsap.to(right, {
+    scaleY: 1,
+    duration: 0.5,
+    delay: 0.08,
+    ease: "expo.out",
+    overwrite: "auto",
+  });
+
+  // BOTTOM
+  gsap.to(bottom, {
+    scaleX: 1,
+    duration: 0.5,
+    delay: 0.16,
+    ease: "expo.out",
+    overwrite: "auto",
+  });
+
+  // LEFT
+  gsap.to(left, {
+    scaleY: 1,
+    duration: 0.5,
+    delay: 0.24,
+    ease: "expo.out",
+    overwrite: "auto",
+  });
+};
+
+// =========================================================
+// HIDE
+// =========================================================
+
+const hideBorders = () => {
+  gsap.killTweensOf([
+    top,
+    bottom,
+    left,
+    right,
+    image,
+  ]);
+
+  // IMAGE
+  gsap.to(image, {
+    scale: 1,
+    duration: 0.6,
+    ease: "power3.out",
+    overwrite: "auto",
+  });
+
+  // LEFT
+  gsap.to(left, {
+    scaleY: 0,
+    duration: 0.35,
+    ease: "power3.inOut",
+    overwrite: "auto",
+  });
+
+  // BOTTOM
+  gsap.to(bottom, {
+    scaleX: 0,
+    duration: 0.35,
+    ease: "power3.inOut",
+    overwrite: "auto",
+  });
+
+  // RIGHT
+  gsap.to(right, {
+    scaleY: 0,
+    duration: 0.35,
+    ease: "power3.inOut",
+    overwrite: "auto",
+  });
+
+  // TOP
+  gsap.to(top, {
+    scaleX: 0,
+    duration: 0.35,
+    ease: "power3.inOut",
+    overwrite: "auto",
+  });
+};
   // =========================================================
+// 3D TILT
+// =========================================================
 
-  const showBorders = () => {
-    gsap.killTweensOf([
-      top,
-      bottom,
-      left,
-      right,
-      innerBorder,
-      image,
-      card,
-    ]);
+const handlePointerMove = (e: PointerEvent) => {
+  // Desktop mouse only
+  if (e.pointerType !== "mouse") return;
 
-    // IMAGE SCALE
-    gsap.to(image, {
-      scale: 1.1,
-      duration: 0.7,
-      ease: "power3.out",
-      overwrite: "auto",
-    });
+  const rect = card.getBoundingClientRect();
 
-    // TOP
-    gsap.to(top, {
-      scaleX: 1,
-      duration: 0.5,
-      ease: "expo.out",
-      overwrite: "auto",
-    });
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
 
-    // RIGHT
-    gsap.to(right, {
-      scaleY: 1,
-      duration: 0.5,
-      delay: 0.08,
-      ease: "expo.out",
-      overwrite: "auto",
-    });
+  const rotateY =
+    ((x / rect.width) - 0.5) * 20;
 
-    // BOTTOM
-    gsap.to(bottom, {
-      scaleX: 1,
-      duration: 0.5,
-      delay: 0.16,
-      ease: "expo.out",
-      overwrite: "auto",
-    });
+  const rotateX =
+    ((y / rect.height) - 0.5) * -20;
 
-    // LEFT
-    gsap.to(left, {
-      scaleY: 1,
-      duration: 0.5,
-      delay: 0.24,
-      ease: "expo.out",
-      overwrite: "auto",
-    });
+  gsap.to(card, {
+    rotateY,
+    rotateX,
+    duration: 0.35,
+    ease: "power2.out",
+    transformPerspective: 1200,
+    transformStyle: "preserve-3d",
+    overwrite: "auto",
+  });
+};
 
-    // INNER FRAME
-    if (innerBorder) {
-      gsap.to(innerBorder, {
-        scale: 1,
-        opacity: 1,
-        duration: 0.65,
-        delay: 0.12,
-        ease: "power3.out",
-        overwrite: "auto",
-      });
-    }
-  };
+const resetTilt = () => {
+  gsap.to(card, {
+    rotateX: 0,
+    rotateY: 0,
+    duration: 0.55,
+    ease: "power3.out",
+    overwrite: "auto",
+  });
+};
 
-  // =========================================================
-  // HIDE
-  // =========================================================
+// =========================================================
+// DESKTOP
+// =========================================================
 
-  const hideBorders = () => {
-    gsap.killTweensOf([
-      top,
-      bottom,
-      left,
-      right,
-      innerBorder,
-      image,
-    ]);
-
-    // IMAGE
-    gsap.to(image, {
-      scale: 1,
-      duration: 0.6,
-      ease: "power3.out",
-      overwrite: "auto",
-    });
-
-    // LEFT
-    gsap.to(left, {
-      scaleY: 0,
-      duration: 0.35,
-      ease: "power3.inOut",
-      overwrite: "auto",
-    });
-
-    // BOTTOM
-    gsap.to(bottom, {
-      scaleX: 0,
-      duration: 0.35,
-      ease: "power3.inOut",
-      overwrite: "auto",
-    });
-
-    // RIGHT
-    gsap.to(right, {
-      scaleY: 0,
-      duration: 0.35,
-      ease: "power3.inOut",
-      overwrite: "auto",
-    });
-
-    // TOP
-    gsap.to(top, {
-      scaleX: 0,
-      duration: 0.35,
-      ease: "power3.inOut",
-      overwrite: "auto",
-    });
-
-    if (innerBorder) {
-      gsap.to(innerBorder, {
-        scale: 0.94,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power3.out",
-        overwrite: "auto",
-      });
-    }
-  };
-
-  // =========================================================
-  // 3D TILT
-  // =========================================================
-
-  const handlePointerMove = (e: PointerEvent) => {
-    // Don't tilt on touch
-    if (e.pointerType === "touch") return;
-
-    const rect = card.getBoundingClientRect();
-
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const rotateY =
-      ((x / rect.width) - 0.5) * 20;
-
-    const rotateX =
-      ((y / rect.height) - 0.5) * -20;
-
-    gsap.to(card, {
-      rotateY,
-      rotateX,
-      duration: 0.35,
-      ease: "power2.out",
-      transformPerspective: 1200,
-      overwrite: "auto",
-    });
-  };
-
-  const resetTilt = () => {
-    gsap.to(card, {
-      rotateX: 0,
-      rotateY: 0,
-      duration: 0.55,
-      ease: "power3.out",
-      overwrite: "auto",
-    });
-  };
-
-  // =========================================================
-  // DESKTOP
-  // =========================================================
-
-  const handlePointerEnter = (e: PointerEvent) => {
-    if (e.pointerType === "mouse") {
-      showBorders();
-    }
-  };
-
-  const handlePointerLeave = (e: PointerEvent) => {
-    if (e.pointerType === "mouse") {
-      hideBorders();
-      resetTilt();
-    }
-  };
-
-  // =========================================================
-  // TOUCH
-  // =========================================================
-
-  const handlePointerDown = (e: PointerEvent) => {
-    if (e.pointerType !== "touch") return;
-
+const handlePointerEnter = (e: PointerEvent) => {
+  if (e.pointerType === "mouse") {
     showBorders();
-  };
+  }
+};
 
-  const handlePointerUp = (e: PointerEvent) => {
-    if (e.pointerType !== "touch") return;
-
-    gsap.delayedCall(1.5, hideBorders);
-  };
-
-  const handlePointerCancel = (e: PointerEvent) => {
-    if (e.pointerType !== "touch") return;
-
+const handlePointerLeave = (e: PointerEvent) => {
+  if (e.pointerType === "mouse") {
     hideBorders();
-  };
+    resetTilt();
+  }
+};
 
+// =========================================================
+// MOBILE / TOUCH
+// =========================================================
+
+const handlePointerDown = (e: PointerEvent) => {
+  if (e.pointerType !== "touch") return;
+
+  showBorders();
+
+  // Small cinematic 3D tilt
+  gsap.to(card, {
+    rotateY: -8,
+    rotateX: 4,
+    scale: 1.03,
+    duration: 0.45,
+    ease: "power3.out",
+    transformPerspective: 1200,
+    transformStyle: "preserve-3d",
+    overwrite: "auto",
+  });
+};
+
+const handlePointerUp = (e: PointerEvent) => {
+  if (e.pointerType !== "touch") return;
+
+  // رجوع تدريجي
+  gsap.to(card, {
+    rotateY: 0,
+    rotateX: 0,
+    scale: 1,
+    duration: 0.65,
+    ease: "expo.out",
+    overwrite: "auto",
+  });
+
+  // خلي الإطار ظاهر لحظة
+  gsap.delayedCall(1.5, hideBorders);
+};
+
+const handlePointerCancel = (e: PointerEvent) => {
+  if (e.pointerType !== "touch") return;
+
+  resetTilt();
+  hideBorders();
+};
   // =========================================================
   // EVENTS
   // =========================================================
@@ -485,7 +476,6 @@ function HeroSection({
       bottom,
       left,
       right,
-      innerBorder,
       image,
       card,
     ]);
