@@ -144,39 +144,351 @@ function HeroSection({
 
   if (!card) return;
 
-  const handleMove = (e: MouseEvent) => {
+  const borders = gsap.utils.toArray<HTMLElement>(
+    ".hero-hover-border",
+    card
+  );
+
+  const innerBorder = card.querySelector(
+    ".hero-inner-border"
+  ) as HTMLElement | null;
+
+  const image = card.querySelector("img") as HTMLImageElement | null;
+
+  if (borders.length !== 4 || !image) return;
+
+  const top = borders[0];
+  const bottom = borders[1];
+  const left = borders[2];
+  const right = borders[3];
+
+  // =========================================================
+  // INITIAL STATE
+  // =========================================================
+
+  // Horizontal borders
+  gsap.set([top, bottom], {
+    scaleX: 0,
+    scaleY: 1,
+    transformOrigin: "left center",
+    autoAlpha: 1,
+  });
+
+  // Vertical borders
+  gsap.set([left, right], {
+    scaleX: 1,
+    scaleY: 0,
+    transformOrigin: "center top",
+    autoAlpha: 1,
+  });
+
+  // Inner border
+  if (innerBorder) {
+    gsap.set(innerBorder, {
+      scale: 0.94,
+      opacity: 0,
+      transformOrigin: "center center",
+    });
+  }
+
+  // Image
+  gsap.set(image, {
+    scale: 1,
+    transformOrigin: "center center",
+  });
+
+  // =========================================================
+  // SHOW
+  // =========================================================
+
+  const showBorders = () => {
+    gsap.killTweensOf([
+      top,
+      bottom,
+      left,
+      right,
+      innerBorder,
+      image,
+      card,
+    ]);
+
+    // IMAGE SCALE
+    gsap.to(image, {
+      scale: 1.1,
+      duration: 0.7,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+
+    // TOP
+    gsap.to(top, {
+      scaleX: 1,
+      duration: 0.5,
+      ease: "expo.out",
+      overwrite: "auto",
+    });
+
+    // RIGHT
+    gsap.to(right, {
+      scaleY: 1,
+      duration: 0.5,
+      delay: 0.08,
+      ease: "expo.out",
+      overwrite: "auto",
+    });
+
+    // BOTTOM
+    gsap.to(bottom, {
+      scaleX: 1,
+      duration: 0.5,
+      delay: 0.16,
+      ease: "expo.out",
+      overwrite: "auto",
+    });
+
+    // LEFT
+    gsap.to(left, {
+      scaleY: 1,
+      duration: 0.5,
+      delay: 0.24,
+      ease: "expo.out",
+      overwrite: "auto",
+    });
+
+    // INNER FRAME
+    if (innerBorder) {
+      gsap.to(innerBorder, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.65,
+        delay: 0.12,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    }
+  };
+
+  // =========================================================
+  // HIDE
+  // =========================================================
+
+  const hideBorders = () => {
+    gsap.killTweensOf([
+      top,
+      bottom,
+      left,
+      right,
+      innerBorder,
+      image,
+    ]);
+
+    // IMAGE
+    gsap.to(image, {
+      scale: 1,
+      duration: 0.6,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+
+    // LEFT
+    gsap.to(left, {
+      scaleY: 0,
+      duration: 0.35,
+      ease: "power3.inOut",
+      overwrite: "auto",
+    });
+
+    // BOTTOM
+    gsap.to(bottom, {
+      scaleX: 0,
+      duration: 0.35,
+      ease: "power3.inOut",
+      overwrite: "auto",
+    });
+
+    // RIGHT
+    gsap.to(right, {
+      scaleY: 0,
+      duration: 0.35,
+      ease: "power3.inOut",
+      overwrite: "auto",
+    });
+
+    // TOP
+    gsap.to(top, {
+      scaleX: 0,
+      duration: 0.35,
+      ease: "power3.inOut",
+      overwrite: "auto",
+    });
+
+    if (innerBorder) {
+      gsap.to(innerBorder, {
+        scale: 0.94,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    }
+  };
+
+  // =========================================================
+  // 3D TILT
+  // =========================================================
+
+  const handlePointerMove = (e: PointerEvent) => {
+    // Don't tilt on touch
+    if (e.pointerType === "touch") return;
+
     const rect = card.getBoundingClientRect();
 
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const rotateY = ((x / rect.width) - 0.5) * 20;
-    const rotateX = ((y / rect.height) - 0.5) * -20;
+    const rotateY =
+      ((x / rect.width) - 0.5) * 20;
+
+    const rotateX =
+      ((y / rect.height) - 0.5) * -20;
 
     gsap.to(card, {
       rotateY,
       rotateX,
-      duration: 0.4,
+      duration: 0.35,
       ease: "power2.out",
       transformPerspective: 1200,
+      overwrite: "auto",
     });
   };
 
-  const reset = () => {
+  const resetTilt = () => {
     gsap.to(card, {
       rotateX: 0,
       rotateY: 0,
-      duration: 0.6,
+      duration: 0.55,
       ease: "power3.out",
+      overwrite: "auto",
     });
   };
 
-  card.addEventListener("mousemove", handleMove);
-  card.addEventListener("mouseleave", reset);
+  // =========================================================
+  // DESKTOP
+  // =========================================================
+
+  const handlePointerEnter = (e: PointerEvent) => {
+    if (e.pointerType === "mouse") {
+      showBorders();
+    }
+  };
+
+  const handlePointerLeave = (e: PointerEvent) => {
+    if (e.pointerType === "mouse") {
+      hideBorders();
+      resetTilt();
+    }
+  };
+
+  // =========================================================
+  // TOUCH
+  // =========================================================
+
+  const handlePointerDown = (e: PointerEvent) => {
+    if (e.pointerType !== "touch") return;
+
+    showBorders();
+  };
+
+  const handlePointerUp = (e: PointerEvent) => {
+    if (e.pointerType !== "touch") return;
+
+    gsap.delayedCall(1.5, hideBorders);
+  };
+
+  const handlePointerCancel = (e: PointerEvent) => {
+    if (e.pointerType !== "touch") return;
+
+    hideBorders();
+  };
+
+  // =========================================================
+  // EVENTS
+  // =========================================================
+
+  card.addEventListener(
+    "pointerenter",
+    handlePointerEnter
+  );
+
+  card.addEventListener(
+    "pointerleave",
+    handlePointerLeave
+  );
+
+  card.addEventListener(
+    "pointermove",
+    handlePointerMove
+  );
+
+  card.addEventListener(
+    "pointerdown",
+    handlePointerDown
+  );
+
+  card.addEventListener(
+    "pointerup",
+    handlePointerUp
+  );
+
+  card.addEventListener(
+    "pointercancel",
+    handlePointerCancel
+  );
+
+  // =========================================================
+  // CLEANUP
+  // =========================================================
 
   return () => {
-    card.removeEventListener("mousemove", handleMove);
-    card.removeEventListener("mouseleave", reset);
+    card.removeEventListener(
+      "pointerenter",
+      handlePointerEnter
+    );
+
+    card.removeEventListener(
+      "pointerleave",
+      handlePointerLeave
+    );
+
+    card.removeEventListener(
+      "pointermove",
+      handlePointerMove
+    );
+
+    card.removeEventListener(
+      "pointerdown",
+      handlePointerDown
+    );
+
+    card.removeEventListener(
+      "pointerup",
+      handlePointerUp
+    );
+
+    card.removeEventListener(
+      "pointercancel",
+      handlePointerCancel
+    );
+
+    gsap.killTweensOf([
+      top,
+      bottom,
+      left,
+      right,
+      innerBorder,
+      image,
+      card,
+    ]);
   };
 }, []);
 
@@ -346,49 +658,98 @@ bg-orange-500/5
             src={myImg}
             style={{
   transformStyle: "preserve-3d",
-  transform: "translateZ(40px)"
 }}
             alt="my img"
             width={300}
             height={300}
             priority
             sizes="(max-width: 768px) 220px, 300px"
-            className="
-rounded-3xl
-object-cover
-transition-all
-duration-700
-group-hover:scale-110
-group-hover:[transform:rotateY(-12deg)_rotateX(4deg)]
+          className="
+  rounded-3xl
+  object-cover
 "
           />
 
-          <div
-className="
-absolute
-- inset-3
-rounded-[30px]
-border
-border-orange-500/20
-group-hover:scale-105
-transition-all
-duration-700
-"
+
+
+        <div
+  className="
+    hero-inner-border
+    absolute
+    inset-3
+    rounded-[30px]
+    border
+    border-orange-500/20
+  "
 />
 
-          {/* Hover borders unchanged */}
-          <span className="absolute top-0 left-0
-          h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600
-          rounded-full transition-all duration-500 group-hover:w-full"></span>
-          <span className="absolute bottom-0 left-0
-          h-[3px] w-0 bg-gradient-to-r from-orange-500 to-orange-600
-          rounded-full transition-all duration-500 group-hover:w-full"></span>
-          <span className="absolute top-0 left-0 w-[3px]
-          h-0 bg-gradient-to-b from-orange-500 to-orange-600
-          rounded-full transition-all duration-500 group-hover:h-full"></span>
-          <span className="absolute top-0 right-0 w-[3px]
-          h-0 bg-gradient-to-b from-orange-500 to-orange-600
-          rounded-full transition-all duration-500 group-hover:h-full"></span>
+          {/* TOP */}
+<span
+  className="
+    hero-hover-border
+    absolute
+    top-0
+    left-0
+    w-full
+    h-[3px]
+    bg-gradient-to-r
+    from-orange-500
+    to-orange-600
+    rounded-full
+    origin-left
+  "
+/>
+
+{/* BOTTOM */}
+<span
+  className="
+    hero-hover-border
+    absolute
+    bottom-0
+    left-0
+    w-full
+    h-[3px]
+    bg-gradient-to-r
+    from-orange-500
+    to-orange-600
+    rounded-full
+    origin-left
+  "
+/>
+
+{/* LEFT */}
+<span
+  className="
+    hero-hover-border
+    absolute
+    top-0
+    left-0
+    w-[3px]
+    h-full
+    bg-gradient-to-b
+    from-orange-500
+    to-orange-600
+    rounded-full
+    origin-top
+  "
+/>
+
+{/* RIGHT */}
+<span
+  className="
+    hero-hover-border
+    absolute
+    top-0
+    right-0
+    w-[3px]
+    h-full
+    bg-gradient-to-b
+    from-orange-500
+    to-orange-600
+    rounded-full
+    origin-top
+  "
+/>
 
 
 <div
