@@ -4,7 +4,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AnimatedTitle from "./custom-sections/AnimatedTitle";
-
+import { useTranslations } from "../lib/i18n-provider";
 gsap.registerPlugin(ScrollTrigger);
 
 interface Cert {
@@ -22,7 +22,7 @@ export default function CertificatesSection() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [activeImg, setActiveImg] = useState<string | null>(null);
-
+  const t = useTranslations("certificates");
   // Scroll Animation
   // Scroll Animation
 useEffect(() => {
@@ -201,7 +201,7 @@ useEffect(() => {
   "
 >
          <div className="w-full flex justify-center mb-16 relative">
-                <AnimatedTitle title=" My Certificates" className="text-orange-400" />
+                <AnimatedTitle title={t("title")} className="text-orange-400" />
               </div>
 
 <div
@@ -257,10 +257,20 @@ useEffect(() => {
           onClick={() => setActiveImg(null)}
         >
           <div
-            ref={modalRef}
-            className="relative max-w-5xl w-[35%] rounded-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
+  ref={modalRef}
+  className="
+    relative
+    w-[92vw]
+    sm:w-[85vw]
+    md:w-[70vw]
+    lg:w-[55vw]
+    max-w-5xl
+    max-h-[90vh]
+    rounded-2xl
+    overflow-hidden
+  "
+  onClick={(e) => e.stopPropagation()}
+>
             <Image
               src={activeImg}
               alt="certificate"

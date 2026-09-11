@@ -5,6 +5,7 @@ import { supabase } from "@/utils/SupaBase/ServerClient";
 import gsap from "gsap";
 import { useParams } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "../lib/i18n-provider";
 import {
   FaReact, FaBootstrap, FaPhp, FaLaravel, FaHtml5
 } from "react-icons/fa";
@@ -53,6 +54,7 @@ const TechIcon: React.FC<{ name: string }> = ({ name }) => {
 export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations("projects");
   const [activeProj, setActiveProj] = useState<Project | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -185,124 +187,75 @@ useEffect(() => {
   if (!projects.length) return;
   if (!projectsSectionRef.current) return;
 
-  const section = projectsSectionRef.current;
-
   const ctx = gsap.context(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".project-card");
 
     if (!cards.length) return;
 
-    // --------------------------------
-    // INITIAL STATE
-    // --------------------------------
+    const hiddenClip =
+      "polygon(" +
+      "0% 0%, " +
+      "15% 0%, " +
+      "8% 20%, " +
+      "28% 20%, " +
+      "20% 40%, " +
+      "40% 40%, " +
+      "32% 60%, " +
+      "52% 60%, " +
+      "44% 80%, " +
+      "64% 80%, " +
+      "56% 100%, " +
+      "0% 100%" +
+      ")";
+
+    const visibleClip =
+      "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+
+    // Initial state
     gsap.set(cards, {
       opacity: 0,
       y: 70,
       scale: 0.94,
       rotateX: 8,
-
-      // 🔥 COMPLEX MASK
-      clipPath:
-        "polygon(" +
-        "0% 0%, " +
-        "15% 0%, " +
-        "8% 20%, " +
-        "28% 20%, " +
-        "20% 40%, " +
-        "40% 40%, " +
-        "32% 60%, " +
-        "52% 60%, " +
-        "44% 80%, " +
-        "64% 80%, " +
-        "56% 100%, " +
-        "0% 100%" +
-        ")",
-
+      clipPath: hiddenClip,
       transformPerspective: 1000,
       transformOrigin: "center bottom",
       force3D: true,
     });
 
-    // --------------------------------
-    // CREATE TRIGGER FOR EACH CARD
-    // --------------------------------
-    cards.forEach((card, index) => {
-  gsap.fromTo(
-    card,
-    {
-      opacity: 0,
-      y: 70,
-      scale: 0.94,
-      rotateX: 8,
-      clipPath:
-        "polygon(" +
-        "0% 0%, " +
-        "15% 0%, " +
-        "8% 20%, " +
-        "28% 20%, " +
-        "20% 40%, " +
-        "40% 40%, " +
-        "32% 60%, " +
-        "52% 60%, " +
-        "44% 80%, " +
-        "64% 80%, " +
-        "56% 100%, " +
-        "0% 100%" +
-        ")",
-    },
-    {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotateX: 0,
-      clipPath:
-        "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+    // كل Card لها Trigger مستقل
+    cards.forEach((card) => {
+      gsap.to(card, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotateX: 0,
+        clipPath: visibleClip,
 
-      duration: 0.8,
-      delay: index * 0.06,
-      ease: "power3.out",
+        duration: 0.8,
+        ease: "power3.out",
 
-      scrollTrigger: {
-        trigger: projectsSectionRef.current,
-        start: "top 72%",
-        once: true,
-        invalidateOnRefresh: true,
-        fastScrollEnd: false,
-      },
-    }
-  );
-});
+        scrollTrigger: {
+          trigger: card,
 
-    // --------------------------------
-    // FORCE REFRESH AFTER LAYOUT
-    // --------------------------------
-    const refresh = () => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          ScrollTrigger.refresh();
-        });
+          // يبدأ لما الـ card نفسها تقرب من الـ viewport
+          start: "top 85%",
+
+          // مرة واحدة فقط
+          once: true,
+
+          invalidateOnRefresh: true,
+        },
       });
-    };
-
-    refresh();
-
-    // --------------------------------
-    // REFRESH WHEN IMAGES CHANGE LAYOUT
-    // --------------------------------
-    const images = section.querySelectorAll("img");
-
-    images.forEach((img) => {
-      if (!img.complete) {
-        img.addEventListener("load", refresh);
-      }
     });
 
-    return () => {
-      images.forEach((img) => {
-        img.removeEventListener("load", refresh);
+    // مهم بعد الـ layout
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
       });
-    };
-  }, section);
+    });
+  }, projectsSectionRef);
 
   return () => {
     ctx.revert();
@@ -446,7 +399,7 @@ useEffect(() => {
   ref={projectsSectionRef}
   className="relative w-full px-6 md:px-16 py-20 text-white"
 >
-      <AnimatedTitle title="My Projects" className="text-orange-400" />
+      <AnimatedTitle title={t("title")} className="text-orange-400" />
 
        <div
 
@@ -594,102 +547,146 @@ pointer-events-none
 )}
 
 
-      {/* MODAL */}
-      {activeProj && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          {/* BACKDROP */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-awww opacity-0 pointer-events-auto"
-            onClick={closeModal}
-          />
+{/* MODAL */}
+{activeProj && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+    {/* BACKDROP */}
+    <div
+      className="absolute inset-0 bg-black/60 backdrop-awww opacity-0 pointer-events-auto"
+      onClick={closeModal}
+    />
 
-          {/* MODAL WINDOW */}
-          <div
-            ref={modalRef}
-            className="
-    relative
-    z-50
-    bg-white/6
-    border border-white/10
-    rounded-2xl md:rounded-3xl
-    p-4 sm:p-6 md:p-8
-    flex
-    flex-col md:flex-row
-    gap-5 md:gap-7
-    opacity-0
-    pointer-events-auto
-    w-[92vw]
-    max-w-[820px]
-    max-h-[85vh]
-    overflow-y-auto
+    {/* MODAL WINDOW */}
+    <div
+      ref={modalRef}
+      className="
+        relative
+        z-50
+        bg-white/6
+        border border-white/10
+        rounded-2xl md:rounded-3xl
+        p-4 sm:p-6 md:p-8
+        flex
+        flex-col md:flex-row
+        gap-5 md:gap-7
+        opacity-0
+        pointer-events-auto
+        w-[92vw]
+        max-w-[820px]
+        max-h-[85vh]
+        overflow-hidden
+      "
+      role="dialog"
+      aria-modal="true"
+      aria-label={getTranslated(activeProj.name, locale)}
+    >
+      {/* SCROLL CONTAINER */}
+    <div
+  className="
+    w-full
+    max-h-[calc(85vh-2rem)]
+    overflow-y-visible
+    overflow-x-hidden
+    pr-2
+
+    lg:overflow-y-hidden
+    lg:max-h-none
+    lg:pr-0
   "
-            role="dialog"
-            aria-modal="true"
-            aria-label={getTranslated(activeProj.name, locale)}
-          >
-            <div className="md:w-1/2 w-full rounded-xl flex items-center overflow-hidden">
+>
+        <div className="flex flex-col md:flex-row gap-5 md:gap-7">
+
+          {/* IMAGE */}
+          <div className="md:w-1/2 w-full rounded-xl flex items-center overflow-hidden shrink-0">
             {activeProj.image && (
-  <div className="relative w-full h-52 sm:h-64 md:h-80 rounded-lg overflow-hidden">
-    <Image
-  src={activeProj.image}
-  alt={getTranslated(activeProj.name, locale)}
-  fill
-  sizes="(max-width: 768px) 100vw, 50vw"
-  className="object-cover rounded-lg"
-  loading="eager"
-  unoptimized
-/>
-  </div>
-)}
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-2xl md:text-3xl font-bold text-orange-300 mb-3">
-              {getTranslated(activeProj.name, locale)}
-              </h3>
-
-              <p className="text-gray-200 mb-4 leading-relaxed">
-               {getTranslated(activeProj.desc, locale)}
-              </p>
-
-              {activeProj.tech && renderTech(activeProj.tech)}
-
-              <div className="flex gap-4 mt-4 items-center">
-                {activeProj.preview && (
-                  <a
-                    href={activeProj.preview}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-600/20 text-orange-300 border border-orange-700/20"
-                  >
-                    <FiExternalLink className="w-4 h-4" />
-                    Live Preview
-                  </a>
-                )}
-
-                {activeProj.github && (
-                  <a
-                    href={activeProj.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-gray-200 border border-white/8"
-                  >
-                    <FiGithub className="w-4 h-4" />
-                    GitHub
-                  </a>
-                )}
-
-                <button
-                  onClick={closeModal}
-                  className="ml-auto px-4 py-2 bg-orange-600 rounded-lg hover:bg-orange-500 transition"
-                >
-                  Close
-                </button>
+              <div className="relative w-full h-52 sm:h-64 md:h-80 rounded-lg overflow-hidden">
+                <Image
+                  src={activeProj.image}
+                  alt={getTranslated(activeProj.name, locale)}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover rounded-lg"
+                  loading="eager"
+                  unoptimized
+                />
               </div>
+            )}
+          </div>
+
+          {/* CONTENT */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-2xl md:text-3xl font-bold text-orange-300 mb-3">
+              {getTranslated(activeProj.name, locale)}
+            </h3>
+
+            <p className="text-gray-200 mb-4 leading-relaxed">
+              {getTranslated(activeProj.desc, locale)}
+            </p>
+
+            {activeProj.tech && renderTech(activeProj.tech)}
+
+            <div className="flex flex-wrap gap-4 mt-4 items-center">
+              {activeProj.preview && (
+                <a
+                  href={activeProj.preview}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    flex items-center gap-2
+                    px-4 py-2
+                    rounded-lg
+                    bg-orange-600/20
+                    text-orange-300
+                    border border-orange-700/20
+                  "
+                >
+                  <FiExternalLink className="w-4 h-4" />
+                  Live Preview
+                </a>
+              )}
+
+              {activeProj.github && (
+                <a
+                  href={activeProj.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    flex items-center gap-2
+                    px-4 py-2
+                    rounded-lg
+                    bg-white/5
+                    text-gray-200
+                    border border-white/8
+                  "
+                >
+                  <FiGithub className="w-4 h-4" />
+                  GitHub
+                </a>
+              )}
+
+              <button
+                onClick={closeModal}
+                className="
+                  ml-auto
+                  px-4 py-2
+                  bg-orange-600
+                  rounded-lg
+                  hover:bg-orange-500
+                  transition
+                "
+              >
+                Close
+              </button>
             </div>
           </div>
+
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
+
+
     </main>
   );
 }

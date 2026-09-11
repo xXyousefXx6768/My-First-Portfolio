@@ -2,179 +2,274 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
+type CursorMode = "desktop" | "small" | "touch";
+
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const tailRef = useRef<HTMLDivElement | null>(null);
+
   const [isOverNavbar, setIsOverNavbar] = useState(false);
+  const [mode, setMode] = useState<CursorMode>("desktop");
 
+  // ✅ Detect mode:
+  // - touch: real phone/tablet
+  // - small: small viewport but still mouse (responsive desktop)
+  // - desktop: default
   useEffect(() => {
-  const navbar = document.querySelector(".navbar-container");
+    const mqCoarse = window.matchMedia("(pointer: coarse)");
+    const mqHoverNone = window.matchMedia("(hover: none)");
+    const mqSmall = window.matchMedia("(max-width: 640px)");
 
-  const enterNavbar = () => setIsOverNavbar(true);
-  const leaveNavbar = () => setIsOverNavbar(false);
+    const update = () => {
+      const isTouch = mqCoarse.matches && mqHoverNone.matches;
+      const isSmall = mqSmall.matches;
 
-  navbar?.addEventListener("mouseenter", enterNavbar);
-  navbar?.addEventListener("mouseleave", leaveNavbar);
+      setMode(isTouch ? "touch" : isSmall ? "small" : "desktop");
+    };
 
-  return () => {
-    navbar?.removeEventListener("mouseenter", enterNavbar);
-    navbar?.removeEventListener("mouseleave", leaveNavbar);
-  };
-}, []);
+    update();
 
-useEffect(() => {
+    mqCoarse.addEventListener?.("change", update);
+    mqHoverNone.addEventListener?.("change", update);
+    mqSmall.addEventListener?.("change", update);
+
+    return () => {
+      mqCoarse.removeEventListener?.("change", update);
+      mqHoverNone.removeEventListener?.("change", update);
+      mqSmall.removeEventListener?.("change", update);
+    };
+  }, []);
+
+  // Navbar hover (desktop/small only)
+  useEffect(() => {
+    if (mode === "touch") return;
+
+    const navbar = document.querySelector(".navbar-container");
+    const enterNavbar = () => setIsOverNavbar(true);
+    const leaveNavbar = () => setIsOverNavbar(false);
+
+    navbar?.addEventListener("mouseenter", enterNavbar);
+navbar?.addEventListener("mouseleave", leaveNavbar);
+navbar?.addEventListener("pointerleave", leaveNavbar);
+
+    return () => {
+      navbar?.removeEventListener("mouseenter", enterNavbar);
+      navbar?.removeEventListener("mouseleave", leaveNavbar);
+      navbar?.removeEventListener("pointerleave", leaveNavbar);
+    };
+  }, [mode]);
+
+  // Apply look based on mode + navbar hover
+  useEffect(() => {
   if (!dotRef.current || !ringRef.current || !tailRef.current) return;
 
+  const dot = dotRef.current;
+  const ring = ringRef.current;
+  const tail = tailRef.current;
+
+  // --- TOUCH ---
+  if (mode === "touch") {
+    gsap.set(ring, { autoAlpha: 0 });
+    gsap.set(tail, { autoAlpha: 0 });
+
+    gsap.set(dot, {
+      autoAlpha: 0,
+      background: "rgba(255,140,40,0.95)",
+      boxShadow: "0 0 12px rgba(255,140,40,0.55)",
+    });
+
+    dot.style.mixBlendMode = "normal";
+    ring.style.mixBlendMode = "normal";
+    tail.style.mixBlendMode = "normal";
+
+    return;
+  }
+
+  // --- SMALL ---
+  if (mode === "small") {
+    gsap.set(dot, {
+      autoAlpha: 1,
+      scale: 1,
+    });
+
+    gsap.set(ring, {
+      autoAlpha: 1,
+      scale: 1,
+    });
+
+    gsap.set(tail, {
+      autoAlpha: 0,
+    });
+
+    dot.style.mixBlendMode = "normal";
+    ring.style.mixBlendMode = "normal";
+
+    gsap.to(dot, {
+      background: "rgba(255,140,40,0.95)",
+      boxShadow: "0 0 14px rgba(255,140,40,0.55)",
+      duration: 0.2,
+      overwrite: "auto",
+    });
+
+    gsap.to(ring, {
+      borderColor: "rgba(255,140,40,0.45)",
+      width: 46,
+      height: 46,
+      duration: 0.2,
+      overwrite: "auto",
+    });
+
+    return;
+  }
+
+  // --- DESKTOP ---
+  gsap.set(dot, {
+    autoAlpha: 1,
+    scale: 1,
+  });
+
+  gsap.set(ring, {
+    autoAlpha: 1,
+    scale: 1,
+  });
+
+  gsap.set(tail, {
+    autoAlpha: 0.7,
+    scale: 1,
+  });
+
   if (isOverNavbar) {
-    gsap.to(dotRef.current, {
-      background: "rgba(255,255,255,0.8)",
-      boxShadow: "0 0 20px rgba(255,255,255,0.6)",
+    gsap.to(dot, {
+      background: "rgba(255,140,40,0.95)",
+      boxShadow: "0 0 22px rgba(255,140,40,0.65)",
       duration: 0.3,
+      overwrite: "auto",
     });
 
-    gsap.to(ringRef.current, {
-      borderColor: "rgba(255,255,255,0.35)",
-      width: 65,
-      height: 65,
-      duration: 0.3,
-    });
-
-    gsap.to(tailRef.current, {
-      background: "rgba(255,255,255,0.15)",
-      duration: 0.3,
-    });
-
-    dotRef.current.style.mixBlendMode = "normal";
-    ringRef.current.style.mixBlendMode = "normal";
-    tailRef.current.style.mixBlendMode = "normal";
-  } else {
-    gsap.to(dotRef.current, {
-      background: "#FFD54A",
-      boxShadow: "0 0 25px rgba(255,213,74,0.95)",
-      duration: 0.3,
-    });
-
-    gsap.to(ringRef.current, {
-      borderColor: "rgba(255,213,74,0.7)",
+    gsap.to(ring, {
+      borderColor: "rgba(255,140,40,0.55)",
       width: 85,
       height: 85,
       duration: 0.3,
+      overwrite: "auto",
     });
 
-    gsap.to(tailRef.current, {
-      background: "rgba(255,213,74,0.20)",
+    gsap.to(tail, {
+      background: "rgba(255,140,40,0.18)",
       duration: 0.3,
+      overwrite: "auto",
     });
 
-    dotRef.current.style.mixBlendMode = "difference";
-    ringRef.current.style.mixBlendMode = "difference";
-    tailRef.current.style.mixBlendMode = "difference";
+    dot.style.mixBlendMode = "normal";
+    ring.style.mixBlendMode = "normal";
+    tail.style.mixBlendMode = "normal";
   }
-}, [isOverNavbar]);
+}, [isOverNavbar, mode]);
 
-
+  // Movement + interactions
   useEffect(() => {
-    const dot = dotRef.current!;
-    const ring = ringRef.current!;
-    const tail = tailRef.current!;
+    if (!dotRef.current || !ringRef.current || !tailRef.current) return;
 
-    
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    const tail = tailRef.current;
+
+    const dotSize = mode === "small" ? 14 : mode === "touch" ? 12 : 26;
+
     Object.assign(dot.style, {
       position: "fixed",
-      width: "26px",        
-      height: "26px",
+      width: `${dotSize}px`,
+      height: `${dotSize}px`,
       borderRadius: "50%",
-      background: "#FFD54A", 
       pointerEvents: "none",
       zIndex: "99999",
       willChange: "transform",
-      mixBlendMode: "difference",
-      boxShadow: "0 0 25px rgba(255,213,74,0.95)", 
     });
 
     Object.assign(ring.style, {
       position: "fixed",
-      width: "85px",        
+      width: "85px",
       height: "85px",
       borderRadius: "50%",
       pointerEvents: "none",
       zIndex: "99998",
-      border: "2px solid rgba(255,213,74,0.7)", 
+      border: "2px solid rgba(255,213,74,0.7)",
       willChange: "transform",
-      mixBlendMode: "difference",
     });
 
-    // Tail effect
     Object.assign(tail.style, {
       position: "fixed",
       width: "45px",
       height: "45px",
       borderRadius: "50%",
-      background: "rgba(255,213,74,0.20)",
       pointerEvents: "none",
       zIndex: "99990",
       willChange: "transform, opacity",
-      mixBlendMode: "difference",
       filter: "blur(14px)",
-      opacity: "0.7",
     });
 
-    // ================== Smooth Follows ==================
-    const dotX = gsap.quickTo(dot, "x", { duration: 0.15 });
-    const dotY = gsap.quickTo(dot, "y", { duration: 0.15 });
+    const dotDur = mode === "touch" ? 0.03 : mode === "small" ? 0.08 : 0.15;
+    const ringDur = mode === "small" ? 0.14 : 0.28;
+    const tailDur = 0.35;
 
-    const ringX = gsap.quickTo(ring, "x", { duration: 0.28 });
-    const ringY = gsap.quickTo(ring, "y", { duration: 0.28 });
+    const dotX = gsap.quickTo(dot, "x", { duration: dotDur });
+    const dotY = gsap.quickTo(dot, "y", { duration: dotDur });
 
-    const tailX = gsap.quickTo(tail, "x", { duration: 0.35 });
-    const tailY = gsap.quickTo(tail, "y", { duration: 0.35 });
+    const ringX = gsap.quickTo(ring, "x", { duration: ringDur });
+    const ringY = gsap.quickTo(ring, "y", { duration: ringDur });
 
-    const onMove = (e: MouseEvent) => {
-      const x = e.clientX;
-      const y = e.clientY;
+    const tailX = gsap.quickTo(tail, "x", { duration: tailDur });
+    const tailY = gsap.quickTo(tail, "y", { duration: tailDur });
 
-      dotX(x - 13); // centered
-      dotY(y - 13);
+    const moveTo = (x: number, y: number) => {
+  dotX(x - dotSize / 2);
+  dotY(y - dotSize / 2);
 
-      ringX(x - 60); 
-      ringY(y - 50);
+  if (mode === "desktop") {
+    const ringSize = 85;
+    const tailSize = 45;
 
-      tailX(x - 22);
-      tailY(y - 22);
+    ringX(x - ringSize / 2);
+    ringY(y - ringSize / 2);
+
+    tailX(x - tailSize / 2);
+    tailY(y - tailSize / 2);
+  } else if (mode === "small") {
+    const ringSize = 46;
+
+    ringX(x - ringSize / 2);
+    ringY(y - ringSize / 2);
+  }
+};
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (mode === "touch") return;
+      moveTo(e.clientX, e.clientY);
     };
 
-    window.addEventListener("mousemove", onMove as EventListener);
+    const onTouchStart = (e: TouchEvent) => {
+      if (mode !== "touch") return;
+      const t = e.touches[0];
+      if (!t) return;
+      gsap.to(dot, { autoAlpha: 1, duration: 0.08, ease: "none" });
+      moveTo(t.clientX, t.clientY);
+    };
 
-    // ================== Hover Interactions ==================
-    const interactives = document.querySelectorAll(
-      "a, button, [role='button'], .service-card, .project-card, [data-hover]"
-    );
+    const onPointerMove = (e: PointerEvent) => {
+  if (mode === "touch") return;
+  // لما pointer يكون mouse أو pen
+  if (e.pointerType === "mouse" || e.pointerType === "pen") {
+    moveTo(e.clientX, e.clientY);
+  }
+};
 
-    interactives.forEach((el) => {
-      el.addEventListener(
-        "pointerenter",
-        (() => {
-          gsap.to(ring, { width: 110, height: 110, duration: 0.25 });
-          gsap.to(dot, { scale: 1.35, duration: 0.18 });
-          gsap.to(tail, { opacity: 1, scale: 1.4, duration: 0.3 });
-        }) as EventListener
-      );
-
-      el.addEventListener(
-        "pointerleave",
-        (() => {
-          gsap.to(ring, { width: 85, height: 85, duration: 0.25 });
-          gsap.to(dot, { scale: 1, duration: 0.18 });
-          gsap.to(tail, { opacity: 0.7, scale: 1, duration: 0.3 });
-        }) as EventListener
-      );
-    });
+window.addEventListener("pointermove", onPointerMove, { passive: true });
 
     return () => {
-      window.removeEventListener("mousemove", onMove as EventListener);
+    window.removeEventListener("pointermove", onPointerMove);
     };
-  }, []);
+  }, [mode]);
 
   return (
     <>

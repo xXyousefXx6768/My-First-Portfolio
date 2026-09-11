@@ -1,7 +1,20 @@
 import { I18nProvider } from "../lib/i18n-provider";
+import type { Metadata } from "next";
 import LenisScrollProvider from "../Providers/lenis-provider";
 import CustomCursor from "../Components/custom-sections/CustomCursor";
 import ToasterProvider from "../Components/ToasterProvider";
+
+export const metadata: Metadata = {
+  title: {
+    default: "TITO — Full‑Stack Developer",
+    template: "%s | TITO",
+  },
+  description: "Full‑Stack Developer portfolio",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+};
 
 export async function generateStaticParams() {
   return [{ locale: "en" }, { locale: "de" }];

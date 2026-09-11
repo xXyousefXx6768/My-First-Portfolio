@@ -199,6 +199,8 @@ items-center
 justify-between
 gap-12
 lg:gap-32
+xl:gap-44
+2xl:gap-56
 w-full
 max-w-7xl
 mx-auto

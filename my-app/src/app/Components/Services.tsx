@@ -124,8 +124,8 @@ export default function Services() {
       },
 
       {
-  title: "System Development",
-  desc: "Building scalable web-based systems tailored to real business needs.",
+  title: t("items.6.title"),
+  desc: t("items.6.desc"),
   icon: (
     <FaProjectDiagram
       className="text-purple-400 text-4xl parallax-l will-change-transform"
@@ -136,8 +136,8 @@ export default function Services() {
 },
 
 {
-  title: "AI Integration",
-  desc: "Integrating AI-powered features into modern web applications and business systems.",
+  title: t("items.7.title"),
+  desc: t("items.7.desc"),
   icon: (
     <FaBrain
       className="text-violet-400 text-4xl parallax-l will-change-transform"
@@ -148,8 +148,8 @@ export default function Services() {
 },
 
 {
-  title: "CRM Systems",
-  desc: "Building customer management systems to organize data, sales and business operations.",
+  title: t("items.8.title"),
+  desc: t("items.8.desc"),
   icon: (
     <FaUsersCog
       className="text-sky-400 text-4xl parallax-l will-change-transform"
@@ -160,8 +160,8 @@ export default function Services() {
 },
 
 {
-  title: "Automation & Workflows",
-  desc: "Automating repetitive business processes to improve efficiency and reduce manual work.",
+  title: t("items.9.title"),
+  desc: t("items.9.desc"),
   icon: (
     <FaRobot
       className="text-emerald-400 text-4xl parallax-l will-change-transform"

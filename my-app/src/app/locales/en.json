@@ -21,13 +21,36 @@
   }
 ,
   "about": {
-    "title": "About Me",
-    "description": "👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer who loves turning ideas into interactive, functional, and visually appealing web experiences..."
+  "title": "About Me",
+  "description": "👋 Hi, I’m Yousef Amr, also known as Tito — a passionate Full-Stack Developer who loves turning ideas into interactive, functional, and visually appealing web experiences...",
+  "paragraphs": {
+    "one": "I am a Front-End Developer specialized in React.js, Next.js and modern web technologies, passionate about creating high-performance, scalable and visually engaging web applications.",
+    "two": "Combining strong technical skills with a background in Italian Language Studies, I bring analytical thinking, adaptability and effective communication to every team and environment.",
+    "three": "My focus is building intuitive user experiences, writing clean maintainable code and continuously improving my skills to deliver modern digital solutions with real business value."
   },
+  "cards": {
+    "reactNext": {
+      "title": "React & Next.js",
+      "desc": "Modern Front-End Development"
+    },
+    "responsive": {
+      "title": "Responsive UI",
+      "desc": "Mobile First Design Approach"
+    },
+    "languages": {
+      "title": "3 Languages",
+      "desc": "Arabic • English • German"
+    },
+    "available": {
+      "title": "Available",
+      "desc": "Open For Opportunities"
+    }
+  }
+},
   "skills": {
     "title": "My Skills"
   },
-  
+
   "services": {
   "title": "Services",
   "items": {
@@ -54,9 +77,152 @@
     "5": {
       "title": "Maintenance & Support",
       "desc": "Bug fixes, refactoring, and long-term project support."
-    }
-  }
+    },
+    "6": {
+  "title": "System Development",
+  "desc": "Building scalable web-based systems tailored to real business needs."
+},
+"7": {
+  "title": "AI Integration",
+  "desc": "Integrating AI-powered features into modern web applications and business systems."
+},
+"8": {
+  "title": "CRM Systems",
+  "desc": "Building customer management systems to organize data, sales and business operations."
+},
+"9": {
+  "title": "Automation & Workflows",
+  "desc": "Automating repetitive business processes to improve efficiency and reduce manual work."
 }
+  }
+},
+"systemsShowcase": {
+  "scrollToPlay": "Scroll to play",
+
+  "intro": {
+    "label": "More than websites",
+    "title": "I DON'T JUST",
+    "highlight": "BUILD.",
+    "description": "I design digital experiences that become useful products, connected workflows, and systems that actually move a business forward."
+  },
+
+  "craft": {
+    "label": "PROCESS / DELIVERY",
+    "titleLeft": "IDEAS",
+    "titleRight": "CODE",
+    "description": "I translate business intent into clean architecture, reliable implementation, and production-ready systems.",
+    "highlight": "Every decision has a purpose.",
+    "concept": "Concept",
+    "build": "Build",
+    "ship": "Ship"
+  },
+
+  "websites": {
+    "label": "01 / DIGITAL EXPERIENCE",
+    "titleLeft": "WEB",
+    "titleRight": "SITES",
+    "description": "Interfaces built to communicate ",
+    "desc2":"convert attention,",
+    "desc3":"and make a product feel as strong as the technology behind it."
+  },
+
+  "webapps": {
+    "label": "02 / APPLICATION",
+    "titleLeft": "WEB",
+    "titleRight": "APPS",
+    "description": "From dashboards to complex workflows,",
+    "desc2":"every interaction is designed around a real user action."
+  },
+
+  "systems": {
+    "title": "SYSTEMS",
+    "description": "Websites are only one layer.",
+    "desc2": "I connect interfaces, data, logic, users, and automation into one coherent digital architecture.,",
+    "core": "CORE"
+  },
+
+  "crm": {
+    "title": "CRM",
+    "subtitle": "MANAGEMENT SYSTEM",
+    "online": "● ONLINE",
+    "users": "USERS",
+    "leads": "LEADS",
+    "conversion": "CONVERSION",
+    "activity": "Customer activity • Real-time data • Automated workflow"
+  },
+
+  "ai": {
+  "title": "INTELLIGENCE",
+  "highlight": "IN MOTION.",
+  "description": "AI becomes useful when it connects to the system around it.",
+  "desc2": "Automation, decision support, intelligent workflows, and real integrations."
+},
+
+  "final": {
+    "label": "That's what I build",
+    "title": "DIGITAL",
+    "highlight": "SYSTEMS.",
+    "stack": "WEB APPS • CRM • AI • AUTOMATION",
+    "line1": "Not isolated pages.",
+    "highlight1": "Connected experiences.",
+    "line2": "Not just features.",
+    "highlight2": "Complete systems."
+  }
+},
+"projects":{
+  "title":"My projects"
+},
+"certificates":{
+ "title":"My certificates"
+},
+"contact": {
+  "title": "Let's Work Together",
+  "description": "Have a project in mind or want to discuss an opportunity? Feel free to reach out through any of the platforms below.",
+  "cards": {
+    "email": {
+      "title": "Email",
+      "desc": "Send me an email anytime."
+    },
+    "linkedin": {
+      "title": "LinkedIn",
+      "desc": "Connect and let's discuss opportunities."
+    },
+    "github": {
+      "title": "GitHub",
+      "desc": "Explore my projects and code."
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "desc": "Quick communication for projects."
+    }
+  },
+  "cta": "Start a Conversation"
+},
+
+"footer": {
+  "eyebrow": "THE LAST FRAME",
+  "titleLine1": "LET'S BUILD",
+  "titleLine2": "SOMETHING THAT MATTERS.",
+  "description": "Digital experiences should feel clear, intentional, and alive. I build modern interfaces and powerful web solutions that turn ideas into something people can actually experience.",
+  "navigationTitle": "NAVIGATION",
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "skills": "Skills",
+    "services": "Services",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "servicesTitle": "WHAT I BUILD",
+  "service1": "Web Experiences",
+  "service2": "Web Applications",
+  "service3": "Digital Systems",
+  "service4": "Interactive Interfaces",
+  "stack": "REACT • NEXT.JS • GSAP • TAILWIND",
+  "signature": "DESIGNED & BUILT BY TITO",
+  "closing": "Good design gets attention. Great digital experiences stay with you."
+}
+
 }
 
 

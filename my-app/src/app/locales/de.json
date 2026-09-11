@@ -19,15 +19,38 @@
     "hire": "Stellen Sie mich ein",
     "download": "Lebenslauf herunterladen"
   },
-  
+
   "about": {
-    "title": "Über mich",
-    "description": "Ich bin Frontend-Entwickler mit Spezialisierung auf React.js, Next.js und moderne Webtechnologien. Meine Leidenschaft ist die Entwicklung leistungsstarker, skalierbarer und visuell ansprechender Webanwendungen. Durch die Kombination fundierter technischer Kenntnisse mit meinem akademischen Hintergrund im Bereich der italienischen Sprache bringe ich analytisches Denken, Anpassungsfähigkeit und ausgeprägte Kommunikationsfähigkeiten in jedes Team und Arbeitsumfeld ein. Mein Schwerpunkt liegt auf der Entwicklung intuitiver Benutzererlebnisse, dem Schreiben von sauberem und wartbarem Code sowie der kontinuierlichen Weiterentwicklung meiner Fähigkeiten, um moderne digitale Lösungen mit echtem Mehrwert für Unternehmen zu schaffen."
+  "title": "Über mich",
+  "description": "Ich bin Frontend-Entwickler mit Spezialisierung auf React.js, Next.js und moderne Webtechnologien. Meine Leidenschaft ist die Entwicklung leistungsstarker, skalierbarer und visuell ansprechender Webanwendungen. Durch die Kombination fundierter technischer Kenntnisse mit meinem akademischen Hintergrund im Bereich der italienischen Sprache bringe ich analytisches Denken, Anpassungsfähigkeit und ausgeprägte Kommunikationsfähigkeiten in jedes Team und Arbeitsumfeld ein. Mein Schwerpunkt liegt auf der Entwicklung intuitiver Benutzererlebnisse, dem Schreiben von sauberem und wartbarem Code sowie der kontinuierlichen Weiterentwicklung meiner Fähigkeiten, um moderne digitale Lösungen mit echtem Mehrwert für Unternehmen zu schaffen.",
+  "paragraphs": {
+    "one": "Ich bin Front-End-Entwickler mit Spezialisierung auf React.js, Next.js und moderne Webtechnologien und entwickle leidenschaftlich leistungsstarke, skalierbare und visuell überzeugende Webanwendungen.",
+    "two": "Durch die Kombination starker technischer Fähigkeiten mit meinem Hintergrund im Studium der italienischen Sprache bringe ich analytisches Denken, Anpassungsfähigkeit und klare Kommunikation in jedes Team und Umfeld ein.",
+    "three": "Mein Fokus liegt auf intuitiven Benutzererlebnissen, sauberem und wartbarem Code sowie der kontinuierlichen Weiterentwicklung, um moderne digitale Lösungen mit echtem geschäftlichem Mehrwert zu liefern."
   },
+  "cards": {
+    "reactNext": {
+      "title": "React & Next.js",
+      "desc": "Moderne Front-End-Entwicklung"
+    },
+    "responsive": {
+      "title": "Responsives UI",
+      "desc": "Mobile-First-Designansatz"
+    },
+    "languages": {
+      "title": "3 Sprachen",
+      "desc": "Arabisch • Englisch • Deutsch"
+    },
+    "available": {
+      "title": "Verfügbar",
+      "desc": "Offen für neue Möglichkeiten"
+    }
+  }
+},
   "skills": {
     "title": "Meine Fähigkeiten"
   },
-  
+
  "services": {
   "title": "Dienstleistungen",
   "items": {
@@ -54,9 +77,153 @@
     "5": {
       "title": "Wartung & Support",
       "desc": "Fehlerbehebung, Refactoring und langfristige Projektunterstützung."
-    }
-  }
+    },
+    "6": {
+  "title": "Systementwicklung",
+  "desc": "Entwicklung skalierbarer webbasierter Systeme, die gezielt auf reale Geschäftsanforderungen zugeschnitten sind."
+},
+"7": {
+  "title": "KI-Integration",
+  "desc": "Integration KI-gestützter Funktionen in moderne Webanwendungen und Geschäftssysteme."
+},
+"8": {
+  "title": "CRM-Systeme",
+  "desc": "Entwicklung von CRM-Systemen zur Organisation von Kundendaten, Vertrieb und Geschäftsabläufen."
+},
+"9": {
+  "title": "Automatisierung & Workflows",
+  "desc": "Automatisierung wiederkehrender Geschäftsprozesse zur Steigerung der Effizienz und Reduzierung manueller Arbeit."
 }
+  }
+},
+
+"systemsShowcase": {
+  "scrollToPlay": "Zum Starten scrollen",
+
+  "intro": {
+    "label": "Mehr als Websites",
+    "title": "ICH BAUE NICHT NUR",
+    "highlight": "WEBSEITEN.",
+    "description": "Ich entwickle digitale Erlebnisse, die zu nützlichen Produkten, vernetzten Workflows und Systemen werden, die ein Unternehmen wirklich voranbringen."
+  },
+
+  "craft": {
+    "label": "PROZESS / UMSETZUNG",
+    "titleLeft": "IDEEN",
+    "titleRight": "CODE",
+    "description": "Ich übersetze geschäftliche Anforderungen in eine klare Architektur, zuverlässige Umsetzung und produktionsreife Systeme.",
+    "highlight": "Jede Entscheidung hat einen Zweck.",
+    "concept": "Konzept",
+    "build": "Entwicklung",
+    "ship": "Bereitstellung"
+  },
+
+  "websites": {
+  "label": "01 / DIGITALE EXPERIENCE",
+  "titleLeft": "WEB",
+  "titleRight": "SITES",
+  "description": "Benutzeroberflächen, die kommunizieren,",
+  "desc2": "Aufmerksamkeit in Interesse verwandeln,",
+  "desc3": "und ein Produkt so stark wirken lassen wie die Technologie dahinter."
+},
+
+  "webapps": {
+    "label": "02 / ANWENDUNG",
+    "titleLeft": "WEB",
+    "titleRight": "APPS",
+    "description": "Von Dashboards bis hin zu komplexen Workflows ist ",
+    "desc2":"jede Interaktion auf eine echte Benutzeraktion ausgerichtet."
+  },
+
+  "systems": {
+  "title": "SYSTEME",
+  "description": "Websites sind nur eine Ebene.",
+  "desc2": "Ich verbinde Interfaces, Daten, Logik, Benutzer und Automatisierung zu einer kohärenten digitalen Architektur.",
+  "core": "KERN"
+},
+
+  "crm": {
+    "title": "CRM",
+    "subtitle": "MANAGEMENTSYSTEM",
+    "online": "● ONLINE",
+    "users": "BENUTZER",
+    "leads": "LEADS",
+    "conversion": "KONVERSION",
+    "activity": "Kundenaktivität • Echtzeitdaten • Automatisierter Workflow"
+  },
+
+  "ai": {
+  "title": "INTELLIGENZ",
+  "highlight": "IN BEWEGUNG.",
+  "description": "KI wird nützlich, wenn sie sich mit dem System um sie herum verbindet.",
+  "desc2": "Automatisierung, Entscheidungsunterstützung, intelligente Workflows und echte Integrationen."
+},
+
+  "final": {
+    "label": "Das ist es, was ich entwickle",
+    "title": "DIGITALE",
+    "highlight": "SYSTEME.",
+    "stack": "WEB-APPS • CRM • KI • AUTOMATISIERUNG",
+    "line1": "Keine isolierten Seiten.",
+    "highlight1": "Vernetzte Erlebnisse.",
+    "line2": "Nicht nur Funktionen.",
+    "highlight2": "Komplette Systeme."
+  }
+},
+"projects":{
+  "title":"Meine Projekte"
+},
+"certificates":{
+ "title":"Meine Zertifikate"
+},
+"contact": {
+  "title": "Lassen Sie uns zusammenarbeiten",
+  "description": "Haben Sie ein Projekt im Kopf oder möchten Sie über eine Möglichkeit sprechen? Kontaktieren Sie mich gerne über eine der folgenden Plattformen.",
+  "cards": {
+    "email": {
+      "title": "E-Mail",
+      "desc": "Schreiben Sie mir jederzeit eine E-Mail."
+    },
+    "linkedin": {
+      "title": "LinkedIn",
+      "desc": "Vernetzen wir uns und sprechen wir über Möglichkeiten."
+    },
+    "github": {
+      "title": "GitHub",
+      "desc": "Entdecken Sie meine Projekte und meinen Code."
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "desc": "Schnelle Kommunikation für Projekte."
+    }
+  },
+  "cta": "Gespräch starten"
+},
+"footer": {
+  "eyebrow": "DER LETZTE FRAME",
+  "titleLine1": "LASS UNS",
+  "titleLine2": "ETWAS BESONDERES BAUEN.",
+  "description": "Digitale Erlebnisse sollten klar, durchdacht und lebendig wirken. Ich entwickle moderne Interfaces und leistungsstarke Weblösungen, die aus Ideen echte digitale Erfahrungen machen.",
+  "navigationTitle": "NAVIGATION",
+  "nav": {
+    "home": "Startseite",
+    "about": "Über mich",
+    "skills": "Fähigkeiten",
+    "services": "Dienstleistungen",
+    "projects": "Projekte",
+    "contact": "Kontakt"
+  },
+  "servicesTitle": "WAS ICH ENTWICKLE",
+  "service1": "Web-Erlebnisse",
+  "service2": "Webanwendungen",
+  "service3": "Digitale Systeme",
+  "service4": "Interaktive Interfaces",
+  "stack": "REACT • NEXT.JS • GSAP • TAILWIND",
+  "signature": "ENTWORFEN & ENTWICKELT VON TITO",
+  "closing": "Gutes Design zieht Aufmerksamkeit auf sich. Großartige digitale Erlebnisse bleiben im Gedächtnis."
+}
+
+
 }
 
 

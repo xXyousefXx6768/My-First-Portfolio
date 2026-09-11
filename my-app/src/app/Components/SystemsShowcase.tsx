@@ -3,10 +3,11 @@
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import { useTranslations } from "../lib/i18n-provider";
 gsap.registerPlugin(ScrollTrigger);
 
 const SystemsShowcase = () => {
+  const t = useTranslations("systemsShowcase");
   const sectionRef = useRef<HTMLElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
   const hintRef = useRef<HTMLDivElement | null>(null);
@@ -1795,7 +1796,7 @@ const SystemsShowcase = () => {
               whitespace-nowrap
             "
           >
-            Scroll to play
+            {t("scrollToPlay")}
           </span>
         </div>
 
@@ -1917,21 +1918,25 @@ const SystemsShowcase = () => {
                 md:mb-8
               "
             >
-              More than websites
+              {t("intro.label")}
             </p>
 
             <h2
-              data-intro
-              className="
-                text-[clamp(2.4rem,8vw,6.5rem)]
-                font-black
-                leading-[0.85]
-                tracking-[-0.06em]
-                whitespace-nowrap
-              "
-            >
-              I DON'T JUST
-            </h2>
+  data-intro
+  className={`
+    font-black
+    leading-[0.85]
+    tracking-[-0.06em]
+    whitespace-nowrap
+    ${
+      t("intro.title") === "ICH BAUE NICHT NUR"
+        ? "text-[clamp(1.9rem,6.3vw,6.2rem)]"
+        : "text-[clamp(2.4rem,8vw,6.5rem)]"
+    }
+  `}
+>
+  {t("intro.title")}
+</h2>
 
             <div
               data-intro
@@ -1950,7 +1955,7 @@ const SystemsShowcase = () => {
                   text-orange-500
                 "
               >
-                <span className="intro-orange-word">BUILD.</span>
+                <span className="intro-orange-word">{t("intro.highlight")}</span>
               </h2>
 
               <svg
@@ -1992,14 +1997,12 @@ const SystemsShowcase = () => {
                 leading-7
               "
             >
-              I design digital experiences that become useful products,
-              connected workflows, and systems that actually move a business
-              forward.
+            {t("intro.description")}
             </p>
           </div>
 
           {/* =================================================
-              PHASE 02 — IDEAS → CODE
+              PHASE 02 — {t("craft.titleLeft")} → CODE
           ================================================= */}
 
           <div
@@ -2026,7 +2029,7 @@ const SystemsShowcase = () => {
                   text-gray-300/70
                 "
               >
-                PROCESS / DELIVERY
+                {t("craft.label")}
               </span>
 
               <h3
@@ -2040,9 +2043,9 @@ const SystemsShowcase = () => {
                   tracking-[-0.065em]
                 "
               >
-                <span className="craft-highlight">IDEAS</span>
+                <span className="craft-highlight">{t("craft.titleLeft")}</span>
                 <span className="mx-3 md:mx-6 text-orange-500">→</span>
-                <span>CODE</span>
+                <span>{t("craft.titleRight")}</span>
               </h3>
 
               <p
@@ -2059,11 +2062,10 @@ const SystemsShowcase = () => {
                   md:leading-8
                 "
               >
-                I translate business intent into clean architecture,
-                reliable implementation, and production-ready systems.
+                {t("craft.description")}
                 <span className="text-white">
                   {" "}
-                  Every decision has a purpose.
+                  {t("craft.highlight")}
                 </span>
               </p>
 
@@ -2179,7 +2181,7 @@ const SystemsShowcase = () => {
                       text-gray-400
                     "
                   >
-                    Concept
+                  {t("craft.concept")}
                   </span>
                 </div>
 
@@ -2244,7 +2246,7 @@ const SystemsShowcase = () => {
                       text-gray-400
                     "
                   >
-                    Build
+                  {t("craft.build")}
                   </span>
                 </div>
 
@@ -2300,7 +2302,7 @@ const SystemsShowcase = () => {
                       text-gray-400
                     "
                   >
-                    Ship
+                  {t("craft.ship")}
                   </span>
                 </div>
               </div>
@@ -2335,7 +2337,7 @@ const SystemsShowcase = () => {
                   text-gray-500
                 "
               >
-                01 / DIGITAL EXPERIENCE
+              {t("websites.label")}
               </span>
 
               <div className="relative mt-4 md:mt-6">
@@ -2349,9 +2351,9 @@ const SystemsShowcase = () => {
                     whitespace-nowrap
                   "
                 >
-                  WEB
+                {t("websites.titleLeft")}
                   <span className="website-word-highlight text-white">
-                    SITES
+                  {t("websites.titleRight")}
                   </span>
                 </h3>
 
@@ -2393,9 +2395,9 @@ const SystemsShowcase = () => {
                   mx-auto
                 "
               >
-                Interfaces built to communicate,
-                <span className="text-gray-300"> convert attention, </span>
-                and make a product feel as strong as the technology behind it.
+                {t("websites.description")}
+                <span className="text-gray-300"> {t("websites.desc2")} </span>
+                {t("websites.desc3")}
               </p>
 
               <div
@@ -2540,7 +2542,7 @@ const SystemsShowcase = () => {
                   text-gray-500
                 "
               >
-                02 / APPLICATION
+                {t("webapps.label")}
               </span>
 
               <h3
@@ -2554,9 +2556,9 @@ const SystemsShowcase = () => {
                 "
               >
                 <span className="webapp-highlight text-orange-500">
-                  WEB
+                  {t("webapps.titleLeft")}
                 </span>{" "}
-                APPS
+              {t("webapps.titleRight")}
               </h3>
 
               <p
@@ -2571,10 +2573,10 @@ const SystemsShowcase = () => {
                   leading-7
                 "
               >
-                From dashboards to complex workflows,
+                {t("webapps.description")}
                 <span className="text-gray-300">
                   {" "}
-                  every interaction is designed around a real user action.
+                  {t("webapps.desc2")}
                 </span>
               </p>
 
@@ -2816,7 +2818,7 @@ const SystemsShowcase = () => {
                 />
 
                 <span className="text-lg md:text-2xl font-black text-orange-500">
-                  CORE
+                  {t("systems.core")}
                 </span>
               </div>
 
@@ -2831,7 +2833,7 @@ const SystemsShowcase = () => {
                   tracking-[-0.07em]
                 "
               >
-                <span className="systems-highlight">SYSTEMS</span>
+                <span className="systems-highlight">{t("systems.title")}</span>
               </h3>
 
               <p
@@ -2846,11 +2848,10 @@ const SystemsShowcase = () => {
                   leading-7
                 "
               >
-                Websites are only one layer.
+                {t("systems.description")}
                 <span className="text-gray-300">
                   {" "}
-                  I connect interfaces, data, logic, users, and automation
-                  into one coherent digital architecture.
+                  {t("systems.desc2")}
                 </span>
               </p>
             </div>
@@ -2908,7 +2909,7 @@ const SystemsShowcase = () => {
                       md:text-base
                     "
                   >
-                    CRM
+                    {t("crm.title")}
                   </span>
 
                   <span
@@ -2921,7 +2922,7 @@ const SystemsShowcase = () => {
                       text-gray-500
                     "
                   >
-                    MANAGEMENT SYSTEM
+                  {t("crm.subtitle")}
                   </span>
                 </div>
 
@@ -2932,7 +2933,7 @@ const SystemsShowcase = () => {
                     text-green-400
                   "
                 >
-                  ● ONLINE
+                {t("crm.online")}
                 </span>
               </div>
 
@@ -2959,7 +2960,7 @@ const SystemsShowcase = () => {
                   "
                 >
                   <p className="text-[9px] md:text-xs text-gray-500">
-                    USERS
+                  {t("crm.users")}
                   </p>
 
                   <p
@@ -2987,7 +2988,7 @@ const SystemsShowcase = () => {
                   "
                 >
                   <p className="text-[9px] md:text-xs text-gray-500">
-                    LEADS
+                    {t("crm.leads")}
                   </p>
 
                   <p
@@ -3016,7 +3017,7 @@ const SystemsShowcase = () => {
                   "
                 >
                   <p className="text-[9px] md:text-xs text-gray-500">
-                    CONVERSION
+                  {t("crm.conversion")}
                   </p>
 
                   <p
@@ -3134,7 +3135,7 @@ const SystemsShowcase = () => {
                     leading-5
                   "
                 >
-                  Customer activity • Real-time data • Automated workflow
+                  {t("crm.activity")}
                 </span>
               </div>
             </div>
@@ -3374,7 +3375,7 @@ const SystemsShowcase = () => {
                     text-orange-500
                   "
                 >
-                  AI
+                {t("ai.title")}
                 </span>
               </div>
 
@@ -3391,7 +3392,7 @@ const SystemsShowcase = () => {
               >
                 INTELLIGENCE
                 <br />
-                <span className="text-orange-500">IN MOTION.</span>
+                <span className="text-orange-500">{t("ai.highlight")}</span>
               </h3>
 
               <p
@@ -3406,11 +3407,10 @@ const SystemsShowcase = () => {
                   leading-7
                 "
               >
-                AI becomes useful when it connects to the system around it.
+                {t("ai.description")}
                 <span className="text-gray-300">
                   {" "}
-                  Automation, decision support, intelligent workflows, and
-                  real integrations.
+                {t("ai.desc2")}
                 </span>
               </p>
             </div>
@@ -3446,7 +3446,7 @@ const SystemsShowcase = () => {
                 md:mb-8
               "
             >
-              That's what I build
+              {t("final.label")}
             </p>
 
             <h3
@@ -3458,11 +3458,11 @@ const SystemsShowcase = () => {
                 tracking-[-0.07em]
               "
             >
-              DIGITAL
+            {t("final.title")}
               <br />
 
               <span className="final-highlight text-orange-500 inline-block">
-                SYSTEMS.
+                {t("final.highlight")}
               </span>
             </h3>
 
@@ -3480,7 +3480,7 @@ const SystemsShowcase = () => {
                 leading-6
               "
             >
-              WEB APPS • CRM • AI • AUTOMATION
+              {t("final.stack")}
             </p>
 
             <p
@@ -3495,11 +3495,11 @@ const SystemsShowcase = () => {
                 md:leading-7
               "
             >
-              Not isolated pages.
-              <span className="text-white"> Connected experiences.</span>
+              {t("final.line1")}
+              <span className="text-white"> {t("final.highlight1")}</span>
               <br />
               Not just features.
-              <span className="text-orange-500"> Complete systems.</span>
+              <span className="text-orange-500"> {t("final.highlight2")}</span>
             </p>
 
             <svg

@@ -9,9 +9,9 @@ import {
   FaGithub,
   FaWhatsapp,
 } from "react-icons/fa";
-
+import { useTranslations } from "../lib/i18n-provider";
 function ContactMe() {
-
+   const t = useTranslations("contact");
   const handleCardEnter = (
   e: React.MouseEvent<HTMLAnchorElement>
 ) => {
@@ -141,14 +141,10 @@ const handleCardLeave = (
       <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-gradient-to-r from-orange-500/50 to-red-500/20 rounded-full blur-[120px] opacity-40" />
 
       {/* Title */}
-      <AnimatedTitle
-        title="Let's Work Together"
-        className="text-orange-400"
-      />
+    <AnimatedTitle title={t("title")} className="text-orange-400" />
 
       <p className="text-center text-gray-400 max-w-2xl mx-auto mt-4 mb-14">
-        Have a project in mind or want to discuss an opportunity?
-        Feel free to reach out through any of the platforms below.
+        {t("description")}
       </p>
 
       {/* Cards */}
@@ -190,16 +186,10 @@ const handleCardLeave = (
 
   {/* Content */}
   <div className="contact-content relative z-10">
-    <FaEnvelope className=" contact-icon text-4xl text-orange-500 mb-4" />
-
-    <h3 className="text-xl font-semibold">
-      Email
-    </h3>
-
-    <p className=" mt-2">
-      Send me an email anytime.
-    </p>
-  </div>
+            <FaEnvelope className="contact-icon text-4xl text-orange-500 mb-4" />
+            <h3 className="text-xl font-semibold">{t("cards.email.title")}</h3>
+            <p className="mt-2">{t("cards.email.desc")}</p>
+          </div>
 </a>
 
       <a
@@ -238,16 +228,10 @@ const handleCardLeave = (
   />
 
   <div className="contact-content relative z-10">
-    <FaLinkedin className="  contact-icon  text-4xl text-orange-500 mb-4" />
-
-    <h3 className="text-xl font-semibold">
-      LinkedIn
-    </h3>
-
-    <p className=" mt-2">
-      Connect and let's discuss opportunities.
-    </p>
-  </div>
+            <FaLinkedin className="contact-icon text-4xl text-orange-500 mb-4" />
+            <h3 className="text-xl font-semibold">{t("cards.linkedin.title")}</h3>
+            <p className="mt-2">{t("cards.linkedin.desc")}</p>
+          </div>
 </a>
       <a
   href="https://github.com/xXyousefXx6768"
@@ -288,11 +272,11 @@ const handleCardLeave = (
     <FaGithub className=" contact-icon  text-4xl text-orange-500 mb-4" />
 
     <h3 className="text-xl font-semibold">
-      GitHub
+    {t("cards.github.title")}
     </h3>
 
     <p className=" mt-2">
-      Explore my projects and code.
+    {t("cards.github.desc")}
     </p>
   </div>
 </a>
@@ -335,11 +319,11 @@ const handleCardLeave = (
     <FaWhatsapp className="  contact-icon  text-4xl text-orange-500 mb-4" />
 
     <h3 className="text-xl font-semibold">
-      WhatsApp
+    {t("cards.whatsapp.title")}
     </h3>
 
     <p className=" mt-2">
-      Quick communication for projects.
+    {t("cards.whatsapp.desc")}
     </p>
   </div>
 </a>
@@ -352,7 +336,7 @@ const handleCardLeave = (
           href="mailto:yourmail@gmail.com"
           className="bg-gradient-to-r from-[#FA6E00] to-[#E60026] px-8 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300"
         >
-          Start a Conversation
+          {t("cta")}
         </a>
       </div>
     </section>

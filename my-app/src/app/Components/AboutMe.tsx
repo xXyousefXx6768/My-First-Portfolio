@@ -282,6 +282,7 @@ if (isMobile) {
     ctx.revert();
   };
 }, []);
+
   return (
     <main
 
@@ -328,7 +329,6 @@ pointer-events-none
           className="flex-1 max-w-2xl z-20"
         >
           <div className="text-gray-300 leading-relaxed text-lg md:text-xl space-y-6">
-
             <div className="about-line-mask overflow-hidden">
               <p
                 ref={(el) => {
@@ -336,9 +336,7 @@ pointer-events-none
                 }}
                 className="about-line"
               >
-                I am a Front-End Developer specialized in React.js, Next.js and
-                modern web technologies, passionate about creating high-performance,
-                scalable and visually engaging web applications.
+                {t("paragraphs.one")}
               </p>
             </div>
 
@@ -349,9 +347,7 @@ pointer-events-none
                 }}
                 className="about-line"
               >
-                Combining strong technical skills with a background in Italian
-                Language Studies, I bring analytical thinking, adaptability and
-                effective communication to every team and environment.
+                {t("paragraphs.two")}
               </p>
             </div>
 
@@ -362,9 +358,7 @@ pointer-events-none
                 }}
                 className="about-line"
               >
-                My focus is building intuitive user experiences, writing clean
-                maintainable code and continuously improving my skills to deliver
-                modern digital solutions with real business value.
+                {t("paragraphs.three")}
               </p>
             </div>
 
@@ -399,11 +393,11 @@ pointer-events-none
         "
             >
               <h3 className="text-orange-500 text-2xl font-bold">
-                React & Next.js
+              {t("cards.reactNext.title")}
               </h3>
 
               <p className="text-gray-400 text-sm mt-2">
-                Modern Front-End Development
+              {t("cards.reactNext.desc")}
               </p>
             </div>
 
@@ -423,11 +417,11 @@ pointer-events-none
         "
             >
               <h3 className="text-orange-500 text-2xl font-bold">
-                Responsive UI
+                {t("cards.responsive.title")}
               </h3>
 
               <p className="text-gray-400 text-sm mt-2">
-                Mobile First Design Approach
+                {t("cards.responsive.desc")}
               </p>
             </div>
 
@@ -447,11 +441,11 @@ pointer-events-none
         "
             >
               <h3 className="text-orange-500 text-2xl font-bold">
-                3 Languages
+                {t("cards.languages.title")}
               </h3>
 
               <p className="text-gray-400 text-sm mt-2">
-                Arabic • English • Deutch
+                {t("cards.languages.desc")}
               </p>
             </div>
 
@@ -471,11 +465,11 @@ pointer-events-none
         "
             >
               <h3 className="text-orange-500 text-2xl font-bold">
-                Available
+                {t("cards.available.title")}
               </h3>
 
               <p className="text-gray-400 text-sm mt-2">
-                Open For Opportunities
+                {t("cards.available.desc")}
               </p>
             </div>
 
