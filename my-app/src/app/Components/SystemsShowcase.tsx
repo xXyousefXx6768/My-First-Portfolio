@@ -1930,7 +1930,7 @@ const SystemsShowcase = () => {
     whitespace-nowrap
     ${
       t("intro.title") === "ICH BAUE NICHT NUR"
-        ? "text-[clamp(1.9rem,6.3vw,6.2rem)]"
+        ? "text-[clamp(1.8rem,6.1vw,6.1rem)]"
         : "text-[clamp(2.4rem,8vw,6.5rem)]"
     }
   `}
