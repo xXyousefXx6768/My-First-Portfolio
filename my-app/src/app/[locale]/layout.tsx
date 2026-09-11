@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   },
   description: "Full‑Stack Developer portfolio",
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/tito-logo.png",
+    apple: "/tito-logo.png",
   },
 };
 
