@@ -12,7 +12,10 @@ function Footer() {
   const t = useTranslations("footer");
 
   useEffect(() => {
-    if (!footerRef.current) return;
+    const footer = footerRef.current;
+
+if (!footer) return;
+
 
     const ctx = gsap.context(() => {
       /* ==========================================
@@ -20,7 +23,7 @@ function Footer() {
       ========================================== */
 
       const reveal = (
-        element: Element | null,
+         element: Element | string | null,
         from: gsap.TweenVars,
         to: gsap.TweenVars,
         start = "top 88%"
@@ -83,13 +86,8 @@ function Footer() {
          EACH LINE HAS ITS OWN SCROLLTRIGGER
       ========================================== */
 
-      const titleLine1 = footerRef.current.querySelector(
-        ".footer-title-line-1"
-      );
-
-      const titleLine2 = footerRef.current.querySelector(
-        ".footer-title-line-2"
-      );
+      const titleLine1 = footer.querySelector(".footer-title-line-1");
+     const titleLine2 = footer.querySelector(".footer-title-line-2");
 
       reveal(
         titleLine1,

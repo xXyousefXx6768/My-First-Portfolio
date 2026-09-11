@@ -45,10 +45,66 @@ function AboutMe() {
     // ==========================================
 
     // TEXT
-    gsap.set(textLines, {
-      yPercent: 105,
-    });
+    // ==========================================
+// TEXT — SEQUENTIAL PREMIUM REVEAL
+// ==========================================
 
+gsap.set(textLines, {
+  yPercent: 120,
+  opacity: 0,
+  rotateX: -55,
+  skewY: 6,
+  filter: "blur(10px)",
+  transformOrigin: "0% 100%",
+  transformPerspective: 1000,
+  willChange: "transform, opacity, filter",
+});
+
+textLines.forEach((line, index) => {
+  if (!line) return;
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: line,
+      start: isMobile
+        ? "top 88%"
+        : "top 82%",
+      once: true,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  tl.to(line, {
+    yPercent: 0,
+    opacity: 1,
+    rotateX: 0,
+    skewY: 0,
+    filter: "blur(0px)",
+
+    duration: 1.05,
+
+    ease: "expo.out",
+
+    overwrite: "auto",
+  });
+
+  // tiny settle
+  tl.to(
+    line,
+    {
+      y: -2,
+      duration: 0.18,
+      ease: "power2.out",
+    },
+    "-=0.12"
+  );
+
+  tl.to(line, {
+    y: 0,
+    duration: 0.3,
+    ease: "power3.out",
+  });
+});
     // IMAGE CONTAINER
     //
     // opacity: 0
@@ -112,16 +168,61 @@ function AboutMe() {
       },
     });
 
-    // ==========================================
-    // 1 — TEXT
-    // ==========================================
+  // ==========================================
+// 1 — TEXT PREMIUM REVEAL
+// ==========================================
 
-    tl.to(textLines, {
-      yPercent: 0,
-      duration: 0.85,
-      stagger: 0.12,
-      ease: "power4.out",
-    });
+const textReveal = tl.fromTo(
+  textLines,
+  {
+    yPercent: 120,
+    opacity: 0,
+    rotateX: -55,
+    skewY: 6,
+    filter: "blur(10px)",
+  },
+  {
+    yPercent: 0,
+    opacity: 1,
+    rotateX: 0,
+    skewY: 0,
+    filter: "blur(0px)",
+
+    duration: 1.15,
+
+    stagger: {
+      each: 0.14,
+      from: "start",
+    },
+
+    ease: "expo.out",
+
+    overwrite: "auto",
+  }
+);
+
+// subtle settle after the reveal
+tl.to(
+  textLines,
+  {
+    y: -2,
+    duration: 0.22,
+    stagger: 0.035,
+    ease: "power2.out",
+  },
+  "-=0.18"
+);
+
+tl.to(
+  textLines,
+  {
+    y: 0,
+    duration: 0.35,
+    stagger: 0.035,
+    ease: "power3.out",
+  },
+  "<"
+);
 
     // ==========================================
 // 2 — IMAGE
@@ -329,7 +430,11 @@ pointer-events-none
           className="flex-1 max-w-2xl z-20"
         >
           <div className="text-gray-300 leading-relaxed text-lg md:text-xl space-y-6">
-            <div className="about-line-mask overflow-hidden">
+            <div className="
+  about-line-mask
+  overflow-hidden
+  [perspective:1000px]
+">
               <p
                 ref={(el) => {
                   if (el) textLinesRef.current[0] = el;
@@ -340,7 +445,11 @@ pointer-events-none
               </p>
             </div>
 
-            <div className="about-line-mask overflow-hidden">
+            <div className="
+  about-line-mask
+  overflow-hidden
+  [perspective:1000px]
+">
               <p
                 ref={(el) => {
                   if (el) textLinesRef.current[1] = el;
@@ -351,7 +460,11 @@ pointer-events-none
               </p>
             </div>
 
-            <div className="about-line-mask overflow-hidden">
+            <div className="
+  about-line-mask
+  overflow-hidden
+  [perspective:1000px]
+">
               <p
                 ref={(el) => {
                   if (el) textLinesRef.current[2] = el;
