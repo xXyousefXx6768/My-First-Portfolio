@@ -18,8 +18,8 @@ useLayoutEffect(() => {
 const tl = gsap.timeline({
   paused: true,
   defaults: {
-    ease: "power2.out",
-  }
+    ease: "power3.out",
+  },
 });
 
 
@@ -48,156 +48,101 @@ ease:"none"
 });
 
  const strokes = gsap.utils.toArray<SVGPathElement>(
-".logo-wing-stroke,.logo-body-stroke"
+  ".logo-wing-stroke,.logo-body-stroke"
 );
 
-strokes.forEach((path)=>{
+strokes.forEach((path) => {
+  let length = Number(path.dataset.length);
 
-let length = Number(path.dataset.length);
+  if (!length) {
+    length = path.getTotalLength();
 
-if(!length){
+    path.dataset.length = String(length);
+  }
 
-length = path.getTotalLength();
-
-path.dataset.length = String(length);
-
-}
-
-gsap.set(path,{
-strokeDasharray:length,
-strokeDashoffset:length
+  gsap.set(path, {
+    strokeDasharray: length,
+    strokeDashoffset: length
+  });
 });
 
-});
-
-gsap.set(
-[
-".logo-svg",
-".logo-wing-fill",
-".logo-body-fill",
-".tito-text"
-],
-{
-opacity:0
-}
-);
-
-// ==========================================
-// LOGO SHINE — INITIAL STATE
-// ==========================================
-
-gsap.set(".logo-svg", {
-  filter: `
-    brightness(1)
-    drop-shadow(0 0 0 rgba(255,120,0,0))
-  `,
-  willChange: "filter",
-});
-
-tl.to(".logo-svg",{
-  opacity:1,
-  scale:1,
-  duration:.3
-});
-
-tl.to(".logo-wing-stroke",{
-  strokeDashoffset:0,
-  duration:1.4,
-  ease:"power2.inOut"
-});
-
-tl.to(".logo-wing-fill",{
-  opacity:1,
-  duration:.35
-},"<70%");
-
-tl.to(".logo-body-stroke",{
-  strokeDashoffset:0,
-  duration:1.8,
-  ease:"power2.inOut"
-},"-=.15");
-
-tl.to(".logo-body-fill",{
-  opacity:1,
-  duration:.4
-},"<80%");
-
-// ==========================================
-// LOGO CINEMATIC SHINE
-// START ONLY AFTER LOGO IS FULLY DRAWN
-// ==========================================
-
-// ==========================================
-// LOGO — SUBTLE CINEMATIC ILLUMINATION
-// START ONLY AFTER LOGO IS FULLY DRAWN
-// ==========================================
-
-
-
-// Start with a very subtle glow
-tl.to(".logo-svg", {
-  filter: `
-    brightness(1.08)
-    drop-shadow(0 0 5px rgba(255,120,0,.18))
-    drop-shadow(0 0 14px rgba(255,100,0,.08))
-  `,
-  duration: 0.5,
-  ease: "power2.out",
-});
-
-// Gentle cinematic breathing
-tl.to(".logo-svg", {
-  filter: `
-    brightness(1.14)
-    drop-shadow(0 0 7px rgba(255,140,20,.25))
-    drop-shadow(0 0 18px rgba(255,100,0,.12))
-  `,
-  duration: 0.7,
-  ease: "sine.inOut",
-});
-
-// Return slightly
-tl.to(".logo-svg", {
-  filter: `
-    brightness(1.08)
-    drop-shadow(0 0 5px rgba(255,120,0,.18))
-    drop-shadow(0 0 14px rgba(255,100,0,.08))
-  `,
-  duration: 0.7,
-  ease: "sine.inOut",
-});
-// ==========================================
-// TITO — CINEMATIC MATERIALIZE
-// STAGE 01
-// ==========================================
-
-// نحتفظ بـ fills لأننا هنستخدمها لاحقًا
 const fills = gsap.utils.toArray<HTMLElement>(".tito-fill");
 
-// ------------------------------------------
-// INITIAL STATE
-// ------------------------------------------
+
+
+gsap.set(
+  [
+    ".logo-svg",
+    ".logo-wing-fill",
+    ".logo-body-fill",
+  ],
+  {
+    opacity: 0,
+  }
+);
+
+gsap.set(".logo-svg", {
+  opacity: 0,
+  scale: 1,
+});
+
+gsap.set(".logo-wing-fill", {
+  opacity: 0,
+});
+
+gsap.set(".logo-body-fill", {
+  opacity: 0,
+});
 
 gsap.set(".tito-text", {
   opacity: 1,
   y: 0,
   scale: 1,
-  scaleY: 1,
-  filter: "none",
-  clipPath: "none",
   transformOrigin: "50% 50%",
-  willChange: "transform, opacity, filter",
 });
 
-gsap.set(".tito-base", {
-  opacity: 1,
-  color: "#ffffff",
+gsap.set(".tito-letter", {
+  opacity: 0,
+  y: 14,
+  x: 0,
+  scaleX: 1,
+  scaleY: 1,
+  skewX: 0,
+  filter: "blur(7px)",
+  textShadow: "none",
+  transformOrigin: "50% 50%",
 });
 
-gsap.set(fills, {
+gsap.set(".tito-fill", {
   opacity: 0,
 });
 
+gsap.set(".subtitle", {
+  opacity: 0,
+  y: 16,
+  filter: "blur(7px)",
+});
+
+gsap.set(
+  [
+    ".glitch-red",
+    ".glitch-cyan",
+    ".glitch-line",
+  ],
+  {
+    opacity: 0,
+  }
+);
+
+// TITO container
+gsap.set(".tito-text", {
+  opacity: 1,
+  y: 0,
+  scale: 1,
+  transformOrigin: "50% 50%",
+});
+
+// TITO letters
 gsap.set(".tito-letter", {
   opacity: 0,
   y: 14,
@@ -211,25 +156,146 @@ gsap.set(".tito-letter", {
   willChange: "transform, opacity, filter",
 });
 
-// ------------------------------------------
-// CENTER → OUT MATERIALIZE
-// ------------------------------------------
-
-tl.to(".tito-letter", {
-  opacity: 1,
-  y: 0,
-  filter: "blur(0px)",
-  duration: 0.24,
-  stagger: {
-    each: 0.075,
-    from: "center",
-  },
-  ease: "expo.out",
+// TITO fills
+gsap.set(".tito-fill", {
+  opacity: 0,
 });
 
-// ------------------------------------------
-// RGB DIGITAL ARRIVAL
-// ------------------------------------------
+// ==========================================
+// LOGO SHINE — INITIAL STATE
+// ==========================================
+
+gsap.set(".logo-svg", {
+  filter: `
+    brightness(1)
+    drop-shadow(0 0 0 rgba(255,120,0,0))
+  `,
+  willChange: "filter",
+});
+
+// =========================================================
+// INTRO MASTER TIMELINE
+// FAST / CINEMATIC / ZERO DEAD TIME
+// =========================================================
+
+// =========================================================
+// 01 — LOGO DRAW
+// FULL DRAW FIRST — NO PREMATURE REVEAL
+// =========================================================
+
+tl.to(".logo-svg", {
+  opacity: 1,
+  duration: 0.2,
+  ease: "power2.out",
+});
+
+// ---------------------------------------------------------
+// WING DRAW
+// ---------------------------------------------------------
+
+tl.to(".logo-wing-stroke", {
+  strokeDashoffset: 0,
+  duration: 1.15,
+  ease: "power2.inOut",
+});
+
+// Wing fill ONLY after wing is fully drawn
+tl.to(".logo-wing-fill", {
+  opacity: 1,
+  duration: 0.3,
+  ease: "power2.out",
+});
+
+// ---------------------------------------------------------
+// BODY DRAW
+// ---------------------------------------------------------
+
+tl.to(
+  ".logo-body-stroke",
+  {
+    strokeDashoffset: 0,
+    duration: 1.35,
+    ease: "power2.inOut",
+  },
+  "-=0.2"
+);
+
+// Body fill ONLY after body draw
+tl.to(".logo-body-fill", {
+  opacity: 1,
+  duration: 0.3,
+  ease: "power2.out",
+});
+
+// =========================================================
+// 02 — LOGO SHINE
+// ORIGINAL CINEMATIC FEEL
+// =========================================================
+
+tl.to(
+  ".logo-svg",
+  {
+    filter: `
+      brightness(1.08)
+      drop-shadow(0 0 5px rgba(255,120,0,.18))
+      drop-shadow(0 0 14px rgba(255,100,0,.08))
+    `,
+    duration: 0.5,
+    ease: "power2.out",
+  },
+  "-=0.1"
+);
+
+tl.to(
+  ".logo-svg",
+  {
+    filter: `
+      brightness(1.14)
+      drop-shadow(0 0 7px rgba(255,140,20,.25))
+      drop-shadow(0 0 18px rgba(255,100,0,.12))
+    `,
+    duration: 0.7,
+    ease: "sine.inOut",
+  }
+);
+
+tl.to(
+  ".logo-svg",
+  {
+    filter: `
+      brightness(1.08)
+      drop-shadow(0 0 5px rgba(255,120,0,.18))
+      drop-shadow(0 0 14px rgba(255,100,0,.08))
+    `,
+    duration: 0.7,
+    ease: "sine.inOut",
+  }
+);
+
+// =========================================================
+// 03 — TITO MATERIALIZE
+// ORIGINAL STYLE / FULL REVEAL
+// =========================================================
+
+tl.to(
+  ".tito-letter",
+  {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    duration: 0.24,
+    stagger: {
+      each: 0.075,
+      from: "center",
+    },
+    ease: "expo.out",
+  },
+  "-=0.08"
+);
+
+// =========================================================
+// 04 — RGB GLITCH
+// =========================================================
 
 tl.to(
   ".tito-letter",
@@ -238,27 +304,33 @@ tl.to(
     y: (i) => (i % 2 === 0 ? 2 : -2),
     skewX: (i) => (i % 2 === 0 ? -12 : 12),
     scaleX: (i) => (i % 2 === 0 ? 0.95 : 1.05),
+
     textShadow: (i) =>
       i % 2 === 0
         ? "-7px 0 rgba(255,0,70,.9), 6px 0 rgba(0,240,255,.65), 0 0 18px rgba(255,120,0,.25)"
         : "7px 0 rgba(0,240,255,.9), -6px 0 rgba(255,0,70,.65), 0 0 18px rgba(255,120,0,.25)",
+
     duration: 0.085,
+
     stagger: {
       each: 0.02,
       from: "center",
     },
+
     ease: "none",
   },
-  "-=0.12"
+  "-=0.1"
 );
 
-// ------------------------------------------
+// ---------------------------------------------------------
 // GLITCH SETTLE
-// ------------------------------------------
+// ---------------------------------------------------------
 
 tl.to(".tito-letter", {
   x: 0,
+  y: 0,
   skewX: 0,
+  scaleX: 1,
   textShadow: "none",
   duration: 0.14,
   stagger: {
@@ -268,149 +340,86 @@ tl.to(".tito-letter", {
   ease: "power3.out",
 });
 
-// ------------------------------------------
-// FINAL WHITE LOCK
-// ------------------------------------------
+// =========================================================
+// 05 — STRONG GLITCH HIT
+// =========================================================
 
-tl.set(".tito-text", {
-  opacity: 1,
-  y: 0,
-  scale: 1,
-  filter: "none",
-});
-
-tl.set(".tito-base", {
-  opacity: 1,
-  color: "#ffffff",
-});
-
-tl.set(fills, {
-  opacity: 0,
-});
-// ==========================================
-// STAGE 2 — CINEMATIC GLITCH + COLOR SNAP
-// ==========================================
-
-// تجهيز طبقات الجليتش
-gsap.set(
+tl.set(
   [
     ".glitch-red",
     ".glitch-cyan",
     ".glitch-line",
   ],
   {
-    opacity: 0,
-  }
+    opacity: 1,
+  },
+  "-=0.03"
 );
 
-// ------------------------------
-// GLITCH HIT #1 — بداية التشويش
-// ------------------------------
-tl.to(".glitch-red", {
-  opacity: 0.75,
-  x: -5,
-  skewX: -10,
-  duration: 0.045,
-  ease: "none",
-});
-
-tl.to(".glitch-cyan", {
-  opacity: 0.65,
-  x: 5,
-  skewX: 8,
-  duration: 0.045,
-  ease: "none",
-}, "<");
-
-tl.to(".tito-text", {
-  x: 2,
-  skewX: -2,
-  duration: 0.045,
-  ease: "none",
-}, "<");
-
-
-// ------------------------------
-// CUT
-// ------------------------------
-tl.set(
-  [
-    ".glitch-red",
-    ".glitch-cyan",
-    ".tito-text",
-  ],
-  {
-    x: 0,
-    skewX: 0,
-  }
-);
-
-tl.set(
-  [
-    ".glitch-red",
-    ".glitch-cyan",
-  ],
-  {
-    opacity: 0,
-  }
-);
-
-
-// ------------------------------
-// GLITCH HIT #2 — أسرع وأقوى
-// ------------------------------
-tl.to(".glitch-red", {
-  opacity: 1,
-  x: -14,
-  y: 3,
-  skewX: -20,
-  scaleX: 1.08,
-  duration: 0.04,
-  ease: "none",
-});
-
-tl.to(".glitch-cyan", {
-  opacity: 1,
-  x: 14,
-  y: -3,
-  skewX: 18,
-  scaleX: 0.94,
-  duration: 0.04,
-  ease: "none",
-}, "<");
-
-tl.to(".tito-text", {
-  x: () => gsap.utils.random(-6, 6),
-  y: () => gsap.utils.random(-3, 3),
-  skewX: () => gsap.utils.random(-6, 6),
-  duration: 0.04,
-  ease: "none",
-}, "<");
-
-
-
+// Red layer
 tl.to(
-  ".glitch-line",
+  ".glitch-red",
   {
-    opacity: 0.95,
-    scaleX: 1.35,
-    scaleY: 2.2,
-    x: () => gsap.utils.random(-18, 18),
-    y: () => gsap.utils.random(-10, 10),
-    duration: 0.04,
+    x: -12,
+    skewX: -18,
+    opacity: 1,
+    duration: 0.055,
     ease: "none",
-    stagger: 0, // كلهم مع بعض
   },
   "<"
 );
 
-// ✅ COLOR SNAP DURING GLITCH (not after)
+// Cyan layer
+tl.to(
+  ".glitch-cyan",
+  {
+    x: 12,
+    skewX: 18,
+    opacity: 1,
+    duration: 0.055,
+    ease: "none",
+  },
+  "<"
+);
+
+// Main text hit
+tl.to(
+  ".tito-text",
+  {
+    x: 3,
+    skewX: -3,
+    duration: 0.055,
+    ease: "none",
+  },
+  "<"
+);
+
+// GLITCH SCAN LINES
+tl.to(
+  ".glitch-line",
+  {
+    opacity: 1,
+    scaleX: 1.25,
+    scaleY: 2,
+    x: () => gsap.utils.random(-15, 15),
+    y: () => gsap.utils.random(-8, 8),
+    duration: 0.05,
+    stagger: 0,
+    ease: "none",
+  },
+  "<"
+);
+
+// =========================================================
+// 06 — COLOR SNAP
+// =========================================================
+
 tl.set(
   fills,
   {
     opacity: 1,
     color: "#ff6a00",
-    clipPath: "none",
+    clipPath: "inset(0 0% 0 0)",
     filter: "none",
   },
   "<"
@@ -423,55 +432,9 @@ tl.set(
   },
   "<"
 );
-// ------------------------------
-// CUT
-// ------------------------------
+
+// Kill glitch immediately
 tl.set(
-  [
-    ".glitch-red",
-    ".glitch-cyan",
-    ".glitch-line",
-  ],
-  {
-    opacity: 0,
-  }
-);
-
-tl.set(".tito-text", {
-  x: 0,
-  skewX: 0,
-});
-
-
-// ==========================================
-// COLOR SNAP
-// اللون يتغير فجأة أثناء الجليتش
-// ==========================================
-
-
-
-// ------------------------------
-// AFTER-SNAP GLITCH
-// ------------------------------
-tl.to(".tito-text", {
-  x: -3,
-  skewX: 3,
-  duration: 0.035,
-  ease: "none",
-});
-
-tl.to(".tito-text", {
-  x: 3,
-  skewX: -3,
-  duration: 0.035,
-  ease: "none",
-});
-
-
-// ------------------------------
-// GLITCH COLLAPSE
-// ------------------------------
-tl.to(
   [
     ".glitch-red",
     ".glitch-cyan",
@@ -480,284 +443,114 @@ tl.to(
   {
     opacity: 0,
     x: 0,
+    y: 0,
     skewX: 0,
     scaleX: 1,
-    duration: 0.07,
+    scaleY: 1,
+  }
+);
+
+// =========================================================
+// 07 — SUBTITLE
+// ORIGINAL CINEMATIC REVEAL
+// =========================================================
+
+tl.fromTo(
+  ".subtitle",
+  {
+    opacity: 0,
+    y: 18,
+    filter: "blur(8px)",
+  },
+  {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    duration: 0.45,
+    ease: "power3.out",
+  },
+  "-=0.02"
+);
+
+// =========================================================
+// 08 — MICRO SETTLE
+// =========================================================
+
+tl.to(
+  [".logo-svg", ".tito-text"],
+  {
+    scale: 0.985,
+    duration: 0.12,
     ease: "power2.out",
   }
 );
 
-tl.to(".tito-text", {
-  x: 0,
-  skewX: 0,
-  duration: 0.08,
-  ease: "power2.out",
-});
-// ==========================================
-// STAGE 3 — CINEMATIC SETTLE
-// TITO PRESENCE LOCK
-// ==========================================
-
-// بداية الـ settle:
-// ضغط بسيط جدًا من غير ما الحروف تتحرك لوحدها
-tl.to(".tito-text", {
-  scaleX: 0.985,
-  scaleY: 0.99,
-  y: -1,
-  duration: 0.16,
-  ease: "power2.out",
-});
-
-// ==========================================
-// MICRO EXPANSION
-// ==========================================
-
-tl.to(".tito-text", {
-  scaleX: 1,
-  scaleY: 1,
-  y: 0,
-  duration: 0.28,
-  ease: "power2.out",
-});
-
-// ==========================================
-// CINEMATIC PRESENCE
-// ==========================================
-
-tl.to(".tito-text", {
-  filter: `
-    brightness(1.05)
-    drop-shadow(0 0 6px rgba(255,120,0,.10))
-    drop-shadow(0 0 18px rgba(255,100,0,.05))
-  `,
-  duration: 0.22,
-  ease: "power2.out",
-});
-
-// ==========================================
-// LOCK
-// ==========================================
-
-tl.to(".tito-text", {
-  filter: "none",
-  duration: 0.28,
-  ease: "power2.inOut",
-});
-
-// ==========================================
-// STAGE 4 — COLOR CONFIRM
-// اللون اتغير بالفعل أثناء الـ GLITCH
-// ==========================================
-
-tl.set(fills, {
-  opacity: 1,
-  color: "#ff6a00",
-  clipPath: "inset(0 0% 0 0)",
-  filter: "none",
-});
-
-tl.set(".tito-base", {
-  opacity: 0,
-});
-
-// ==========================================
-// STAGE 5 — COLOR LOCK + REFLECTION
-// ==========================================
-
-// ------------------------------------------
-// 01 — ORANGE COLOR LOCK
-// ------------------------------------------
-
-// نثبت الـ TITO باللون البرتقالي
-// من غير زيادة في الـ glow
-tl.set(fills, {
-  opacity: 1,
-  clipPath: "inset(0 0% 0 0)",
-  filter: "none",
-});
-
-// ------------------------------------------
-// 02 — CLEAN WHITE BASE
-// ------------------------------------------
-
-// نخلي الـ base موجود تحته
-// عشان اللون يفضل نضيف ومش يحصل flicker
-tl.set(".tito-base", {
-  opacity: 0,
-});
-
-// ------------------------------------------
-// 03 — SUBTLE COLOR PRESENCE
-// ------------------------------------------
-
-tl.to(".tito-text", {
-  filter: `
-    brightness(1.06)
-    drop-shadow(0 0 6px rgba(255,120,0,.14))
-    drop-shadow(0 0 18px rgba(255,100,0,.06))
-  `,
-  duration: 0.22,
-  ease: "power2.out",
-});
-
-// ------------------------------------------
-// 04 — REFLECTION PREP
-// ------------------------------------------
-
-// الـ reflection نفسه مش ظاهر عندك في JSX حاليًا،
-// لذلك لا نضيف عنصر وهمي أو نحرّك selector غير موجود.
-// المرحلة الحالية تثبت اللون فقط.
-tl.set(".tito-text", {
-  scaleX: 1,
-  scaleY: 1,
-  y: 0,
-});
-
-// ------------------------------------------
-// 05 — COLOR LOCK
-// ------------------------------------------
-
-tl.to(".tito-text", {
-  filter: `
-    brightness(1.03)
-    drop-shadow(0 0 4px rgba(255,120,0,.10))
-    drop-shadow(0 0 12px rgba(255,100,0,.04))
-  `,
-  duration: 0.30,
-  ease: "sine.inOut",
-});
-
-
-
-
-// ==========================================
-// LOGO GLOW — CINEMATIC BREATHING
-// ==========================================
-
-tl.to(".logo-glow", {
-  scale: 1.25,
-  opacity: 0.55,
-  duration: 0.65,
-  ease: "sine.inOut",
-});
-
-tl.to(".logo-glow", {
-  scale: 1.05,
-  opacity: 0.28,
-  duration: 0.55,
-  ease: "sine.inOut",
-});
-
-tl.to(".logo-glow", {
-  scale: 1.4,
-  opacity: 0.7,
-  duration: 0.8,
-  ease: "sine.inOut",
-});
-
 tl.to(
-[
- ".logo-svg",
- ".tito-text",
- ".tito-reflection",
- ".subtitle"
-],
-{
- scale:.92,
- opacity:.8,
- duration:.8,
- ease:"power2.out"
-}
-);
-
-tl.to(".logo-glow",{
- scale:2.2,
- opacity:.9,
- duration:.7,
- ease:"power2.out"
-});
-
-
-
-// ==========================================
-// PHASE 5 — CINEMATIC LANDING
-// KEEP CONTENT COMPLETELY STATIC
-// ==========================================
-
-// المحتوى يثبت تمامًا قبل بداية الـ mask
-tl.set(
-  [
-    ".logo-svg",
-    ".tito-text",
-    ".subtitle",
-  ],
+  [".logo-svg", ".tito-text"],
   {
-    y: 0,
     scale: 1,
-    opacity: 1,
-    filter: "none",
+    duration: 0.18,
+    ease: "power2.out",
   }
 );
-
-// ==========================================
-// ORANGE ENERGY BURST
-// ==========================================
-
-tl.to(".logo-glow", {
-  scale: 3,
-  opacity: 0.95,
-  duration: 0.25,
-  ease: "power4.in",
-});
-
-// ==========================================
-// FULL SCREEN ORANGE ENERGY
-// ==========================================
-
-tl.to(".logo-glow", {
-  scale: 8,
-  opacity: 1,
-  duration: 0.35,
-  ease: "expo.in",
-});
-
-tl.to(".logo-glow", {
-  scale: 8,
-  opacity: 1,
-  duration: 0.35,
-  ease: "expo.in",
-});
-// ==========================================
-// ENERGY COLLAPSE
-// ==========================================
+// =========================================================
+// 09 — ENERGY BUILD
+// يبدأ فورًا بدون waiting
+// =========================================================
 
 tl.to(
   ".logo-glow",
   {
-    scale: 4,
-    opacity: 0,
-    duration: 0.8,
-    ease: "power4.out",
+    scale: 1.7,
+    opacity: 0.5,
+    duration: 0.35,
+    ease: "power2.out",
   },
-  "-=0.55"
+  "<"
 );
 
-// ==========================================
-// LIGHT SWEEP TRANSITION (AWWWARDS-LIKE, LIGHTWEIGHT)
-// No clip-path. Just opacity + transform.
-// ==========================================
+tl.to(
+  ".logo-glow",
+  {
+    scale: 2.8,
+    opacity: 0.8,
+    duration: 0.35,
+    ease: "power3.in",
+  }
+);
 
-gsap.set(".transition-wash", { autoAlpha: 0 });
-gsap.set(".transition-sweep", { autoAlpha: 0, xPercent: -160 });
+tl.to(
+  ".logo-glow",
+  {
+    scale: 7,
+    opacity: 1,
+    duration: 0.3,
+    ease: "expo.in",
+  }
+);
+
+// =========================================================
+// 11 — TRANSITION WASH
+// يبدأ أثناء الـ burst
+// =========================================================
+
+gsap.set(".transition-wash", {
+  autoAlpha: 0,
+});
+
+gsap.set(".transition-sweep", {
+  autoAlpha: 0,
+  xPercent: -160,
+});
 
 tl.to(
   ".transition-wash",
   {
     autoAlpha: 1,
-    duration: 0.18,
+    duration: 0.12,
     ease: "power1.out",
   },
-  "+=0.02"
+  "-=0.12"
 );
 
 tl.to(
@@ -765,50 +558,59 @@ tl.to(
   {
     autoAlpha: 1,
     xPercent: 190,
-    duration: 0.55,
+    duration: 0.42,
     ease: "power3.inOut",
   },
   "<"
 );
 
-// Pull content slightly back + fade for cinematic handoff
+// =========================================================
+// 12 — CONTENT EXIT
+// =========================================================
+
 tl.to(
-  [".logo-svg", ".tito-text", ".subtitle"],
+  [
+    ".logo-svg",
+    ".tito-text",
+    ".subtitle",
+  ],
   {
     opacity: 0,
     scale: 0.985,
-    y: -6,
-    duration: 0.42,
+    y: -4,
+    duration: 0.3,
     ease: "power2.inOut",
   },
-  "<+=0.06"
+  "<+=0.04"
 );
 
-// Fade overlays out (reveals the site cleanly)
+// =========================================================
+// 13 — CLEAN EXIT
+// =========================================================
+
 tl.to(
   ".transition-wash",
   {
     autoAlpha: 0,
-    duration: 0.35,
-    ease: "power2.inOut",
+    duration: 0.22,
+    ease: "power2.out",
   },
-  "-=0.16"
+  "-=0.08"
 );
 
 tl.to(
   ".transition-sweep",
   {
     autoAlpha: 0,
-    duration: 0.22,
+    duration: 0.16,
     ease: "power2.out",
   },
-  "-=0.20"
+  "-=0.16"
 );
 
-// ==========================================
-// INTRO EXIT
-// ONLY NOW REMOVE THE INTRO
-// ==========================================
+// =========================================================
+// 14 — REMOVE INTRO
+// =========================================================
 
 tl.set(introRef.current, {
   opacity: 0,
@@ -821,10 +623,11 @@ tl.call(() => {
 
   onComplete();
 
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     ScrollTrigger.refresh();
   });
 });
+
 tl.play();
  });
 return () => {

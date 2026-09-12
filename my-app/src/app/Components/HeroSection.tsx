@@ -35,7 +35,6 @@ function HeroSection({
   const ctx = gsap.context(() => {
     const tl = gsap.timeline({
       defaults: { ease: "power4.out" },
-      delay: 0.3,
     });
 
     /* =========================

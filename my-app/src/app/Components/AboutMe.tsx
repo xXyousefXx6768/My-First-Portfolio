@@ -601,7 +601,7 @@ pointer-events-none
     h-[460px]
     md:w-[320px]
     md:h-[520px]
-    lg:-mt-12
+    lg:-mt-34
     shadow-lg
     will-change-transform
     shadow-orange-700/10
