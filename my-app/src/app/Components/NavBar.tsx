@@ -53,9 +53,7 @@ const NavBar: React.FC<NavBarProps> = ({
   const currentLocale = pathname.split("/")[1] || "en";
   const currentLang = languages.find((l) => l.code === currentLocale);
 
-  /* ===============================
-     ✅ DESKTOP HOVER (كما هو)
-  ===============================*/
+
   useEffect(() => {
 
   const cleanups: (() => void)[] = [];
@@ -234,7 +232,7 @@ window.removeEventListener("scroll", handleScroll);
     duration: 1.5,
     scrollTo: {
       y: `#${sectionId}`,
-      offsetY: 120, // ارتفاع الناف بار
+      offsetY: 120,
     },
     ease: "power4.inOut",
   });

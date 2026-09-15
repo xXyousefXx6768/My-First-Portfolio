@@ -273,15 +273,15 @@ html {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
-  overflow: visible;  /* 👈 أهم حاجة */
+  overflow: visible;
 }
 
-/* الـ Shine */
+
 .shine-wrapper {
   position: absolute;
-  inset: 0;     /* نفس حجم الـ navbar */
+  inset: 0;
   overflow: hidden;
-  border-radius: 50px; /* نفس شكل الناف */
+  border-radius: 50px;
   pointer-events: none;
 }
 
@@ -303,7 +303,7 @@ html {
   100% { left: 125%; }
 }
 
-/* عند تمرير الماوس - شين قوي */
+
 .navbar-container:hover {
   box-shadow: 0 0 25px rgba(255, 140, 0, 0.6), 0 0 45px rgba(255, 90, 0, 0.4);
   border-color: rgba(255, 150, 50, 0.5);
@@ -358,7 +358,7 @@ html {
   color: #fff;
 }
 
-/* زر الاتصال */
+
 .contact-btn {
   background: linear-gradient(to right, #FA6E00, #E60026);
   color: #fff;
@@ -451,13 +451,13 @@ html {
   width: 10px;
 }
 
-/* خلفية الشريط */
+
 ::-webkit-scrollbar-track {
   background: #080808;
   border-radius: 10px;
 }
 
-/* الجزء المتحرك (المؤشر) */
+
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #FA6E00, #E60026);
   border-radius: 10px;
@@ -465,20 +465,19 @@ html {
   transition: all 0.3s ease;
 }
 
-/* لما المستخدم يمر بالماوس على الشريط */
+
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #FF7A00, #FF0033);
   box-shadow: 0 0 15px rgba(255, 90, 0, 0.8);
 }
 
-/* لجعل الشريط ناعم جدًا عند التمرير */
+
 html {
   scroll-behavior: smooth;
   scrollbar-color: #FA6E00 #04020069;
   scrollbar-width: thin;
 }
 
-/* إطار مضيء */
 .frame-glow {
   position: relative;
   padding: 10px;
@@ -506,7 +505,7 @@ html {
   filter: blur(10px);
 }
 
-/* حركة الأنيميشن في الإطار */
+
 @keyframes glowMove {
   0% { background-position: 0% 0%; }
   50% { background-position: 200% 0%; }

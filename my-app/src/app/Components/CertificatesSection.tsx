@@ -120,11 +120,7 @@ useEffect(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
-
-        // 🔒 نفس التوقيت القديم
         start: "top 75%",
-
-        // 🔒 نفس السلوك القديم
         once: true,
       },
     });
@@ -149,11 +145,7 @@ useEffect(() => {
       rotateY: 0,
       filter: "blur(0px)",
       clipPath: finalMask,
-
-      // 🔒 نفس التوقيت القديم
       duration: 1.2,
-
-      // 🔥 stagger موجود أصلًا
       stagger: 0.18,
 
       ease: "power4.out",

@@ -32,9 +32,6 @@ function AboutMe() {
   const ctx = gsap.context(() => {
     const textLines = textLinesRef.current.filter(Boolean);
 
-    // مهم:
-    // نجيب الكروت من داخل الـ component نفسه
-    // بدل selector عام على الصفحة
     const cards = gsap.utils.toArray<HTMLElement>(
       ".stat-card",
       sectionRef.current!
@@ -44,8 +41,6 @@ function AboutMe() {
     // INITIAL STATES
     // ==========================================
 
-    // TEXT
-    // ==========================================
 // TEXT — SEQUENTIAL PREMIUM REVEAL
 // ==========================================
 
@@ -105,13 +100,7 @@ textLines.forEach((line, index) => {
     ease: "power3.out",
   });
 });
-    // IMAGE CONTAINER
-    //
-    // opacity: 0
-    // حتى الصورة لا تظهر نهائيًا قبل بداية animation
-    //
-    // scale صغير لكن ليس صغيرًا جدًا
-    // حتى لا تصبح الحركة مبالغ فيها
+
     gsap.set(imageContainer, {
   opacity: 0,
   scale: 0.88,
@@ -156,10 +145,10 @@ textLines.forEach((line, index) => {
       },
 
       scrollTrigger: {
-        // استخدم الـ content نفسه بدل العنوان
+
         trigger: sectionRef.current,
 
-        // يبدأ أسرع بكثير
+
         start: "top 72%",
 
         once: true,
@@ -306,15 +295,10 @@ if (isMobile) {
     // ==========================================
     // 3 — CARDS
     // ==========================================
-    //
-    // مهم جدًا:
-    // هنا الكروت تبدأ بعد انتهاء الصورة فعلًا
-    //
+
 
     if (!isMobile) {
-  // ==========================================
-  // DESKTOP — نفس الترتيب القديم
-  // ==========================================
+
 
   tl.to(
     cards,
@@ -365,7 +349,7 @@ if (isMobile) {
       paused: true,
     });
 
-    // يبدأ فقط بعد انتهاء الـ cards
+
     tl.call(() => {
       floatingTween.play();
     });

@@ -36,18 +36,8 @@ const SystemsShowcase = () => {
     const section = sectionRef.current!;
     const frame = frameRef.current!;
 
-    /*
-     * =====================================================
-     * MASTER SCROLL CONFIG
-     * =====================================================
-     *
-     * الـ section كله يتحكم فيه Timeline واحد.
-     * كل Phase لها Timeline مستقل.
-     *
-     * لا يوجد Snap.
-     * لا يوجد onEnter/onLeave يغير حالة العناصر فجأة.
-     * كل شيء reversible بشكل طبيعي مع الـ scroll back.
-     */
+
+
 
     const END_DISTANCE = 6200;
 
@@ -121,16 +111,7 @@ const SystemsShowcase = () => {
       finalRef.current,
     ].filter(Boolean) as HTMLDivElement[];
 
-    /*
-     * مهم:
-     *
-     * مفيش visibility:hidden هنا.
-     * كل panel يفضل موجود في الـDOM
-     * والتحكم يكون بالـopacity + clipPath + transform.
-     *
-     * ده يمنع مشكلة إن panel يفضل hidden
-     * أثناء الـforward animation.
-     */
+
 
     gsap.set(panels, {
       opacity: 0,
@@ -160,10 +141,7 @@ const SystemsShowcase = () => {
 
     drawSVG(scrollArrow);
 
-    /*
-     * الـloop ده خارج الـmaster timeline
-     * لكنه لا يؤثر على الـscroll position.
-     */
+
 
     const hintFloat = gsap.to(".scroll-hint-arrow", {
       y: 6,
@@ -684,11 +662,7 @@ const SystemsShowcase = () => {
       }
     );
 
-    /*
-     * HOLD
-     *
-     * مهم عشان المستخدم يلحق يشوف المرحلة
-     */
+
     introTl.to({}, { duration: 0.35 });
 
     introTl.add(exitPhase(introRef.current!, 12));
@@ -701,10 +675,7 @@ const SystemsShowcase = () => {
 
     const craftTl = gsap.timeline();
 
-    /*
-     * Background يبدأ مع الـphase
-     * ويفضل موجود أثناء الـphase بالكامل.
-     */
+
 
     craftTl.to(
       frame,
@@ -819,9 +790,7 @@ const SystemsShowcase = () => {
 
     craftTl.add(exitPhase(craftRef.current!, -18));
 
-    /*
-     * الخلفية ترجع للأسود في نهاية craft فقط.
-     */
+
 
     craftTl.to(
       frame,
@@ -1491,19 +1460,12 @@ const SystemsShowcase = () => {
       }
     );
 
-    /*
-     * Hold final state.
-     * عشان لما توصل لآخر section ما يحصلش exit مفاجئ.
-     */
+
     finalTl.to({}, { duration: 0.6 });
 
     tl.add(finalTl);
 
-    /* =====================================================
-       BACKGROUND MOTION
-       مربوطة بنفس الـmaster timeline
-       بدل ScrollTriggers منفصلة.
-    ===================================================== */
+
 
     tl.to(
       ".systems-grid",
@@ -1537,10 +1499,6 @@ const SystemsShowcase = () => {
       0
     );
 
-    /*
-     * لأن background tweens فوق كلها duration قصير بالنسبة
-     * للـtimeline، نمدهم لحد نهاية الـmaster timeline.
-     */
 
     gsap.set(
       [
@@ -1553,19 +1511,7 @@ const SystemsShowcase = () => {
       }
     );
 
-    /*
-     * =====================================================
-     * SINGLE SCROLLTRIGGER
-     * =====================================================
-     *
-     * هنا النقطة المهمة:
-     *
-     * - no snap
-     * - no onEnter reset
-     * - no onLeave reset
-     * - no visibility manipulation
-     * - الـtimeline نفسها هي الحالة الوحيدة للحركة
-     */
+
 
     const scrollTrigger = ScrollTrigger.create({
   trigger: section,

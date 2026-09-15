@@ -38,7 +38,7 @@ function HeroSection({
     });
 
     /* =========================
-       🎬 UNIQUE IMAGE REVEAL
+       IMAGE REVEAL
     ==========================*/
 
     tl.fromTo(
@@ -74,7 +74,7 @@ function HeroSection({
       });
 
     /* =========================
-       🎬 TEXT CINEMATIC REVEAL
+        TEXT CINEMATIC REVEAL
     ==========================*/
 
     tl.fromTo(
@@ -108,7 +108,7 @@ function HeroSection({
     );
 
     /* =========================
-       🌊 FLOATING MICRO MOTION
+       FLOATING MICRO MOTION
     ==========================*/
 
     gsap.to(imageElement, {
@@ -120,7 +120,7 @@ function HeroSection({
     });
 
     /* =========================
-       📜 PARALLAX
+        PARALLAX
     ==========================*/
 
     gsap.to(imageElement, {
@@ -179,7 +179,7 @@ function HeroSection({
     autoAlpha: 1,
   });
 
-  // Inner border
+
 
 
   // Image
@@ -381,7 +381,7 @@ const handlePointerDown = (e: PointerEvent) => {
 const handlePointerUp = (e: PointerEvent) => {
   if (e.pointerType !== "touch") return;
 
-  // رجوع تدريجي
+
   gsap.to(card, {
     rotateY: 0,
     rotateX: 0,
@@ -391,7 +391,7 @@ const handlePointerUp = (e: PointerEvent) => {
     overwrite: "auto",
   });
 
-  // خلي الإطار ظاهر لحظة
+
   gsap.delayedCall(1.5, hideBorders);
 };
 

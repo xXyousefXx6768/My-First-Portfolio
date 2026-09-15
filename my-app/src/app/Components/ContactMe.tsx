@@ -31,7 +31,7 @@ function ContactMe() {
     },
   });
 
-  // الخلفية تطلع من تحت
+
   tl.to(
     fill,
     {
@@ -42,7 +42,6 @@ function ContactMe() {
     0
   );
 
-  // النص
   tl.to(
     content,
     {
@@ -54,7 +53,7 @@ function ContactMe() {
     0.18
   );
 
-  // الـ Icon
+
   if (icon) {
     tl.to(
       icon,
@@ -90,7 +89,7 @@ const handleCardLeave = (
     },
   });
 
-  // رجوع المحتوى
+
   tl.to(
     content,
     {
@@ -102,7 +101,7 @@ const handleCardLeave = (
     0
   );
 
-  // رجوع الـ Icon للبرتقالي
+
   if (icon) {
     tl.to(
       icon,
@@ -117,7 +116,7 @@ const handleCardLeave = (
     );
   }
 
-  // اختفاء الخلفية
+
   tl.to(
     fill,
     {

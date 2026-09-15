@@ -40,7 +40,7 @@ const themes = {
 export default function Services() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Refs لجميع الكروت
+
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const t = useTranslations("services");
 
@@ -271,7 +271,7 @@ cards.forEach((card, index) => {
     delay = index * 0.08;
     start = "top 90%";
   } else {
-    // Desktop — نفس الأنيميشن الحالي
+
     const isFirstRow = index < 3;
 
     delay = isFirstRow
@@ -460,7 +460,7 @@ transformPerspective:1000,
 transformStyle:"preserve-3d"
 })
 
-              // أنشئ الـ quickTo مرة واحدة فقط
+
             if((el as any)._quick){
     return;
 }

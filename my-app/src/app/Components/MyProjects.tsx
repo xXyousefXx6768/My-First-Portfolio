@@ -166,7 +166,7 @@ useEffect(() => {
     }
   });
 
-  // لو كل الصور كانت loaded بالفعل
+
   if (loaded === images.length) {
     refresh();
   }
@@ -223,7 +223,7 @@ useEffect(() => {
       force3D: true,
     });
 
-    // كل Card لها Trigger مستقل
+
     cards.forEach((card) => {
       gsap.to(card, {
         opacity: 1,
@@ -238,10 +238,10 @@ useEffect(() => {
         scrollTrigger: {
           trigger: card,
 
-          // يبدأ لما الـ card نفسها تقرب من الـ viewport
+
           start: "top 85%",
 
-          // مرة واحدة فقط
+
           once: true,
 
           invalidateOnRefresh: true,
@@ -249,7 +249,7 @@ useEffect(() => {
       });
     });
 
-    // مهم بعد الـ layout
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();

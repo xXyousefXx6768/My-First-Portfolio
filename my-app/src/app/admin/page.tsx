@@ -34,7 +34,6 @@ const AdminPage: React.FC = () => {
   preview:"",
 });
 
-  // ✅ جلب المشاريع
   const fetchProjects = async () => {
     const { data, error } = await supabase
       .from("projects")
@@ -51,7 +50,7 @@ const AdminPage: React.FC = () => {
     setProjects(data || []);
   };
 
-  // ✅ استخدم useEffect عشان يتحدث أول ما تسجل دخول أو بعد ما ترفع مشروع
+
   useEffect(() => {
     if (auth) fetchProjects();
   }, [auth]);
@@ -68,7 +67,7 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  // ☁️ رفع المشروع
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -77,7 +76,7 @@ const AdminPage: React.FC = () => {
       return;
     }
 
-    // رفع الصورة
+
     const formData = new FormData();
     formData.append("file", project.image);
     const res = await fetch("/api/upload", {
@@ -91,7 +90,7 @@ const AdminPage: React.FC = () => {
       return;
     }
 
-    // إدخال البيانات
+
     const { error } = await supabase.from("projects").insert([
       {
         name: project.name,
@@ -111,7 +110,7 @@ const AdminPage: React.FC = () => {
 
     toast.success("✅ تم رفع المشروع بنجاح!");
     setShowForm(false);
-    fetchProjects(); // ✅ تحدث القائمة فوراً بعد الرفع
+    fetchProjects();
   };
 
   const addTechnology = (tech: string) => {
@@ -172,7 +171,7 @@ const AdminPage: React.FC = () => {
       </button>
     </div>
 
-    {/* ✅ نموذج إضافة مشروع */}
+
     {showForm && (
       <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-10 max-w-lg mx-auto border border-gray-700">
         <h2 className="text-2xl font-semibold text-amber-400 mb-5">📦 Add New Project</h2>
@@ -239,7 +238,7 @@ const AdminPage: React.FC = () => {
   }
 />
 
-          {/* ✅ التقنيات */}
+
           <div>
             <div className="flex gap-2 mb-3">
               <input
@@ -270,7 +269,6 @@ const AdminPage: React.FC = () => {
               ))}
             </div>
 
-            {/* ✅ اقتراحات */}
             <div className="flex flex-wrap gap-2 mt-2 text-sm">
               {techSuggestions.map((t) => (
                 <button
@@ -285,7 +283,7 @@ const AdminPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ✅ روابط */}
+
           <input
             type="url"
             placeholder="GitHub Link"
@@ -299,7 +297,7 @@ const AdminPage: React.FC = () => {
             onChange={(e) => setProject({ ...project, preview: e.target.value })}
           />
 
-          {/* ✅ صورة المشروع */}
+
           <input
             type="file"
             accept="image/*"
@@ -309,7 +307,7 @@ const AdminPage: React.FC = () => {
             }
           />
 
-          {/* ✅ أزرار */}
+
           <div className="flex justify-between mt-4">
             <button
               type="button"
@@ -329,21 +327,30 @@ const AdminPage: React.FC = () => {
       </div>
     )}
 
-    {/* ✅ قائمة المشاريع */}
+
     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
       {projects.map((p) => (
         <div
           key={p.id}
           className="bg-gray-800 p-5 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300 border border-gray-700"
         >
-          <img
-            src={p.image}
-            alt={p.name}
-            className="rounded-lg w-full h-52 object-cover mb-4"
-          />
-          <h3 className="text-xl font-bold text-amber-400 mb-2">{p.name}</h3>
-          <p className="text-sm text-gray-300 mb-3">{p.tech?.join(", ")}</p>
-          <p className="text-gray-400 text-sm mb-4">{p.desc}</p>
+        <img
+  src={p.image}
+  alt={p.name?.en || "Project"}
+  className="rounded-lg w-full h-52 object-cover mb-4"
+/>
+
+<h3 className="text-xl font-bold text-amber-400 mb-2">
+  {p.name?.en}
+</h3>
+
+<p className="text-sm text-gray-300 mb-3">
+  {p.tech?.join(", ")}
+</p>
+
+<p className="text-gray-400 text-sm mb-4">
+  {p.desc?.en}
+</p>
           <div className="flex gap-3">
             <a
               href={p.github}

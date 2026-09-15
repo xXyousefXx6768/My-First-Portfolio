@@ -424,7 +424,7 @@ export default function CustomCursor() {
 
       // TOUCH
       if (mode === "touch") {
-        // في الموبايل الدوت فقط
+
         dotX(x - dotSize / 2);
         dotY(y - dotSize / 2);
       }
